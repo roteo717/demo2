@@ -3,640 +3,1477 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A-Line 検査ホーム</title>
+<title>Gemini 検査システム</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Noto+Sans+JP:wght@300;400;500;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg-dark: #0d1117;
-    --bg-sidebar: #161b22;
-    --bg-card: #1c2128;
-    --bg-card2: #21262d;
-    --border: #30363d;
-    --border-light: #3d444d;
-    --text-primary: #e6edf3;
-    --text-secondary: #8b949e;
-    --text-muted: #6e7681;
-    --accent: #58a6ff;
-    --accent-dim: #1f3a5f;
-    --green: #2ea043;
-    --green-bg: #1a3a20;
-    --red: #da3633;
-    --red-bg: #3a1a1a;
-    --tab-active: #238636;
-  }
-  body {
-    font-family: 'Noto Sans JP', sans-serif;
-    background: var(--bg-dark);
-    color: var(--text-primary);
-    height: 100vh;
-    display: flex;
-    overflow: hidden;
-    font-size: 13px;
-  }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg-dark: #0d1117;
+  --bg-sidebar: #161b22;
+  --bg-card: #1c2128;
+  --bg-card2: #21262d;
+  --border: #30363d;
+  --border-light: #3d444d;
+  --text-primary: #e6edf3;
+  --text-secondary: #8b949e;
+  --text-muted: #6e7681;
+  --accent: #58a6ff;
+  --accent-dim: #1f3a5f;
+  --green: #2ea043;
+  --green-bg: #1a3a20;
+  --red: #da3633;
+  --red-bg: #3a1a1a;
+  --orange: #d97706;
+  --orange-dim: #3a2600;
+  --purple: #a371f7;
+  --purple-dim: #2a1a4a;
+  --tab-active: #238636;
+}
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  height: 100vh;
+  display: flex;
+  overflow: hidden;
+  font-size: 13px;
+}
 
-  /* SIDEBAR */
-  .sidebar {
-    width: 200px;
-    min-width: 200px;
-    background: var(--bg-sidebar);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-  }
-  .sidebar-logo {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: 700;
-    font-size: 14px;
-    color: var(--accent);
-  }
-  .sidebar-logo-icon {
-    width: 28px; height: 28px;
-    background: linear-gradient(135deg, var(--accent), #a371f7);
-    border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px;
-  }
-  .nav-item {
-    display: flex; align-items: center; gap: 12px;
-    padding: 11px 20px;
-    cursor: pointer;
-    color: var(--text-secondary);
-    transition: all 0.15s;
-    border-left: 3px solid transparent;
-    font-size: 13px;
-    user-select: none;
-  }
-  .nav-item:hover { background: var(--bg-card2); color: var(--text-primary); }
-  .nav-item.active {
-    background: var(--accent-dim);
-    color: var(--accent);
-    border-left-color: var(--accent);
-  }
-  .nav-icon { font-size: 15px; width: 18px; text-align: center; }
-  .nav-spacer { flex: 1; }
-  .sidebar-user {
-    padding: 14px 20px;
-    border-top: 1px solid var(--border);
-    display: flex; align-items: center; gap: 10px;
-  }
-  .user-avatar {
-    width: 32px; height: 32px; border-radius: 50%;
-    background: linear-gradient(135deg, #4a9eff, #a371f7);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 700; color: white;
-    flex-shrink: 0;
-  }
-  .user-info { overflow: hidden; }
-  .user-name { font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .user-role { font-size: 10px; color: var(--text-muted); }
+/* ══ SIDEBAR ════════════════════════════════ */
+.sidebar {
+  width: 200px; min-width: 200px;
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+}
+.sidebar-logo {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 700; font-size: 14px; color: var(--accent);
+}
+.sidebar-logo-icon {
+  width: 28px; height: 28px;
+  background: linear-gradient(135deg, var(--accent), #a371f7);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+}
+.nav-section-label {
+  padding: 14px 20px 4px;
+  font-size: 10px; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.8px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 20px;
+  cursor: pointer; color: var(--text-secondary);
+  transition: all 0.15s;
+  border-left: 3px solid transparent;
+  font-size: 13px; user-select: none;
+}
+.nav-item:hover { background: var(--bg-card2); color: var(--text-primary); }
+.nav-item.active { background: var(--accent-dim); color: var(--accent); border-left-color: var(--accent); }
+.nav-item.sub { padding-left: 36px; font-size: 12px; border-left: 3px solid transparent; }
+.nav-icon { width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: inherit; }
+.nav-spacer { flex: 1; }
+.sidebar-user {
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+.user-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, #4a9eff, #a371f7);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: white; flex-shrink: 0;
+}
+.user-info { overflow: hidden; }
+.user-name { font-size: 12px; font-weight: 500; }
+.user-role { font-size: 10px; color: var(--text-muted); }
 
-  /* MAIN */
-  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+/* ══ MAIN ════════════════════════════════ */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.screen { display: none; flex: 1; flex-direction: column; overflow: hidden; }
+.screen.active { display: flex; }
 
-  /* HEADER */
-  .header {
-    background: var(--bg-sidebar);
-    border-bottom: 1px solid var(--border);
-    padding: 0 24px;
-    height: 56px;
-    display: flex; align-items: center; justify-content: space-between;
-    flex-shrink: 0;
-  }
-  .header-title { font-size: 17px; font-weight: 700; }
-  .header-clock {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 14px;
-    color: var(--text-secondary);
-    letter-spacing: 1px;
-  }
+/* ══ HEADER (shared) ════════════════════ */
+.header {
+  background: var(--bg-sidebar);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px; height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.header-left { display: flex; flex-direction: column; gap: 1px; }
+.header-title { font-size: 17px; font-weight: 700; }
+.header-subtitle { font-size: 11px; color: var(--text-muted); }
+.header-clock {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 13px; color: var(--text-secondary); letter-spacing: 1px;
+}
 
-  /* FILTER BAR */
-  .filter-bar {
-    background: var(--bg-card);
-    border-bottom: 1px solid var(--border);
-    padding: 12px 24px;
-    display: flex; gap: 16px; align-items: flex-end;
-    flex-shrink: 0;
-  }
-  .filter-group { display: flex; flex-direction: column; gap: 4px; }
-  .filter-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-  .filter-select {
-    background: var(--bg-dark);
-    border: 1px solid var(--border-light);
-    border-radius: 6px;
-    color: var(--text-primary);
-    padding: 6px 28px 6px 10px;
-    font-size: 12px;
-    font-family: inherit;
-    cursor: pointer;
-    appearance: none;
-    -webkit-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236e7681'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 8px center;
-    min-width: 130px;
-  }
-  .filter-input {
-    background: var(--bg-dark);
-    border: 1px solid var(--border-light);
-    border-radius: 6px;
-    color: var(--text-primary);
-    padding: 6px 10px;
-    font-size: 12px;
-    font-family: inherit;
-    min-width: 80px;
-  }
+/* ══════════════════════════════════════════
+   INSPECTION SCREEN
+═══════════════════════════════════════════ */
+.filter-bar {
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  display: flex; gap: 16px; align-items: flex-end;
+  flex-shrink: 0;
+}
+.filter-group { display: flex; flex-direction: column; gap: 4px; }
+.filter-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.filter-select {
+  background: var(--bg-dark); border: 1px solid var(--border-light); border-radius: 6px;
+  color: var(--text-primary); padding: 6px 28px 6px 10px; font-size: 12px; font-family: inherit;
+  cursor: pointer; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236e7681'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 8px center; min-width: 130px;
+}
+.filter-input {
+  background: var(--bg-dark); border: 1px solid var(--border-light); border-radius: 6px;
+  color: var(--text-primary); padding: 6px 10px; font-size: 12px; font-family: inherit; min-width: 80px;
+}
+.tabs-bar {
+  background: var(--bg-card); border-bottom: 1px solid var(--border);
+  padding: 0 24px; display: flex; flex-shrink: 0; overflow-x: auto;
+}
+.tab {
+  padding: 12px 20px; cursor: pointer; color: var(--text-secondary); font-size: 13px;
+  border-bottom: 2px solid transparent;
+  display: flex; align-items: center; gap: 8px;
+  transition: all 0.15s; white-space: nowrap; user-select: none;
+}
+.tab:hover { color: var(--text-primary); }
+.tab.active { color: var(--text-primary); border-bottom-color: var(--accent); }
+.tab-badge { background: var(--tab-active); color: #fff; border-radius: 10px; padding: 1px 6px; font-size: 10px; font-weight: 700; }
+.tab-ng { background: var(--red); }
+.insp-content { flex: 1; display: flex; overflow: hidden; padding: 20px 24px; gap: 20px; }
+.inspection-card {
+  flex: 1; background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 10px; display: flex; flex-direction: column; overflow: hidden;
+}
+.card-header {
+  padding: 18px 24px 14px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.card-title-group { display: flex; align-items: center; gap: 14px; }
+.item-number {
+  width: 36px; height: 36px; border: 2px solid var(--border-light); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 15px; color: var(--text-secondary); flex-shrink: 0;
+}
+.item-title { font-size: 18px; font-weight: 700; }
+.process-badge {
+  background: var(--bg-card2); border: 1px solid var(--border-light); border-radius: 20px;
+  padding: 4px 14px; font-size: 12px; color: var(--text-secondary);
+}
+.card-body {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; padding: 30px 24px; gap: 20px;
+}
+.tolerance-spec { font-size: 16px; color: var(--text-secondary); font-family: 'Share Tech Mono', monospace; letter-spacing: 1px; }
+.digital-display-wrap {
+  background: #0a0e14; border: 2px solid var(--border-light); border-radius: 12px;
+  padding: 20px 48px; display: flex; align-items: baseline; gap: 10px;
+  box-shadow: inset 0 0 40px rgba(0,0,0,0.5), 0 0 20px rgba(88,166,255,0.05);
+  position: relative;
+}
+.digital-display-wrap::before {
+  content: ''; position: absolute; inset: 0; border-radius: 10px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 100%); pointer-events: none;
+}
+.digital-value {
+  font-family: 'Orbitron', monospace; font-size: 68px; font-weight: 700;
+  color: #e6edf3; letter-spacing: 4px;
+  text-shadow: 0 0 20px rgba(88,166,255,0.3), 0 0 40px rgba(88,166,255,0.1); line-height: 1;
+}
+.digital-value-input {
+  font-family: 'Orbitron', monospace; font-size: 68px; font-weight: 700;
+  color: #e6edf3; letter-spacing: 4px; line-height: 1;
+  background: transparent; border: none; outline: none;
+  width: 200px; text-align: right; caret-color: var(--accent);
+  text-shadow: 0 0 20px rgba(88,166,255,0.3), 0 0 40px rgba(88,166,255,0.1);
+  -moz-appearance: textfield;
+}
+.digital-value-input::-webkit-outer-spin-button,
+.digital-value-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.digital-value-input.ok { color: #2ea043; text-shadow: 0 0 20px rgba(46,160,67,0.4); }
+.digital-value-input.ng { color: #da3633; text-shadow: 0 0 20px rgba(218,54,51,0.4); }
+.digital-display-wrap.ok { border-color: #2ea043; box-shadow: inset 0 0 40px rgba(0,0,0,0.5), 0 0 20px rgba(46,160,67,0.15); }
+.digital-display-wrap.ng { border-color: #da3633; box-shadow: inset 0 0 40px rgba(0,0,0,0.5), 0 0 20px rgba(218,54,51,0.15); }
+.digital-unit { font-family: 'Share Tech Mono', monospace; font-size: 22px; color: var(--text-secondary); margin-bottom: 8px; }
+.action-buttons { display: flex; gap: 16px; }
+.btn-ok {
+  background: var(--green); color: white; border: none; border-radius: 8px;
+  padding: 12px 36px; font-size: 15px; font-weight: 700; cursor: pointer;
+  display: flex; align-items: center; gap: 8px; transition: all 0.15s; font-family: inherit; letter-spacing: 1px;
+}
+.btn-ok:hover { background: #3fb950; transform: translateY(-1px); box-shadow: 0 4px 15px rgba(46,160,67,0.4); }
+.btn-ng {
+  background: var(--red); color: white; border: none; border-radius: 8px;
+  padding: 12px 36px; font-size: 15px; font-weight: 700; cursor: pointer;
+  display: flex; align-items: center; gap: 8px; transition: all 0.15s; font-family: inherit; letter-spacing: 1px;
+}
+.btn-ng:hover { background: #f04b48; transform: translateY(-1px); box-shadow: 0 4px 15px rgba(218,54,51,0.4); }
+.card-footer {
+  border-top: 1px solid var(--border); padding: 14px 24px;
+  display: flex; align-items: center; gap: 10px;
+}
+.nav-btn {
+  background: var(--bg-card2); border: 1px solid var(--border-light); border-radius: 8px;
+  color: var(--text-secondary); width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 14px; transition: all 0.15s; flex-shrink: 0; user-select: none;
+}
+.nav-btn:hover { background: var(--accent-dim); color: var(--accent); border-color: var(--accent); }
+.nav-labels { display: flex; gap: 8px; align-items: center; flex: 1; justify-content: center; }
+.nav-label-btn {
+  background: var(--bg-dark); border: 1px solid var(--border); border-radius: 6px;
+  padding: 6px 14px; font-size: 11px; color: var(--text-secondary);
+  cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px;
+}
+.prev-area, .next-area { display: flex; align-items: center; gap: 8px; }
+.prev-next-label { font-size: 11px; color: var(--text-muted); }
+.checklist-panel {
+  width: 240px; min-width: 240px; background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 10px; display: flex; flex-direction: column; overflow: hidden;
+}
+.checklist-header {
+  padding: 14px 16px; border-bottom: 1px solid var(--border);
+  font-size: 11px; font-weight: 600; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.8px; flex-shrink: 0;
+}
+.checklist-scroll { flex: 1; overflow-y: auto; }
+.checklist-scroll::-webkit-scrollbar { width: 4px; }
+.checklist-scroll::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+.check-item {
+  display: flex; align-items: center;
+  padding: 10px 16px; border-bottom: 1px solid var(--border);
+  cursor: pointer; transition: background 0.1s; gap: 8px;
+}
+.check-item:hover { background: var(--bg-card2); }
+.check-item.active { background: var(--accent-dim); }
+.check-item-name { font-size: 12px; color: var(--text-primary); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.check-item-name span { color: var(--text-muted); margin-right: 4px; font-size: 11px; }
+.status-icon { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; font-weight: 700; line-height: 1; margin-left: auto; }
+.status-ok { background: var(--green-bg); color: var(--green); }
+.status-ng { background: var(--red-bg); color: var(--red); }
+.status-pending { background: var(--bg-dark); color: var(--text-muted); border: 1px solid var(--border-light); }
 
-  /* TABS */
-  .tabs-bar {
-    background: var(--bg-card);
-    border-bottom: 1px solid var(--border);
-    padding: 0 24px;
-    display: flex;
-    flex-shrink: 0;
-    overflow-x: auto;
-  }
-  .tab {
-    padding: 12px 20px;
-    cursor: pointer;
-    color: var(--text-secondary);
-    font-size: 13px;
-    border-bottom: 2px solid transparent;
-    display: flex; align-items: center; gap: 8px;
-    transition: all 0.15s;
-    white-space: nowrap;
-    user-select: none;
-  }
-  .tab:hover { color: var(--text-primary); }
-  .tab.active { color: var(--text-primary); border-bottom-color: var(--accent); }
-  .tab-badge {
-    background: var(--tab-active);
-    color: #fff;
-    border-radius: 10px;
-    padding: 1px 6px;
-    font-size: 10px;
-    font-weight: 700;
-  }
-  .tab-ng { background: var(--red); }
+/* ══════════════════════════════════════════
+   SETTINGS / MASTER DATA SCREEN
+═══════════════════════════════════════════ */
+.page-tabs {
+  background: var(--bg-sidebar); border-bottom: 1px solid var(--border);
+  padding: 0 24px; display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0; gap: 16px;
+}
+.ptab-group { display: flex; }
+.ptab {
+  padding: 12px 18px; cursor: pointer; color: var(--text-secondary); font-size: 13px;
+  border-bottom: 2px solid transparent; transition: all 0.15s; white-space: nowrap; user-select: none;
+}
+.ptab:hover { color: var(--text-primary); }
+.ptab.active { color: var(--text-primary); border-bottom-color: var(--accent); }
+.page-actions { display: flex; gap: 8px; align-items: center; padding: 8px 0; }
+.sbtn {
+  display: flex; align-items: center; gap: 6px; line-height: 1;
+  padding: 7px 14px; border-radius: 8px; font-size: 12px; font-family: inherit;
+  font-weight: 500; cursor: pointer; transition: all 0.15s;
+  border: 1px solid var(--border-light); background: var(--bg-card2); color: var(--text-secondary);
+}
+.sbtn:hover { background: var(--border); color: var(--text-primary); }
+.sbtn-primary { background: var(--accent); color: #0d1117; border-color: var(--accent); font-weight: 700; }
+.sbtn-primary:hover { background: #79b8ff; border-color: #79b8ff; }
+.master-grid {
+  flex: 1; display: grid; grid-template-columns: repeat(4, 1fr);
+  overflow: hidden;
+}
+.master-col {
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.master-col:last-child { border-right: none; }
+.col-header {
+  padding: 10px 16px; background: var(--bg-card2); border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+}
+.col-title { font-size: 12px; font-weight: 700; color: var(--text-primary); }
+.col-count {
+  font-size: 11px; color: var(--text-muted); background: var(--bg-dark);
+  border: 1px solid var(--border); border-radius: 20px; padding: 1px 8px;
+}
+.col-search {
+  padding: 8px 12px; border-bottom: 1px solid var(--border);
+  display: flex; gap: 6px; background: var(--bg-card); flex-shrink: 0;
+}
+.search-wrap { position: relative; flex: 1; }
+.search-icon { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 12px; pointer-events: none; }
+.search-input {
+  width: 100%; background: var(--bg-dark); border: 1px solid var(--border-light); border-radius: 6px;
+  color: var(--text-primary); padding: 5px 8px 5px 28px; font-size: 12px; font-family: inherit;
+}
+.search-input:focus { outline: none; border-color: var(--accent); }
+.btn-add {
+  display: flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 6px;
+  background: var(--accent-dim); border: 1px solid rgba(88,166,255,0.3); color: var(--accent);
+  font-size: 11px; font-weight: 600; cursor: pointer; font-family: inherit;
+  transition: all 0.15s; white-space: nowrap;
+}
+.btn-add:hover { background: var(--accent); color: #0d1117; }
+.col-list { flex: 1; overflow-y: auto; background: var(--bg-card); }
+.col-list::-webkit-scrollbar { width: 4px; }
+.col-list::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 4px; }
 
-  /* CONTENT */
-  .content {
-    flex: 1;
-    display: flex;
-    overflow: hidden;
-    padding: 20px 24px;
-    gap: 20px;
-  }
+/* ── product selection screen ── */
+.ps-line-item { padding:10px 16px; border-bottom:1px solid var(--border); cursor:pointer; transition:background .1s; display:flex; align-items:center; gap:8px; }
+.ps-line-item:hover { background:var(--bg-card2); }
+.ps-line-item.active { background:var(--accent-dim); border-left:3px solid var(--accent); padding-left:13px; }
+.ps-prod-item { padding:10px 14px; border-bottom:1px solid var(--border); cursor:pointer; transition:background .1s; display:flex; align-items:center; gap:10px; }
+.ps-prod-item:hover { background:var(--bg-card2); }
+.ps-prod-item.active { background:var(--accent-dim); border-left:3px solid var(--accent); padding-left:11px; }
+.ps-proc-hd { padding:7px 16px; background:var(--bg-card2); border-bottom:1px solid var(--border); display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none; }
+.ps-proc-hd:hover { background:var(--border); }
+.ps-insp-row { display:grid; grid-template-columns:22px 22px 1fr 1fr 52px 36px 36px; align-items:center; gap:6px; padding:8px 14px; border-bottom:1px solid var(--border); transition:background .1s; }
+.ps-insp-row:hover { background:var(--bg-card2); }
+.ps-star { color:var(--text-muted); font-size:13px; cursor:pointer; transition:color .12s; flex-shrink:0; }
+.ps-star.on { color:#e3b341; }
+.ps-def { font-size:10px; font-weight:700; padding:1px 6px; border-radius:4px; background:var(--green-bg); border:1px solid rgba(46,160,67,.3); color:var(--green); }
+.ps-chk { width:15px; height:15px; border-radius:3px; cursor:pointer; border:1px solid var(--border-light); appearance:none; background:var(--bg-dark); justify-self:center; accent-color:var(--accent); }
+.ps-chk:checked { background:var(--accent); border-color:var(--accent); }
+.ps-empty { padding:32px 16px; text-align:center; color:var(--text-muted); font-size:12px; }
 
-  /* INSPECTION CARD */
-  .inspection-card {
-    flex: 1;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-  .card-header {
-    padding: 18px 24px 14px;
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .card-title-group { display: flex; align-items: center; gap: 14px; }
-  .item-number {
-    width: 36px; height: 36px;
-    border: 2px solid var(--border-light);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 15px;
-    color: var(--text-secondary);
-    flex-shrink: 0;
-  }
-  .item-title { font-size: 18px; font-weight: 700; }
-  .process-badge {
-    background: var(--bg-card2);
-    border: 1px solid var(--border-light);
-    border-radius: 20px;
-    padding: 4px 14px;
-    font-size: 12px;
-    color: var(--text-secondary);
-  }
-  .card-body {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 30px 24px;
-    gap: 20px;
-  }
-  .tolerance-spec {
-    font-size: 16px;
-    color: var(--text-secondary);
-    font-family: 'Share Tech Mono', monospace;
-    letter-spacing: 1px;
-  }
-  .digital-display-wrap {
-    background: #0a0e14;
-    border: 2px solid var(--border-light);
-    border-radius: 12px;
-    padding: 20px 48px;
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-    box-shadow: inset 0 0 40px rgba(0,0,0,0.5), 0 0 20px rgba(88,166,255,0.05);
-    position: relative;
-  }
-  .digital-display-wrap::before {
-    content: '';
-    position: absolute; inset: 0; border-radius: 10px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 100%);
-    pointer-events: none;
-  }
-  .digital-value {
-    font-family: 'Orbitron', monospace;
-    font-size: 68px;
-    font-weight: 700;
-    color: #e6edf3;
-    letter-spacing: 4px;
-    text-shadow: 0 0 20px rgba(88,166,255,0.3), 0 0 40px rgba(88,166,255,0.1);
-    line-height: 1;
-  }
-  .digital-unit {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 22px;
-    color: var(--text-secondary);
-    margin-bottom: 8px;
-  }
-  .action-buttons {
-    display: flex; gap: 16px;
-  }
-  .btn-ok {
-    background: var(--green);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 12px 36px;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    display: flex; align-items: center; gap: 8px;
-    transition: all 0.15s;
-    font-family: inherit;
-    letter-spacing: 1px;
-  }
-  .btn-ok:hover { background: #3fb950; transform: translateY(-1px); box-shadow: 0 4px 15px rgba(46,160,67,0.4); }
-  .btn-ok:active { transform: translateY(0); }
-  .btn-ng {
-    background: var(--red);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 12px 36px;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    display: flex; align-items: center; gap: 8px;
-    transition: all 0.15s;
-    font-family: inherit;
-    letter-spacing: 1px;
-  }
-  .btn-ng:hover { background: #f04b48; transform: translateY(-1px); box-shadow: 0 4px 15px rgba(218,54,51,0.4); }
-  .btn-ng:active { transform: translateY(0); }
-  .card-footer {
-    border-top: 1px solid var(--border);
-    padding: 14px 24px;
-    display: flex; align-items: center; gap: 10px;
-  }
-  .nav-btn {
-    background: var(--bg-card2);
-    border: 1px solid var(--border-light);
-    border-radius: 8px;
-    color: var(--text-secondary);
-    width: 34px; height: 34px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.15s;
-    flex-shrink: 0;
-    user-select: none;
-  }
-  .nav-btn:hover { background: var(--accent-dim); color: var(--accent); border-color: var(--accent); }
-  .nav-labels {
-    display: flex; gap: 8px; align-items: center;
-    flex: 1;
-    justify-content: center;
-  }
-  .nav-label-btn {
-    background: var(--bg-dark);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 6px 14px;
-    font-size: 11px;
-    color: var(--text-secondary);
-    cursor: pointer;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 160px;
-  }
-  .prev-area, .next-area {
-    display: flex; align-items: center; gap: 8px;
-  }
-  .prev-next-label { font-size: 11px; color: var(--text-muted); }
-
-  /* CHECKLIST PANEL */
-  .checklist-panel {
-    width: 240px;
-    min-width: 240px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-  .checklist-header {
-    padding: 14px 16px;
-    border-bottom: 1px solid var(--border);
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    flex-shrink: 0;
-  }
-  .checklist-scroll { flex: 1; overflow-y: auto; }
-  .checklist-scroll::-webkit-scrollbar { width: 4px; }
-  .checklist-scroll::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
-  .check-item {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 10px 16px;
-    border-bottom: 1px solid var(--border);
-    cursor: pointer;
-    transition: background 0.1s;
-    gap: 8px;
-  }
-  .check-item:hover { background: var(--bg-card2); }
-  .check-item.active { background: var(--accent-dim); }
-  .check-item-name { font-size: 12px; color: var(--text-primary); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .check-item-name span { color: var(--text-muted); margin-right: 4px; font-size: 11px; }
-  .status-icon { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; font-weight: 700; }
-  .status-ok { background: var(--green-bg); color: var(--green); }
-  .status-ng { background: var(--red-bg); color: var(--red); }
-  .status-pending { background: var(--bg-dark); color: var(--text-muted); border: 1px solid var(--border-light); }
+.list-item {
+  padding: 10px 16px; border-bottom: 1px solid var(--border); cursor: pointer;
+  transition: background 0.1s; display: flex; align-items: center; justify-content: space-between; gap: 8px;
+}
+.list-item:hover { background: var(--bg-card2); }
+.list-item.active { background: var(--accent-dim); border-left: 3px solid var(--accent); padding-left: 13px; }
+.list-item-main { flex: 1; overflow: hidden; }
+.list-item-name { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.list-item-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+.badge-active { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--green); white-space: nowrap; }
+.badge-active::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--green); display: block; }
+.list-item-num { font-size: 12px; color: var(--text-muted); font-family: 'Share Tech Mono', monospace; width: 20px; text-align: center; flex-shrink: 0; }
+.list-item-arrow { color: var(--text-muted); font-size: 12px; flex-shrink: 0; }
+.tag { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px; flex-shrink: 0; }
+.tag-blue { background: var(--accent-dim); border: 1px solid rgba(88,166,255,0.3); color: var(--accent); }
+.tag-orange { background: var(--orange-dim); border: 1px solid rgba(217,119,6,0.3); color: var(--orange); }
+.tag-purple { background: var(--purple-dim); border: 1px solid rgba(163,113,247,0.3); color: var(--purple); }
+.col-detail { border-top: 1px solid var(--border); background: var(--bg-dark); padding: 14px; flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; }
+.detail-title { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 2px; }
+.field-group { display: flex; flex-direction: column; gap: 3px; }
+.field-label { font-size: 10px; color: var(--text-muted); }
+.field-input {
+  background: var(--bg-card2); border: 1px solid var(--border-light); border-radius: 6px;
+  color: var(--text-primary); padding: 6px 10px; font-size: 12px; font-family: inherit; width: 100%;
+}
+.field-input:focus { outline: none; border-color: var(--accent); }
+.field-select {
+  background: var(--bg-card2); border: 1px solid var(--border-light); border-radius: 6px;
+  color: var(--text-primary); padding: 6px 28px 6px 10px; font-size: 12px; font-family: inherit; width: 100%;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236e7681'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 8px center; cursor: pointer;
+}
+.field-select:focus { outline: none; border-color: var(--accent); }
+.field-row { display: flex; gap: 8px; }
+.field-row .field-group { flex: 1; }
+.field-textarea {
+  background: var(--bg-card2); border: 1px solid var(--border-light); border-radius: 6px;
+  color: var(--text-primary); padding: 6px 10px; font-size: 12px; font-family: inherit;
+  width: 100%; resize: none; height: 48px;
+}
+.field-textarea:focus { outline: none; border-color: var(--accent); }
+.detail-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 2px; }
+.btn-cancel {
+  padding: 6px 14px; background: var(--bg-card2); border: 1px solid var(--border-light);
+  border-radius: 6px; color: var(--text-secondary); font-size: 12px; font-family: inherit; cursor: pointer; transition: all 0.15s;
+}
+.btn-cancel:hover { background: var(--border); color: var(--text-primary); }
+.btn-save {
+  padding: 6px 18px; background: var(--accent); border: none; border-radius: 6px;
+  color: #0d1117; font-size: 12px; font-weight: 700; font-family: inherit; cursor: pointer; transition: all 0.15s;
+}
+.btn-save:hover { background: #79b8ff; }
 </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
+<!-- ══ SIDEBAR ════════════════════════════════ -->
 <nav class="sidebar">
   <div class="sidebar-logo">
-    <div class="sidebar-logo-icon">✦</div>
+    <div class="sidebar-logo-icon" style="font-size:0;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" ><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
     Gemini
   </div>
-  <div class="nav-item" onclick="setNav(this)"><span class="nav-icon">🏠</span>ホーム</div>
-  <div class="nav-item active" onclick="setNav(this)"><span class="nav-icon">🔍</span>検査</div>
-  <div class="nav-item" onclick="setNav(this)"><span class="nav-icon">📦</span>製品選択</div>
-  <div class="nav-item" onclick="setNav(this)"><span class="nav-icon">📐</span>図面</div>
-  <div class="nav-item" onclick="setNav(this)"><span class="nav-icon">📋</span>履歴・レポート</div>
+  <div class="nav-item" data-screen="home"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" ><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg></span>ホーム</div>
+  <div class="nav-item active" data-screen="inspection"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" ><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg></span>検査</div>
+  <div class="nav-item" data-screen="product"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" ><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span>製品選択</div>
+  <div class="nav-item" data-screen="drawing"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" ><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/><line x1="14" y1="9" x2="14" y2="5"/><line x1="9" y1="14" x2="3" y2="14"/></svg></span>図面</div>
+  <div class="nav-item" data-screen="report"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" ><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>履歴・レポート</div>
   <div class="nav-spacer"></div>
-  <div class="nav-item" onclick="setNav(this)"><span class="nav-icon">⚙️</span>設定</div>
+  <div class="nav-section-label">設定</div>
+  <div class="nav-item" data-screen="settings-master"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" ><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>設定</div>
+  <div class="nav-item sub" data-screen="settings-master">マスターデータ</div>
+  <div class="nav-item sub" data-screen="settings-user">ユーザー管理</div>
+  <div class="nav-item sub" data-screen="settings-role">権限管理</div>
+  <div class="nav-item sub" data-screen="settings-sys">システム設定</div>
+  <div class="nav-item sub" data-screen="settings-log">ログ管理</div>
   <div class="sidebar-user">
-    <div class="user-avatar">山田</div>
+    <div class="user-avatar">山</div>
     <div class="user-info">
       <div class="user-name">山田 太郎</div>
-      <div class="user-role">検査員</div>
+      <div class="user-role">管理者</div>
     </div>
   </div>
 </nav>
 
-<!-- MAIN -->
+<!-- ══ MAIN ════════════════════════════════ -->
 <div class="main">
-  <!-- HEADER -->
-  <div class="header">
-    <div class="header-title">A-Line 検査ホーム</div>
-    <div class="header-clock" id="clock">----</div>
-  </div>
 
-  <!-- FILTER BAR -->
-  <div class="filter-bar">
-    <div class="filter-group">
-      <div class="filter-label">ライン</div>
-      <select class="filter-select">
-        <option>A-Line</option>
-        <option>B-Line</option>
-        <option>C-Line</option>
-      </select>
+  <!-- ════════════════════════════════════════
+       INSPECTION SCREEN
+  ══════════════════════════════════════════ -->
+  <div class="screen active" id="screen-inspection">
+    <div class="header">
+      <div class="header-left"><div class="header-title">A-Line 検査ホーム</div></div>
+      <div class="header-clock" id="clock">----</div>
     </div>
-    <div class="filter-group">
-      <div class="filter-label">メーカー</div>
-      <select class="filter-select">
-        <option>Example Mfg Co., Ltd.</option>
-        <option>Acme Corp.</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <div class="filter-label">ロット番号</div>
-      <input class="filter-input" type="text" value="1234">
-    </div>
-    <div class="filter-group">
-      <div class="filter-label">日付</div>
-      <select class="filter-select">
-        <option>2026-05-07</option>
-        <option>2026-05-06</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <div class="filter-label">検査員</div>
-      <select class="filter-select">
-        <option>山田 太郎</option>
-        <option>田中 花子</option>
-      </select>
-    </div>
-  </div>
-
-  <!-- TABS -->
-  <div class="tabs-bar">
-    <div class="tab active" onclick="setTab(this)">シャフトA <span class="tab-badge" id="progressBadge">0/10</span> <span class="tab-badge tab-ng" id="ngBadge">NG: 0</span></div>
-    <div class="tab" onclick="setTab(this)">シャフトB</div>
-    <div class="tab" onclick="setTab(this)">サンプルC</div>
-    <div class="tab" onclick="setTab(this)">サンプルD</div>
-    <div class="tab" onclick="setTab(this)">サンプルE</div>
-    <div class="tab" onclick="setTab(this)">サンプルF</div>
-  </div>
-
-  <!-- CONTENT -->
-  <div class="content">
-    <!-- INSPECTION CARD -->
-    <div class="inspection-card">
-      <div class="card-header">
-        <div class="card-title-group">
-          <div class="item-number" id="itemNum">1</div>
-          <div class="item-title" id="itemTitle">外径（パートA）</div>
-        </div>
-        <div class="process-badge" id="process">旋削</div>
+    <div class="filter-bar">
+      <div class="filter-group">
+        <div class="filter-label">ライン</div>
+        <select class="filter-select"><option>A-Line</option><option>B-Line</option><option>C-Line</option></select>
       </div>
-      <div class="card-body">
-        <div class="tolerance-spec" id="spec">50 ± 0.2 mm</div>
-        <div class="digital-display-wrap">
-          <div class="digital-value" id="displayValue">--.-</div>
-          <div class="digital-unit">mm</div>
-        </div>
-        <div class="action-buttons">
-          <button class="btn-ok" onclick="judge('OK')">✓ &nbsp;OK</button>
-          <button class="btn-ng" onclick="judge('NG')">✕ &nbsp;NG</button>
-        </div>
+      <div class="filter-group">
+        <div class="filter-label">メーカー</div>
+        <select class="filter-select"><option>Example Mfg Co., Ltd.</option><option>Acme Corp.</option></select>
       </div>
-      <div class="card-footer">
-        <div class="prev-area">
-          <div class="nav-btn" onclick="prevItem()">◀</div>
-          <div class="prev-next-label">前の項目</div>
-        </div>
-        <div class="nav-labels">
-          <div class="nav-label-btn" id="prevChip">—</div>
-          <div class="nav-label-btn" id="nextChip">—</div>
-        </div>
-        <div class="next-area">
-          <div class="prev-next-label">次の項目</div>
-          <div class="nav-btn" onclick="nextItem()">▶</div>
-        </div>
+      <div class="filter-group">
+        <div class="filter-label">ロット番号</div>
+        <input class="filter-input" type="text" value="1234">
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">日付</div>
+        <select class="filter-select"><option>2026-05-07</option><option>2026-05-06</option></select>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">検査員</div>
+        <select class="filter-select"><option>山田 太郎</option><option>田中 花子</option></select>
       </div>
     </div>
-
-    <!-- CHECKLIST PANEL -->
-    <div class="checklist-panel">
-      <div class="checklist-header">検査項目リスト</div>
-      <div class="checklist-scroll" id="checklist"></div>
+    <div class="tabs-bar" id="inspTabsBar">
+      <div class="tab active" data-tab="0">シャフトA <span class="tab-badge" id="progressBadge">0/10</span> <span class="tab-badge tab-ng" id="ngBadge">NG: 0</span></div>
+      <div class="tab" data-tab="1">シャフトB</div>
+      <div class="tab" data-tab="2">サンプルC</div>
+      <div class="tab" data-tab="3">サンプルD</div>
+      <div class="tab" data-tab="4">サンプルE</div>
+      <div class="tab" data-tab="5">サンプルF</div>
     </div>
+    <div class="insp-content">
+      <div class="inspection-card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="item-number" id="itemNum">1</div>
+            <div class="item-title" id="itemTitle">外径（パートA）</div>
+          </div>
+          <div class="process-badge" id="process">旋削</div>
+        </div>
+        <div class="card-body">
+          <div class="tolerance-spec" id="spec">50 ± 0.2 mm</div>
+          <div class="digital-display-wrap" id="displayWrap">
+            <input type="text" inputmode="decimal" id="displayValue" class="digital-value-input"
+              placeholder="0.0"
+              oninput="onMeasureInput()" onkeydown="onMeasureKey(event)">
+            <div class="digital-unit" id="displayUnit">mm</div>
+          </div>
+          <div id="measure-status" style="height:22px;font-size:12px;font-family:'Share Tech Mono',monospace;letter-spacing:1px;color:var(--text-muted);text-align:center;"></div>
+          <div class="action-buttons">
+            <button class="btn-ok" onclick="judge('OK')">✓ &nbsp;OK</button>
+            <button class="btn-ng" onclick="judge('NG')">✕ &nbsp;NG</button>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="prev-area">
+            <div class="nav-btn" onclick="prevItem()">◀</div>
+            <div class="prev-next-label">前の項目</div>
+          </div>
+          <div class="nav-labels">
+            <div class="nav-label-btn" id="prevChip">—</div>
+            <div class="nav-label-btn" id="nextChip">—</div>
+          </div>
+          <div class="next-area">
+            <div class="prev-next-label">次の項目</div>
+            <div class="nav-btn" onclick="nextItem()">▶</div>
+          </div>
+        </div>
+      </div>
+      <div class="checklist-panel">
+        <div class="checklist-header">検査項目リスト</div>
+        <div class="checklist-scroll" id="checklist"></div>
+      </div>
+    </div>
+  </div><!-- /screen-inspection -->
+
+  <!-- ════════════════════════════════════════
+       SETTINGS / MASTER DATA SCREEN
+  ══════════════════════════════════════════ -->
+  <div class="screen" id="screen-settings-master">
+    <div class="header">
+      <div class="header-left">
+        <div class="header-title">設定（マスターデータ管理）</div>
+        <div class="header-subtitle">検査に使用するマスターデータを管理します</div>
+      </div>
+      <div class="header-clock" id="clock2">----</div>
+    </div>
+    <div class="page-tabs">
+      <div class="ptab-group">
+        <div class="ptab active">内容メーカー</div>
+        <div class="ptab">品名・品番</div>
+        <div class="ptab">工程</div>
+        <div class="ptab">検査項目</div>
+      </div>
+      <div class="page-actions">
+        <button class="sbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" ><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg> インポート</button>
+        <button class="sbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" ><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"/></svg> エクスポート</button>
+        <button class="sbtn sbtn-primary">＋ 新規登録</button>
+      </div>
+    </div>
+    <!-- JS will render all 4 columns here -->
+    <div class="master-grid" id="masterGrid"></div>
+  </div><!-- /screen-settings-master -->
+
+  <!-- Toast notification -->
+  <div id="toast" style="
+    position:fixed; bottom:28px; right:28px; z-index:9999;
+    background:#238636; color:#fff; padding:10px 20px; border-radius:8px;
+    font-size:13px; font-weight:600; opacity:0; transform:translateY(10px);
+    transition:all 0.25s; pointer-events:none; display:flex; align-items:center; gap:8px;
+  ">✓ <span id="toastMsg">保存しました</span></div>
+
+  <!-- Placeholder screens -->
+  <div class="screen" id="screen-home">
+    <div class="header"><div class="header-left"><div class="header-title">ホーム</div></div><div class="header-clock" id="clock3">----</div></div>
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:15px;">ホーム画面</div>
   </div>
-</div>
+  <!-- ════════════════════════════════════════
+       PRODUCT SELECTION SCREEN
+  ══════════════════════════════════════════ -->
+  <div class="screen" id="screen-product">
+    <!-- title row -->
+    <div class="header" style="justify-content:space-between;">
+      <div class="header-left">
+        <div class="header-title">ライン・製品の検査項目組づけ</div>
+        <div class="header-subtitle">ラインごとに製品と検査項目を関連付けます</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="sbtn" onclick="psCopyConfig()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" ><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> コピーして新規作成</button>
+        <button class="sbtn" onclick="showToast('設定一覧を開きました')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" ><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> 設定一覧</button>
+        <div class="header-clock" id="clock-ps">----</div>
+      </div>
+    </div>
+
+    <!-- 3-column grid -->
+    <div style="flex:1;display:grid;grid-template-columns:220px 1fr 1fr;overflow:hidden;">
+
+      <!-- ① LINE -->
+      <div style="display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--border);">
+        <div style="flex-shrink:0;padding:0 16px;background:var(--bg-card2);border-bottom:1px solid var(--border);height:44px;display:flex;align-items:center;gap:8px;">
+          <div style="width:20px;height:20px;border-radius:50%;background:var(--accent-dim);border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--accent);flex-shrink:0;">1</div>
+          <span style="font-size:12px;font-weight:700;flex:1;">ライン選択</span>
+          <span id="ps-line-cnt" style="font-size:10px;color:var(--text-muted);background:var(--bg-dark);border:1px solid var(--border);border-radius:20px;padding:1px 8px;">0件</span>
+        </div>
+        <div style="flex-shrink:0;padding:8px 12px;background:var(--bg-card);border-bottom:1px solid var(--border);">
+          <div style="position:relative;">
+            <span style="position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:12px;pointer-events:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="12" height="12" ><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg></span>
+            <input id="ps-line-search" class="search-input" style="padding-left:27px;" placeholder="ライン名を検索…" oninput="psFilterLines()">
+          </div>
+        </div>
+        <div class="col-list" id="ps-line-list"></div>
+        <div id="ps-line-addform" style="display:none;flex-shrink:0;background:var(--bg-dark);border-top:1px solid var(--border);padding:14px;gap:8px;flex-direction:column;">
+          <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;">新規ライン追加</div>
+          <div class="field-group"><div class="field-label">ライン名</div><input class="field-input" id="ps-new-line-name" placeholder="例: F-Line"></div>
+          <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:2px;">
+            <button class="btn-cancel" onclick="document.getElementById('ps-line-addform').style.display='none'">キャンセル</button>
+            <button class="btn-save" onclick="psSaveLine()">追加</button>
+          </div>
+        </div>
+        <div style="flex-shrink:0;padding:8px 12px;background:var(--bg-card);border-top:1px solid var(--border);">
+          <button class="btn-add" style="width:100%;justify-content:center;" onclick="document.getElementById('ps-line-addform').style.display='flex';document.getElementById('ps-new-line-name').focus()">＋ ライン追加</button>
+        </div>
+      </div>
+
+      <!-- ② PRODUCT -->
+      <div style="display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--border);">
+        <div style="flex-shrink:0;padding:0 16px;background:var(--bg-card2);border-bottom:1px solid var(--border);height:44px;display:flex;align-items:center;gap:8px;">
+          <div style="width:20px;height:20px;border-radius:50%;background:var(--accent-dim);border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--accent);flex-shrink:0;">2</div>
+          <span id="ps-prod-label" style="font-size:12px;font-weight:700;flex:1;">製品選択</span>
+          <span id="ps-prod-cnt" style="font-size:10px;color:var(--text-muted);background:var(--bg-dark);border:1px solid var(--border);border-radius:20px;padding:1px 8px;">0件</span>
+        </div>
+        <div style="flex-shrink:0;padding:8px 12px;background:var(--bg-card);border-bottom:1px solid var(--border);display:flex;gap:6px;">
+          <div style="position:relative;flex:1;">
+            <span style="position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:12px;pointer-events:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="12" height="12" ><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg></span>
+            <input id="ps-prod-search" class="search-input" style="padding-left:27px;" placeholder="製品名・品番を検索…" oninput="psFilterProds()">
+          </div>
+          <button class="btn-add" onclick="psProdFormShow()">＋ 製品追加</button>
+        </div>
+        <div class="col-list" id="ps-prod-list"></div>
+        <div id="ps-prod-addform" style="display:none;flex-shrink:0;background:var(--bg-dark);border-top:1px solid var(--border);padding:14px;gap:8px;flex-direction:column;">
+          <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;">新規製品追加</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div class="field-group"><div class="field-label">製品名</div><input class="field-input" id="ps-new-prod-name" placeholder="例: シャフトG"></div>
+            <div class="field-group"><div class="field-label">品番</div><input class="field-input" id="ps-new-prod-code" placeholder="例: PRD007"></div>
+          </div>
+          <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:2px;">
+            <button class="btn-cancel" onclick="document.getElementById('ps-prod-addform').style.display='none'">キャンセル</button>
+            <button class="btn-save" onclick="psSaveProd()">追加</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ③ INSPECTION ITEMS -->
+      <div style="display:flex;flex-direction:column;overflow:hidden;">
+        <div style="flex-shrink:0;padding:0 16px;background:var(--bg-card2);border-bottom:1px solid var(--border);height:44px;display:flex;align-items:center;gap:8px;">
+          <div style="width:20px;height:20px;border-radius:50%;background:var(--accent-dim);border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--accent);flex-shrink:0;">3</div>
+          <span id="ps-insp-label" style="font-size:12px;font-weight:700;flex:1;">検査項目設定</span>
+          <span id="ps-insp-cnt" style="font-size:10px;color:var(--text-muted);background:var(--bg-dark);border:1px solid var(--border);border-radius:20px;padding:1px 8px;">0件</span>
+        </div>
+        <!-- toolbar -->
+        <div style="flex-shrink:0;padding:8px 14px;background:var(--bg-card);border-bottom:1px solid var(--border);display:flex;gap:6px;justify-content:flex-end;">
+          <button class="btn-add" onclick="psInspFormShow()">＋ 項目追加</button>
+          <button class="btn-add" onclick="psProcessFormShow()">＋ 工程追加</button>
+        </div>
+        <!-- header row -->
+        <div style="display:grid;grid-template-columns:22px 22px 1fr 1fr 52px 36px 36px;align-items:center;gap:6px;padding:5px 14px;background:var(--bg-card2);border-bottom:1px solid var(--border);flex-shrink:0;">
+          <span></span><span style="font-size:10px;color:var(--text-muted);text-align:center;">No</span>
+          <span style="font-size:10px;color:var(--text-muted);">検査項目</span>
+          <span style="font-size:10px;color:var(--text-muted);">規格・基準</span>
+          <span style="font-size:10px;color:var(--text-muted);">単位</span>
+          <span style="font-size:10px;color:var(--text-muted);text-align:center;">必須</span>
+          <span style="font-size:10px;color:var(--text-muted);text-align:center;">有効</span>
+        </div>
+        <div class="col-list" id="ps-insp-list"></div>
+        <!-- item add form -->
+        <div id="ps-insp-addform" style="display:none;flex-shrink:0;background:var(--bg-dark);border-top:1px solid var(--border);padding:14px;gap:8px;flex-direction:column;">
+          <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;">新規検査項目追加</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div class="field-group"><div class="field-label">工程</div>
+              <select class="field-select" id="ps-new-insp-proc"></select>
+            </div>
+            <div class="field-group"><div class="field-label">検査項目名</div><input class="field-input" id="ps-new-insp-name" placeholder="例: 内径"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 70px;gap:8px;">
+            <div class="field-group"><div class="field-label">規格・基準</div><input class="field-input" id="ps-new-insp-spec" placeholder="例: 25 ± 0.1"></div>
+            <div class="field-group"><div class="field-label">単位</div><input class="field-input" id="ps-new-insp-unit" placeholder="mm"></div>
+          </div>
+          <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:2px;">
+            <button class="btn-cancel" onclick="document.getElementById('ps-insp-addform').style.display='none'">キャンセル</button>
+            <button class="btn-save" onclick="psSaveInsp()">追加</button>
+          </div>
+        </div>
+        <!-- process add form -->
+        <div id="ps-proc-addform" style="display:none;flex-shrink:0;background:var(--bg-dark);border-top:1px solid var(--border);padding:14px;gap:8px;flex-direction:column;">
+          <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;">新規工程追加</div>
+          <div class="field-group"><div class="field-label">工程名</div><input class="field-input" id="ps-new-proc-name" placeholder="例: 工程4（めっき）"></div>
+          <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:2px;">
+            <button class="btn-cancel" onclick="document.getElementById('ps-proc-addform').style.display='none'">キャンセル</button>
+            <button class="btn-save" onclick="psSaveProcess()">追加</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /3-column grid -->
+  </div><!-- /screen-product -->
+  <div class="screen" id="screen-drawing">
+    <div class="header"><div class="header-left"><div class="header-title">図面</div></div></div>
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:15px;">図面画面</div>
+  </div>
+  <div class="screen" id="screen-report">
+    <div class="header"><div class="header-left"><div class="header-title">履歴・レポート</div></div></div>
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:15px;">履歴・レポート画面</div>
+  </div>
+  <div class="screen" id="screen-settings-user">
+    <div class="header"><div class="header-left"><div class="header-title">設定 — ユーザー管理</div></div></div>
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:15px;">ユーザー管理画面</div>
+  </div>
+  <div class="screen" id="screen-settings-role">
+    <div class="header"><div class="header-left"><div class="header-title">設定 — 権限管理</div></div></div>
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:15px;">権限管理画面</div>
+  </div>
+  <div class="screen" id="screen-settings-sys">
+    <div class="header"><div class="header-left"><div class="header-title">設定 — システム設定</div></div></div>
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:15px;">システム設定画面</div>
+  </div>
+  <div class="screen" id="screen-settings-log">
+    <div class="header"><div class="header-left"><div class="header-title">設定 — ログ管理</div></div></div>
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:15px;">ログ管理画面</div>
+  </div>
+
+</div><!-- /main -->
 
 <script>
-const items = [
-  { id: 1, name: "外径（パートA）",  process: "旋削",    spec: "50 ± 0.2 mm",      nominal: 50.00, tol: 0.20, status: null },
-  { id: 2, name: "外径（パートB）",  process: "旋削",    spec: "45 ± 0.15 mm",     nominal: 45.00, tol: 0.15, status: null },
-  { id: 3, name: "内径",             process: "ボーリング", spec: "30 ± 0.1 mm",    nominal: 30.00, tol: 0.10, status: null },
-  { id: 4, name: "外径（パートB）",  process: "研磨",    spec: "44.98 ± 0.05 mm",  nominal: 44.98, tol: 0.05, status: null },
-  { id: 5, name: "サンプルC",        process: "フライス", spec: "20 ± 0.3 mm",     nominal: 20.00, tol: 0.30, status: null },
-  { id: 6, name: "サンプルD",        process: "旋削",    spec: "60 ± 0.2 mm",      nominal: 60.00, tol: 0.20, status: null },
-  { id: 7, name: "サンプルE",        process: "研磨",    spec: "15 ± 0.1 mm",      nominal: 15.00, tol: 0.10, status: null },
-  { id: 8, name: "サンプルF",        process: "ボーリング", spec: "25 ± 0.15 mm",  nominal: 25.00, tol: 0.15, status: null },
-  { id: 9, name: "サンプルF-2",      process: "フライス", spec: "35 ± 0.2 mm",     nominal: 35.00, tol: 0.20, status: null },
-  { id: 10, name: "サンプルF-3",     process: "旋削",    spec: "12 ± 0.1 mm",      nominal: 12.00, tol: 0.10, status: null },
+/* ══════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════ */
+function navigate(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById('screen-' + screenId);
+  if (target) target.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.remove('active');
+    if (n.dataset.screen === screenId) n.classList.add('active');
+  });
+  if (screenId.startsWith('settings')) {
+    document.querySelectorAll('.nav-item[data-screen="settings-master"]').forEach(n => {
+      if (!n.classList.contains('sub')) n.classList.add('active');
+    });
+  }
+}
+document.querySelectorAll('.nav-item[data-screen]').forEach(item => {
+  item.addEventListener('click', () => navigate(item.dataset.screen));
+});
+
+/* ══════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════ */
+let toastTimer;
+function showToast(msg, isError) {
+  const el = document.getElementById('toast');
+  const msgEl = document.getElementById('toastMsg');
+  msgEl.textContent = msg;
+  el.style.background = isError ? '#da3633' : '#238636';
+  el.style.opacity = '1';
+  el.style.transform = 'translateY(0)';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(10px)';
+  }, 2500);
+}
+
+/* ══════════════════════════════════════════
+   MASTER DATA STORE
+══════════════════════════════════════════ */
+let nextId = 100;
+const masterData = {
+  makers: [
+    { id:1, name:'Example Mfg Co., Ltd.', code:'MKR001', note:'真精度部品専門', status:'有効' },
+    { id:2, name:'△△工業株式会社',       code:'MKR002', note:'',               status:'有効' },
+    { id:3, name:'□□製作所',             code:'MKR003', note:'',               status:'有効' },
+    { id:4, name:'☆☆メタル株式会社',     code:'MKR004', note:'',               status:'有効' },
+    { id:5, name:'◎◎精密工業',           code:'MKR005', note:'',               status:'有効' },
+  ],
+  products: [
+    { id:1, maker:'Example Mfg Co., Ltd.', name:'シャフトA', code:'PRD001', note:'シャフトA' },
+    { id:2, maker:'Example Mfg Co., Ltd.', name:'シャフトB', code:'PRD002', note:'' },
+    { id:3, maker:'△△工業株式会社',       name:'ギアC',     code:'PRD003', note:'' },
+    { id:4, maker:'△△工業株式会社',       name:'ブラケットD',code:'PRD004', note:'' },
+    { id:5, maker:'□□製作所',             name:'スリーブE', code:'PRD005', note:'' },
+    { id:6, maker:'□□製作所',             name:'フランジF', code:'PRD006', note:'' },
+  ],
+  processes: [
+    { id:1, name:'旋削（外径・内径の旋削加工）', code:'PRC001', desc:'外径および内径の旋削加工を行う工程', order:1 },
+    { id:2, name:'熱処理（焼入れ・焼戻し）',     code:'PRC002', desc:'熱処理工程',       order:2 },
+    { id:3, name:'研削（外径精密研削）',          code:'PRC003', desc:'外径精密研削工程', order:3 },
+    { id:4, name:'歯切り',                        code:'PRC004', desc:'歯切り加工工程',   order:4 },
+    { id:5, name:'プレス',                        code:'PRC005', desc:'プレス加工工程',   order:5 },
+    { id:6, name:'組付け',                        code:'PRC006', desc:'組付け工程',       order:6 },
+    { id:7, name:'洗浄',                          code:'PRC007', desc:'洗浄工程',         order:7 },
+  ],
+  inspItems: [
+    { id:1,  name:'外径（A部）',   code:'DIM001', category:'寸法', unit:'mm', desc:'外径の寸法を測定（A部）' },
+    { id:2,  name:'外径（B部）',   code:'DIM002', category:'寸法', unit:'mm', desc:'外径の寸法を測定（B部）' },
+    { id:3,  name:'内径',          code:'DIM003', category:'寸法', unit:'mm', desc:'内径の寸法を測定' },
+    { id:4,  name:'全長',          code:'DIM004', category:'寸法', unit:'mm', desc:'全長を測定' },
+    { id:5,  name:'段差（D部）',   code:'DIM005', category:'寸法', unit:'mm', desc:'段差を測定（D部）' },
+    { id:6,  name:'硬度',          code:'HRC001', category:'硬度', unit:'HRC','desc':'硬度を測定' },
+    { id:7,  name:'外径精研（A部）',code:'DIM006', category:'寸法', unit:'mm', desc:'外径精研を測定（A部）' },
+    { id:8,  name:'真円度',        code:'FRM001', category:'形状', unit:'μm', desc:'真円度を測定' },
+    { id:9,  name:'モジュール',    code:'DIM007', category:'寸法', unit:'mm', desc:'モジュールを測定' },
+    { id:10, name:'歯幅',          code:'DIM008', category:'寸法', unit:'mm', desc:'歯幅を測定' },
+  ],
+};
+
+/* selected index per column */
+const sel = { makers:0, products:0, processes:0, inspItems:0 };
+
+/* ── column config ── */
+const cols = [
+  {
+    key:'makers', title:'内容メーカー', addLabel:'メーカー追加', searchPh:'メーカー名で検索',
+    detailTitle:'メーカー詳細',
+    labelFn: r => r.name,
+    subFn:   r => r.code,
+    badgeFn: r => `<span class="badge-active">有効</span>`,
+    formFn:  (r, isNew) => `
+      <div class="detail-title">${isNew?'新規メーカー':'メーカー詳細'}</div>
+      <div class="field-group"><div class="field-label">メーカー名</div><input class="field-input" id="f_name" value="${r.name}" /></div>
+      <div class="field-group"><div class="field-label">メーカーコード</div><input class="field-input" id="f_code" value="${r.code}" /></div>
+      <div class="field-group"><div class="field-label">備考</div><input class="field-input" id="f_note" value="${r.note}" /></div>
+      <div class="field-group"><div class="field-label">ステータス</div>
+        <select class="field-select" id="f_status">
+          <option ${r.status==='有効'?'selected':''}>有効</option>
+          <option ${r.status==='無効'?'selected':''}>無効</option>
+        </select></div>`,
+    saveFn: (r, isNew) => {
+      r.name   = document.getElementById('f_name').value.trim();
+      r.code   = document.getElementById('f_code').value.trim();
+      r.note   = document.getElementById('f_note').value.trim();
+      r.status = document.getElementById('f_status').value;
+      if (isNew) masterData.makers.push(r);
+    },
+    newRecord: () => ({ id:++nextId, name:'', code:'', note:'', status:'有効' }),
+  },
+  {
+    key:'products', title:'品名・品番', addLabel:'製品追加', searchPh:'品名・品番で検索',
+    detailTitle:'製品詳細',
+    labelFn: r => r.name,
+    subFn:   r => r.code,
+    badgeFn: r => `<span class="list-item-arrow">›</span>`,
+    formFn:  (r, isNew) => {
+      const opts = masterData.makers.map(m =>
+        `<option ${m.name===r.maker?'selected':''}>${m.name}</option>`).join('');
+      return `
+        <div class="detail-title">${isNew?'新規製品':'製品詳細'}</div>
+        <div class="field-group"><div class="field-label">内容メーカー</div>
+          <select class="field-select" id="f_maker">${opts}</select></div>
+        <div class="field-group"><div class="field-label">品名</div><input class="field-input" id="f_name" value="${r.name}" /></div>
+        <div class="field-group"><div class="field-label">品番</div><input class="field-input" id="f_code" value="${r.code}" /></div>
+        <div class="field-group"><div class="field-label">備考</div><input class="field-input" id="f_note" value="${r.note}" /></div>`;
+    },
+    saveFn: (r, isNew) => {
+      r.maker = document.getElementById('f_maker').value;
+      r.name  = document.getElementById('f_name').value.trim();
+      r.code  = document.getElementById('f_code').value.trim();
+      r.note  = document.getElementById('f_note').value.trim();
+      if (isNew) masterData.products.push(r);
+    },
+    newRecord: () => ({ id:++nextId, maker: masterData.makers[0]?.name||'', name:'', code:'', note:'' }),
+  },
+  {
+    key:'processes', title:'工程', addLabel:'工程追加', searchPh:'工程名で検索',
+    detailTitle:'工程詳細',
+    labelFn: r => r.name,
+    subFn:   r => null,
+    badgeFn: (r,i) => `<span class="list-item-num">${i+1}</span>`,
+    formFn:  (r, isNew) => `
+      <div class="detail-title">${isNew?'新規工程':'工程詳細'}</div>
+      <div class="field-group"><div class="field-label">工程名</div><input class="field-input" id="f_name" value="${r.name}" /></div>
+      <div class="field-group"><div class="field-label">工程コード</div><input class="field-input" id="f_code" value="${r.code}" /></div>
+      <div class="field-group"><div class="field-label">説明</div><textarea class="field-textarea" id="f_desc">${r.desc}</textarea></div>
+      <div class="field-group"><div class="field-label">順序</div><input class="field-input" id="f_order" value="${r.order}" /></div>`,
+    saveFn: (r, isNew) => {
+      r.name  = document.getElementById('f_name').value.trim();
+      r.code  = document.getElementById('f_code').value.trim();
+      r.desc  = document.getElementById('f_desc').value.trim();
+      r.order = parseInt(document.getElementById('f_order').value) || masterData.processes.length+1;
+      if (isNew) masterData.processes.push(r);
+    },
+    newRecord: () => ({ id:++nextId, name:'', code:'', desc:'', order: masterData.processes.length+1 }),
+  },
+  {
+    key:'inspItems', title:'検査項目', addLabel:'項目追加', searchPh:'項目名で検索',
+    detailTitle:'検査項目詳細',
+    labelFn: r => r.name,
+    subFn:   r => r.code,
+    badgeFn: r => {
+      const cls = r.category==='硬度' ? 'tag-orange' : r.category==='形状' ? 'tag-purple' : 'tag-blue';
+      return `<span class="tag ${cls}">${r.category}</span>`;
+    },
+    formFn:  (r, isNew) => `
+      <div class="detail-title">${isNew?'新規検査項目':'検査項目詳細'}</div>
+      <div class="field-group"><div class="field-label">項目名</div><input class="field-input" id="f_name" value="${r.name}" /></div>
+      <div class="field-group"><div class="field-label">項目コード</div><input class="field-input" id="f_code" value="${r.code}" /></div>
+      <div class="field-row">
+        <div class="field-group"><div class="field-label">分類</div>
+          <select class="field-select" id="f_cat">
+            <option ${r.category==='寸法'?'selected':''}>寸法</option>
+            <option ${r.category==='硬度'?'selected':''}>硬度</option>
+            <option ${r.category==='形状'?'selected':''}>形状</option>
+          </select></div>
+        <div class="field-group"><div class="field-label">単位</div><input class="field-input" id="f_unit" value="${r.unit}" /></div>
+      </div>
+      <div class="field-group"><div class="field-label">説明</div><input class="field-input" id="f_desc" value="${r.desc}" /></div>`,
+    saveFn: (r, isNew) => {
+      r.name     = document.getElementById('f_name').value.trim();
+      r.code     = document.getElementById('f_code').value.trim();
+      r.category = document.getElementById('f_cat').value;
+      r.unit     = document.getElementById('f_unit').value.trim();
+      r.desc     = document.getElementById('f_desc').value.trim();
+      if (isNew) masterData.inspItems.push(r);
+    },
+    newRecord: () => ({ id:++nextId, name:'', code:'', category:'寸法', unit:'mm', desc:'' }),
+  },
 ];
 
-let current = 0;
-let animTimer = null;
+/* ── search state ── */
+const searchQ = { makers:'', products:'', processes:'', inspItems:'' };
+/* ── new-mode state ── */
+const newMode = { makers:false, products:false, processes:false, inspItems:false };
+let newRecord = {};
+
+/* ── render single column ── */
+function renderCol(cfg) {
+  const key = cfg.key;
+  const q = searchQ[key].toLowerCase();
+  const data = masterData[key];
+  const filtered = data.filter(r => cfg.labelFn(r).toLowerCase().includes(q) || (cfg.subFn(r)||'').toLowerCase().includes(q));
+
+  /* list items */
+  const listHTML = filtered.map((r, i) => {
+    const origIdx = data.indexOf(r);
+    const isActive = !newMode[key] && origIdx === sel[key];
+    const sub = cfg.subFn(r);
+    return `<div class="list-item${isActive?' active':''}" data-idx="${origIdx}">
+      ${cfg.badgeFn(r,i)}
+      <div class="list-item-main">
+        <div class="list-item-name">${r.name}</div>
+        ${sub ? `<div class="list-item-sub">${sub}</div>` : ''}
+      </div>
+      ${key!=='processes' ? cfg.badgeFn(r,i) : ''}
+    </div>`;
+  });
+
+  /* fix: processes shows num on left, not right */
+  const listHTMLFixed = filtered.map((r, i) => {
+    const origIdx = data.indexOf(r);
+    const isActive = !newMode[key] && origIdx === sel[key];
+    const sub = cfg.subFn(r);
+    if (key === 'processes') {
+      return `<div class="list-item${isActive?' active':''}" data-idx="${origIdx}">
+        <span class="list-item-num">${i+1}</span>
+        <div class="list-item-main"><div class="list-item-name">${r.name}</div></div>
+      </div>`;
+    } else if (key === 'makers') {
+      return `<div class="list-item${isActive?' active':''}" data-idx="${origIdx}">
+        <div class="list-item-main">
+          <div class="list-item-name">${r.name}</div>
+          <div class="list-item-sub">${r.code}</div>
+        </div>
+        <span class="badge-active">有効</span>
+      </div>`;
+    } else if (key === 'products') {
+      return `<div class="list-item${isActive?' active':''}" data-idx="${origIdx}">
+        <div class="list-item-main">
+          <div class="list-item-name">${r.name}</div>
+          <div class="list-item-sub">${r.code}</div>
+        </div>
+        <span class="list-item-arrow">›</span>
+      </div>`;
+    } else {
+      const cls = r.category==='硬度' ? 'tag-orange' : r.category==='形状' ? 'tag-purple' : 'tag-blue';
+      return `<div class="list-item${isActive?' active':''}" data-idx="${origIdx}">
+        <div class="list-item-main">
+          <div class="list-item-name">${r.name}</div>
+          <div class="list-item-sub">${r.code}</div>
+        </div>
+        <span class="tag ${cls}">${r.category}</span>
+      </div>`;
+    }
+  }).join('');
+
+  /* detail form */
+  const rec = newMode[key] ? newRecord[key] : (data[sel[key]] || data[0]);
+  const formHTML = rec ? cfg.formFn(rec, newMode[key]) : '';
+
+  /* build column HTML */
+  const colEl = document.getElementById('mc_' + key);
+  colEl.querySelector('.col-count').textContent = data.length + '件';
+  colEl.querySelector('.col-list').innerHTML = listHTMLFixed;
+  colEl.querySelector('.col-detail').innerHTML = formHTML + `
+    <div class="detail-actions">
+      <button class="btn-cancel" id="btn_cancel_${key}">キャンセル</button>
+      <button class="btn-save" id="btn_save_${key}">保存</button>
+    </div>`;
+
+  /* bind list item clicks */
+  colEl.querySelectorAll('.list-item').forEach(item => {
+    item.addEventListener('click', () => {
+      sel[key] = parseInt(item.dataset.idx);
+      newMode[key] = false;
+      renderCol(cfg);
+    });
+  });
+
+  /* bind save */
+  document.getElementById('btn_save_' + key).addEventListener('click', () => {
+    const isNew = newMode[key];
+    const r = isNew ? newRecord[key] : data[sel[key]];
+    cfg.saveFn(r, isNew);
+    if (isNew) {
+      sel[key] = masterData[key].length - 1;
+      newMode[key] = false;
+    }
+    renderCol(cfg);
+    showToast('保存しました ✓');
+  });
+
+  /* bind cancel */
+  document.getElementById('btn_cancel_' + key).addEventListener('click', () => {
+    newMode[key] = false;
+    renderCol(cfg);
+  });
+}
+
+/* ── render all 4 columns ── */
+function renderMasterGrid() {
+  const grid = document.getElementById('masterGrid');
+  grid.innerHTML = cols.map(cfg => `
+    <div class="master-col" id="mc_${cfg.key}">
+      <div class="col-header">
+        <span class="col-title">${cfg.title}</span>
+        <span class="col-count">0件</span>
+      </div>
+      <div class="col-search">
+        <div class="search-wrap">
+          <span class="search-icon" style="display:flex;align-items:center;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg></span>
+          <input class="search-input" id="search_${cfg.key}" placeholder="${cfg.searchPh}" />
+        </div>
+        <button class="btn-add" id="add_${cfg.key}">＋ ${cfg.addLabel}</button>
+      </div>
+      <div class="col-list"></div>
+      <div class="col-detail"></div>
+    </div>`).join('');
+
+  cols.forEach(cfg => {
+    /* search binding */
+    document.getElementById('search_' + cfg.key).addEventListener('input', e => {
+      searchQ[cfg.key] = e.target.value;
+      renderCol(cfg);
+    });
+    /* add button */
+    document.getElementById('add_' + cfg.key).addEventListener('click', () => {
+      newMode[cfg.key] = true;
+      newRecord[cfg.key] = cfg.newRecord();
+      renderCol(cfg);
+      showToast('新規入力モード — 入力後「保存」を押してください', false);
+    });
+    renderCol(cfg);
+  });
+}
+
+/* ── ptab switching ── */
+document.querySelectorAll('.ptab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+  });
+});
+
+/* ── 新規登録 button in header ── */
+document.querySelector('.sbtn-primary')?.addEventListener('click', () => {
+  /* activate first tab and add to makers */
+  document.querySelectorAll('.ptab')[0].click();
+  document.getElementById('add_makers')?.click();
+});
+
+/* ══════════════════════════════════════════
+   INSPECTION LOGIC
+══════════════════════════════════════════ */
+const allInspProducts = [
+  { name:'シャフトA', items:[
+    { id:1,  name:'外径（A部）',    process:'旋削',      spec:'50 ± 0.2 mm',     nominal:50.00, tol:0.20, status:null },
+    { id:2,  name:'外径（B部）',    process:'旋削',      spec:'45 ± 0.15 mm',    nominal:45.00, tol:0.15, status:null },
+    { id:3,  name:'内径',           process:'ボーリング',spec:'30 ± 0.1 mm',     nominal:30.00, tol:0.10, status:null },
+    { id:4,  name:'外径（研磨）',   process:'研磨',      spec:'44.98 ± 0.05 mm', nominal:44.98, tol:0.05, status:null },
+    { id:5,  name:'真円度',         process:'研磨',      spec:'0 ~ 0.005 mm',    nominal:0.003, tol:0.002,status:null },
+    { id:6,  name:'硬度',           process:'熱処理',    spec:'58 ± 3 HRC',      nominal:58,    tol:3,    status:null },
+    { id:7,  name:'モジュール',     process:'歯切り',    spec:'2 ± 0.02 mm',     nominal:2.00,  tol:0.02, status:null },
+    { id:8,  name:'歯幅',           process:'歯切り',    spec:'25 ± 0.2 mm',     nominal:25.00, tol:0.20, status:null },
+    { id:9,  name:'全長',           process:'旋削',      spec:'120 ± 0.3 mm',    nominal:120.0, tol:0.30, status:null },
+    { id:10, name:'段差',           process:'旋削',      spec:'10 ± 0.1 mm',     nominal:10.00, tol:0.10, status:null },
+  ]},
+  { name:'シャフトB', items:[
+    { id:1, name:'外径',   process:'旋削', spec:'45 ± 0.2 mm',  nominal:45.00, tol:0.20, status:null },
+    { id:2, name:'内径',   process:'旋削', spec:'22 ± 0.1 mm',  nominal:22.00, tol:0.10, status:null },
+    { id:3, name:'全長',   process:'旋削', spec:'80 ± 0.3 mm',  nominal:80.00, tol:0.30, status:null },
+    { id:4, name:'真円度', process:'研磨', spec:'0 ~ 0.01 mm',  nominal:0.005, tol:0.005,status:null },
+    { id:5, name:'硬度',   process:'熱処理',spec:'55 ± 3 HRC',  nominal:55,    tol:3,    status:null },
+  ]},
+  { name:'サンプルC', items:[
+    { id:1, name:'外径',       process:'旋削',  spec:'60 ± 0.2 mm',  nominal:60.00, tol:0.20, status:null },
+    { id:2, name:'歯末の丈',   process:'歯切り',spec:'3 ± 0.05 mm',  nominal:3.00,  tol:0.05, status:null },
+    { id:3, name:'硬度',       process:'熱処理',spec:'60 ± 3 HRC',   nominal:60,    tol:3,    status:null },
+    { id:4, name:'モジュール', process:'歯切り',spec:'2 ± 0.02 mm',  nominal:2.00,  tol:0.02, status:null },
+  ]},
+  { name:'サンプルD', items:[
+    { id:1, name:'外径', process:'旋削', spec:'80 ± 0.2 mm',  nominal:80.00, tol:0.20, status:null },
+    { id:2, name:'内径', process:'旋削', spec:'40 ± 0.1 mm',  nominal:40.00, tol:0.10, status:null },
+    { id:3, name:'高さ', process:'旋削', spec:'30 ± 0.15 mm', nominal:30.00, tol:0.15, status:null },
+  ]},
+  { name:'サンプルE', items:[
+    { id:1, name:'内径（上部）', process:'旋削', spec:'25 ± 0.1 mm',  nominal:25.00, tol:0.10, status:null },
+    { id:2, name:'内径（下部）', process:'旋削', spec:'20 ± 0.1 mm',  nominal:20.00, tol:0.10, status:null },
+    { id:3, name:'全長',         process:'旋削', spec:'50 ± 0.2 mm',  nominal:50.00, tol:0.20, status:null },
+    { id:4, name:'真円度',       process:'研磨', spec:'0 ~ 0.008 mm', nominal:0.004, tol:0.004,status:null },
+    { id:5, name:'硬度',         process:'熱処理',spec:'52 ± 3 HRC',  nominal:52,    tol:3,    status:null },
+    { id:6, name:'表面粗さ',     process:'研磨', spec:'Ra 0.8 μm',    nominal:0.8,   tol:0.2,  status:null },
+  ]},
+  { name:'サンプルF', items:[
+    { id:1, name:'外径（フランジ）', process:'旋削', spec:'100 ± 0.2 mm', nominal:100.0, tol:0.20, status:null },
+    { id:2, name:'内径',             process:'旋削', spec:'50 ± 0.1 mm',  nominal:50.00, tol:0.10, status:null },
+    { id:3, name:'厚さ',             process:'旋削', spec:'15 ± 0.1 mm',  nominal:15.00, tol:0.10, status:null },
+    { id:4, name:'平面度',           process:'研磨', spec:'0 ~ 0.01 mm',  nominal:0.005, tol:0.005,status:null },
+    { id:5, name:'穴径',             process:'ボーリング',spec:'12 ± 0.05 mm',nominal:12.00,tol:0.05,status:null },
+    { id:6, name:'ピッチ円径',       process:'歯切り',spec:'90 ± 0.1 mm', nominal:90.00, tol:0.10, status:null },
+    { id:7, name:'硬度',             process:'熱処理',spec:'50 ± 3 HRC',  nominal:50,    tol:3,    status:null },
+  ]},
+];
+
+let currentTab = 0;
+let inspItems = allInspProducts[0].items.map(i => ({...i, status:null}));
+let current = 0, animTimer = null;
+
+function switchTab(tabIdx) {
+  currentTab = tabIdx;
+  inspItems = allInspProducts[tabIdx].items.map(i => ({...i, status:null}));
+  current = 0;
+  /* update tab UI */
+  document.querySelectorAll('#inspTabsBar .tab').forEach((t, i) => {
+    t.classList.toggle('active', i === tabIdx);
+  });
+  /* move badges to active tab */
+  const activeTab = document.querySelector('#inspTabsBar .tab.active');
+  if (!activeTab.querySelector('#progressBadge')) {
+    activeTab.innerHTML = allInspProducts[tabIdx].name +
+      ' <span class="tab-badge" id="progressBadge">0/' + inspItems.length + '</span>' +
+      ' <span class="tab-badge tab-ng" id="ngBadge">NG: 0</span>';
+  }
+  renderChecklist();
+  renderInspection();
+}
 
 function randomMeasurement(nominal, tol) {
-  const spread = tol * 1.4;
-  return (nominal + (Math.random() - 0.5) * spread).toFixed(1);
+  return (nominal + (Math.random() - 0.5) * tol * 1.4).toFixed(1);
 }
-
 function updateBadges() {
-  const judged = items.filter(i => i.status !== null).length;
-  const ng = items.filter(i => i.status === 'NG').length;
-  document.getElementById('progressBadge').textContent = judged + '/' + items.length;
-  document.getElementById('ngBadge').textContent = 'NG: ' + ng;
+  const judged = inspItems.filter(i => i.status !== null).length;
+  const ng = inspItems.filter(i => i.status === 'NG').length;
+  const pb = document.getElementById('progressBadge');
+  const nb = document.getElementById('ngBadge');
+  if (pb) pb.textContent = judged + '/' + inspItems.length;
+  if (nb) nb.textContent = 'NG: ' + ng;
 }
-
 function renderChecklist() {
-  const el = document.getElementById('checklist');
-  el.innerHTML = items.map((item, i) => {
-    let icon;
-    if (item.status === 'OK') {
-      icon = '<div class="status-icon status-ok">✓</div>';
-    } else if (item.status === 'NG') {
-      icon = '<div class="status-icon status-ng">✕</div>';
-    } else {
-      icon = '<div class="status-icon status-pending">○</div>';
-    }
-    return `<div class="check-item ${i === current ? 'active' : ''}" onclick="goTo(${i})">
-      <div class="check-item-name"><span>${item.id}.</span>${item.name}</div>
-      ${icon}
-    </div>`;
+  document.getElementById('checklist').innerHTML = inspItems.map((item, i) => {
+    let icon = item.status === 'OK' ? '<div class="status-icon status-ok">✓</div>'
+             : item.status === 'NG' ? '<div class="status-icon status-ng">✕</div>'
+             : '<div class="status-icon status-pending"></div>';
+    return `<div class="check-item ${i===current?'active':''}" onclick="goTo(${i})">
+      <div class="check-item-name"><span>${item.id}.</span>${item.name}</div>${icon}</div>`;
   }).join('');
   updateBadges();
 }
-
 function animateValue(target) {
   if (animTimer) clearInterval(animTimer);
   const el = document.getElementById('displayValue');
-  const current_val = parseFloat(el.textContent.replace('--.-', String(target))) || target;
-  const diff = target - current_val;
-  const steps = 24;
+  const cur = parseFloat(el.value) || target;
+  const diff = target - cur;
   let step = 0;
   animTimer = setInterval(() => {
     step++;
-    const val = current_val + diff * (step / steps);
-    el.textContent = val.toFixed(1);
-    if (step >= steps) { el.textContent = target.toFixed(1); clearInterval(animTimer); }
+    el.value = (cur + diff * (step/24)).toFixed(1);
+    if (step >= 24) { el.value = target.toFixed(1); clearInterval(animTimer); onMeasureInput(); }
   }, 18);
 }
-
+function onMeasureInput() {
+  const el = document.getElementById('displayValue');
+  const wrap = document.getElementById('displayWrap');
+  const statusEl = document.getElementById('measure-status');
+  const val = parseFloat(el.value);
+  const item = inspItems[current];
+  if (isNaN(val) || el.value === '') {
+    el.className = 'digital-value-input';
+    wrap.className = 'digital-display-wrap';
+    statusEl.textContent = '';
+    return;
+  }
+  const lo = item.nominal - item.tol, hi = item.nominal + item.tol;
+  const isOK = val >= lo && val <= hi;
+  el.className = 'digital-value-input ' + (isOK ? 'ok' : 'ng');
+  wrap.className = 'digital-display-wrap ' + (isOK ? 'ok' : 'ng');
+  statusEl.style.color = isOK ? '#2ea043' : '#da3633';
+  statusEl.textContent = isOK
+    ? '▲ 範囲内 (' + lo.toFixed(3) + ' ~ ' + hi.toFixed(3) + ')'
+    : '✕ 範囲外 (' + lo.toFixed(3) + ' ~ ' + hi.toFixed(3) + ')';
+}
+function onMeasureKey(e) {
+  if (e.key === 'Enter') { judge(getMeasureResult()); }
+}
+function getMeasureResult() {
+  const val = parseFloat(document.getElementById('displayValue').value);
+  const item = inspItems[current];
+  if (isNaN(val)) return null;
+  return (val >= item.nominal - item.tol && val <= item.nominal + item.tol) ? 'OK' : 'NG';
+}
 function renderInspection() {
-  const item = items[current];
+  const item = inspItems[current];
   document.getElementById('itemNum').textContent = item.id;
   document.getElementById('itemTitle').textContent = item.name;
   document.getElementById('process').textContent = item.process;
   document.getElementById('spec').textContent = item.spec;
-  animateValue(parseFloat(randomMeasurement(item.nominal, item.tol)));
-  const prev = items[current - 1];
-  const next = items[current + 1];
+  const unitEl = document.getElementById('displayUnit');
+  if (unitEl) {
+    const u = item.spec.match(/HRC/) ? 'HRC' : item.spec.match(/μm/) ? 'μm' : 'mm';
+    unitEl.textContent = u;
+  }
+  const inp = document.getElementById('displayValue');
+  inp.className = 'digital-value-input';
+  document.getElementById('displayWrap').className = 'digital-display-wrap';
+  const statusEl = document.getElementById('measure-status');
+  if (statusEl) statusEl.textContent = '';
+  inp.value = '0.0';
+  inp.focus();
+  const prev = inspItems[current-1], next = inspItems[current+1];
   document.getElementById('prevChip').textContent = prev ? '← ' + prev.name : '—';
   document.getElementById('nextChip').textContent = next ? next.name + ' →' : '—';
 }
-
 function judge(result) {
-  items[current].status = result;
+  if (!result) result = getMeasureResult();
+  if (!result) result = 'OK';
+  inspItems[current].status = result;
   renderChecklist();
-  if (current < items.length - 1) {
-    setTimeout(() => { current++; renderInspection(); renderChecklist(); }, 250);
-  }
+  if (current < inspItems.length-1) setTimeout(() => { current++; renderInspection(); renderChecklist(); }, 250);
 }
+function goTo(i) { current = i; renderInspection(); renderChecklist(); }
+function nextItem() { if (current < inspItems.length-1) { current++; renderInspection(); renderChecklist(); } }
+function prevItem() { if (current > 0) { current--; renderInspection(); renderChecklist(); } }
 
-function goTo(i) {
-  current = i;
-  renderInspection();
-  renderChecklist();
-}
+/* bind tab clicks */
+document.querySelectorAll('#inspTabsBar .tab').forEach((tab, idx) => {
+  tab.addEventListener('click', () => switchTab(idx));
+});
 
-function nextItem() {
-  if (current < items.length - 1) { current++; renderInspection(); renderChecklist(); }
-}
-
-function prevItem() {
-  if (current > 0) { current--; renderInspection(); renderChecklist(); }
-}
-
-function setNav(el) {
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  el.classList.add('active');
-}
-
-function setTab(el) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-}
-
+/* ══════════════════════════════════════════
+   CLOCK
+══════════════════════════════════════════ */
 function updateClock() {
   const now = new Date();
-  const pad = n => String(n).padStart(2, '0');
-  document.getElementById('clock').textContent =
-    `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+  const pad = n => String(n).padStart(2,'0');
+  const t = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+  ['clock','clock2','clock3'].forEach(id => { const el=document.getElementById(id); if(el) el.textContent=t; });
 }
 
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+renderMasterGrid();
 renderChecklist();
 renderInspection();
 updateClock();
 setInterval(updateClock, 1000);
+
+/* ══════════════════════════════════════════
+   PRODUCT SELECTION SCREEN LOGIC
+══════════════════════════════════════════ */
+(function(){
+  const PS = {
+    lines: [
+      {id:'A',name:'A-Line',def:true, star:true },
+      {id:'B',name:'B-Line',def:false,star:false},
+      {id:'C',name:'C-Line',def:false,star:false},
+      {id:'D',name:'D-Line',def:false,star:false},
+      {id:'E',name:'E-Line',def:false,star:false},
+    ],
+    products: {
+      A:[{id:'p1',name:'シャフトA',code:'PRD001',star:true},{id:'p2',name:'シャフトB',code:'PRD002',star:false},{id:'p3',name:'ギアC',code:'PRD003',star:false},{id:'p4',name:'ブラケットD',code:'PRD004',star:false},{id:'p5',name:'スリーブE',code:'PRD005',star:false},{id:'p6',name:'フランジF',code:'PRD006',star:false}],
+      B:[{id:'p7',name:'ギアC',code:'PRD003',star:false},{id:'p8',name:'ピンH',code:'PRD008',star:false}],
+      C:[{id:'p9',name:'スリーブE',code:'PRD005',star:false}],
+      D:[{id:'p10',name:'ブラケットD',code:'PRD004',star:false}],
+      E:[],
+    },
+    inspItems: {
+      p1:[
+        {proc:'工程1（旋削）',  id:'i1',name:'外径（A部）',   spec:'50 ± 0.2',   unit:'mm', req:true, active:true},
+        {proc:'工程1（旋削）',  id:'i2',name:'外径（B部）',   spec:'30 ± 0.15',  unit:'mm', req:true, active:true},
+        {proc:'工程1（旋削）',  id:'i3',name:'内径',          spec:'20 ± 0.1',   unit:'mm', req:false,active:true},
+        {proc:'工程2（熱処理）',id:'i4',name:'硬度',          spec:'58 ± 3',     unit:'HRC',req:true, active:true},
+        {proc:'工程3（研削）',  id:'i5',name:'真円度',        spec:'0 ~ 0.005',  unit:'mm', req:true, active:true},
+        {proc:'工程3（研削）',  id:'i6',name:'外径精研（A部）',spec:'50 ± 0.05',  unit:'mm', req:true, active:true},
+        {proc:'工程3（研削）',  id:'i7',name:'モジュール',    spec:'2 ± 0.02',   unit:'mm', req:false,active:true},
+        {proc:'工程3（研削）',  id:'i8',name:'歯幅',          spec:'25 ± 0.2',   unit:'mm', req:false,active:false},
+      ],
+      p2:[
+        {proc:'工程1（旋削）',  id:'j1',name:'外径',  spec:'45 ± 0.2', unit:'mm',req:true, active:true},
+        {proc:'工程1（旋削）',  id:'j2',name:'内径',  spec:'22 ± 0.1', unit:'mm',req:true, active:true},
+        {proc:'工程3（研削）',  id:'j3',name:'真円度', spec:'0 ~ 0.01', unit:'mm',req:false,active:true},
+      ],
+      p3:[
+        {proc:'工程1（旋削）',  id:'k1',name:'歯末の丈',spec:'3 ± 0.05',unit:'mm', req:true,active:true},
+        {proc:'工程2（熱処理）',id:'k2',name:'硬度',    spec:'60 ± 3',  unit:'HRC',req:true,active:true},
+      ],
+    },
+    processes: ['工程1（旋削）','工程2（熱処理）','工程3（研削）'],
+    selLine: 'A', selProd: 'p1', collapsed: {},
+    nid: () => 'x' + Date.now(),
+  };
+
+  function psRenderAll() { psRenderLines(); psRenderProds(); psRenderInsp(); }
+
+  function psRenderLines() {
+    const q = (document.getElementById('ps-line-search')||{value:''}).value.toLowerCase();
+    const lines = PS.lines.filter(l => l.name.toLowerCase().includes(q));
+    const el = document.getElementById('ps-line-list');
+    const cnt = document.getElementById('ps-line-cnt');
+    if (!el) return;
+    cnt.textContent = lines.length + '件';
+    el.innerHTML = lines.map(l => `
+      <div class="ps-line-item${l.id===PS.selLine?' active':''}" onclick="psSelLine('${l.id}')">
+        <span style="color:var(--text-muted);font-size:11px;cursor:grab;">≡</span>
+        <span style="flex:1;font-size:13px;font-weight:500;">${l.name}</span>
+        ${l.def?'<span class="ps-def">デフォルト</span>':''}
+        <span class="ps-star${l.star?' on':''}" onclick="event.stopPropagation();psToggleLineStar('${l.id}')">★</span>
+      </div>`).join('') || '<div class="ps-empty">該当なし</div>';
+  }
+
+  function psRenderProds() {
+    const q = (document.getElementById('ps-prod-search')||{value:''}).value.toLowerCase();
+    const prods = (PS.products[PS.selLine]||[]).filter(p =>
+      p.name.toLowerCase().includes(q) || p.code.toLowerCase().includes(q));
+    const el = document.getElementById('ps-prod-list');
+    const lbl = document.getElementById('ps-prod-label');
+    const cnt = document.getElementById('ps-prod-cnt');
+    if (!el) return;
+    if (lbl) lbl.textContent = `製品選択（${PS.selLine}-Line）`;
+    cnt.textContent = prods.length + '件';
+    el.innerHTML = prods.map(p => `
+      <div class="ps-prod-item${p.id===PS.selProd?' active':''}" onclick="psSelProd('${p.id}')">
+        <span style="color:var(--text-muted);font-size:11px;cursor:grab;">≡</span>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.name}</div>
+          <div style="font-size:10px;color:var(--text-muted);margin-top:2px;font-family:'Share Tech Mono',monospace;">${p.code}</div>
+        </div>
+        <span class="ps-star${p.star?' on':''}" onclick="event.stopPropagation();psToggleProdStar('${p.id}')">★</span>
+      </div>`).join('') || '<div class="ps-empty">製品が未登録です<br><small style="margin-top:6px;display:block">「＋ 製品追加」から追加</small></div>';
+  }
+
+  function psRenderInsp() {
+    const items = PS.inspItems[PS.selProd] || [];
+    const allProds = Object.values(PS.products).flat();
+    const prod = allProds.find(p => p.id === PS.selProd);
+    const el = document.getElementById('ps-insp-list');
+    const lbl = document.getElementById('ps-insp-label');
+    const cnt = document.getElementById('ps-insp-cnt');
+    if (!el) return;
+    if (lbl) lbl.textContent = prod ? `検査項目設定（${prod.name}）` : '検査項目設定';
+    cnt.textContent = items.length + '件';
+
+    /* group by process */
+    const groups = {};
+    items.forEach(item => { if (!groups[item.proc]) groups[item.proc] = []; groups[item.proc].push(item); });
+
+    let html = '', no = 1;
+    Object.entries(groups).forEach(([proc, rows]) => {
+      const key = proc + PS.selProd;
+      const collapsed = !!PS.collapsed[key];
+      html += `<div>
+        <div class="ps-proc-hd" onclick="psToggleProc('${proc.replace(/'/g,"\\'")}')">
+          <span style="font-size:10px;color:var(--text-muted);transition:transform .15s;display:inline-block;transform:rotate(${collapsed?'-90':'0'}deg)">▼</span>
+          <span style="font-size:11px;font-weight:700;color:var(--text-secondary);flex:1;">${proc}</span>
+          <span style="font-size:10px;color:var(--text-muted);">${rows.length}項目</span>
+        </div>`;
+      if (!collapsed) {
+        rows.forEach(item => {
+          html += `<div class="ps-insp-row">
+            <span style="color:var(--text-muted);font-size:11px;cursor:grab;">≡</span>
+            <span style="font-size:11px;color:var(--text-muted);text-align:center;font-family:'Share Tech Mono',monospace;">${no}</span>
+            <span style="font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${item.name}">${item.name}</span>
+            <span style="font-size:11px;color:var(--text-secondary);font-family:'Share Tech Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.spec}</span>
+            <span style="font-size:11px;color:var(--text-muted);">${item.unit}</span>
+            <input type="checkbox" class="ps-chk" ${item.req?'checked':''} onchange="psToggleReq('${item.id}',this.checked)">
+            <input type="checkbox" class="ps-chk" ${item.active?'checked':''} onchange="psToggleActive('${item.id}',this.checked)">
+          </div>`;
+          no++;
+        });
+      }
+      html += '</div>';
+    });
+
+    if (!items.length) html = '<div class="ps-empty">検査項目がありません<br><small style="margin-top:6px;display:block">「＋ 項目追加」から追加</small></div>';
+    el.innerHTML = html;
+  }
+
+  /* expose to global for inline event handlers */
+  window.psSelLine = id => { PS.selLine = id; PS.selProd = (PS.products[id]||[])[0]?.id||null; psRenderAll(); };
+  window.psSelProd = id => { PS.selProd = id; psRenderProds(); psRenderInsp(); };
+  window.psToggleLineStar = id => { const l=PS.lines.find(l=>l.id===id); if(l) l.star=!l.star; psRenderLines(); };
+  window.psToggleProdStar = id => { const p=Object.values(PS.products).flat().find(p=>p.id===id); if(p) p.star=!p.star; psRenderProds(); };
+  window.psToggleProc = proc => { const key=proc+PS.selProd; PS.collapsed[key]=!PS.collapsed[key]; psRenderInsp(); };
+  window.psToggleReq = (id,v) => { const item=(PS.inspItems[PS.selProd]||[]).find(i=>i.id===id); if(item) item.req=v; };
+  window.psToggleActive = (id,v) => { const item=(PS.inspItems[PS.selProd]||[]).find(i=>i.id===id); if(item) item.active=v; };
+  window.psFilterLines = () => psRenderLines();
+  window.psFilterProds = () => psRenderProds();
+
+  window.psProdFormShow = () => { document.getElementById('ps-prod-addform').style.display='flex'; document.getElementById('ps-new-prod-name').focus(); };
+  window.psInspFormShow = () => { document.getElementById('ps-proc-addform').style.display='none'; document.getElementById('ps-insp-addform').style.display='flex'; psRefreshProcDropdown(); document.getElementById('ps-new-insp-name').focus(); };
+  window.psProcessFormShow = () => { document.getElementById('ps-insp-addform').style.display='none'; document.getElementById('ps-proc-addform').style.display='flex'; document.getElementById('ps-new-proc-name').focus(); };
+
+  window.psSaveLine = () => {
+    const name = document.getElementById('ps-new-line-name').value.trim();
+    if (!name) return;
+    const id = name.replace(/[^A-Za-z0-9]/g,'').toUpperCase().slice(0,3) || PS.nid();
+    PS.lines.push({id,name,def:false,star:false}); PS.products[id]=[];
+    document.getElementById('ps-new-line-name').value='';
+    document.getElementById('ps-line-addform').style.display='none';
+    psRenderLines(); showToast('ライン「'+name+'」を追加しました');
+  };
+
+  window.psSaveProd = () => {
+    const name = document.getElementById('ps-new-prod-name').value.trim();
+    const code = document.getElementById('ps-new-prod-code').value.trim() || 'PRD'+Math.floor(Math.random()*900+100);
+    if (!name) return;
+    const id = PS.nid();
+    if (!PS.products[PS.selLine]) PS.products[PS.selLine]=[];
+    PS.products[PS.selLine].push({id,name,code,star:false});
+    PS.inspItems[id]=[];
+    document.getElementById('ps-new-prod-name').value='';
+    document.getElementById('ps-new-prod-code').value='';
+    document.getElementById('ps-prod-addform').style.display='none';
+    PS.selProd=id; psRenderProds(); psRenderInsp(); showToast('製品「'+name+'」を追加しました');
+  };
+
+  function psRefreshProcDropdown() {
+    const sel = document.getElementById('ps-new-insp-proc');
+    if (!sel) return;
+    sel.innerHTML = PS.processes.map(p=>`<option>${p}</option>`).join('');
+  }
+
+  window.psSaveInsp = () => {
+    const proc = document.getElementById('ps-new-insp-proc').value;
+    const name = document.getElementById('ps-new-insp-name').value.trim();
+    const spec = document.getElementById('ps-new-insp-spec').value.trim();
+    const unit = document.getElementById('ps-new-insp-unit').value.trim() || 'mm';
+    if (!name) return;
+    if (!PS.inspItems[PS.selProd]) PS.inspItems[PS.selProd]=[];
+    PS.inspItems[PS.selProd].push({proc,id:PS.nid(),name,spec,unit,req:true,active:true});
+    ['ps-new-insp-name','ps-new-insp-spec','ps-new-insp-unit'].forEach(i=>document.getElementById(i).value='');
+    document.getElementById('ps-insp-addform').style.display='none';
+    psRenderInsp(); showToast('項目「'+name+'」を追加しました');
+  };
+
+  window.psSaveProcess = () => {
+    const name = document.getElementById('ps-new-proc-name').value.trim();
+    if (!name) return;
+    PS.processes.push(name);
+    document.getElementById('ps-new-proc-name').value='';
+    document.getElementById('ps-proc-addform').style.display='none';
+    showToast('工程「'+name+'」を追加しました');
+  };
+
+  window.psCopyConfig = () => showToast('設定をコピーして新規作成しました');
+
+  /* init on screen switch */
+  const origNavigate = window.navigate;
+  window.navigate = function(screenId) {
+    origNavigate(screenId);
+    if (screenId === 'product') psRenderAll();
+  };
+
+  /* clock sync */
+  setInterval(() => { const el=document.getElementById('clock-ps'); if(el){ const n=new Date(),pad=x=>String(x).padStart(2,'0'); el.textContent=`${n.getFullYear()}-${pad(n.getMonth()+1)}-${pad(n.getDate())} ${pad(n.getHours())}:${pad(n.getMinutes())}:${pad(n.getSeconds())}`; } }, 1000);
+})();
 </script>
 </body>
 </html>
