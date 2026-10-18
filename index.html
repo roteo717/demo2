@@ -1556,7 +1556,7 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
   <section class="zs" id="acImp" hidden>
     <div class="zst">品目の読み込み</div>
     <div class="zhint" style="margin:0 0 10px;font-size:13px;color:var(--sub);line-height:1.6">Excel（.xlsx）かCSVから、品目をまとめて追加します。1行目に「品名・品番・メーカー・保管場所・在庫数」と書き、2行目から品目を入れてください（品名以外は空白でOK）。</div>
-    <div class="bar" style="margin-top:0"><button class="btn" id="impGo" type="button">ファイルを選んで読み込む</button><button class="btn g" id="impTpl" type="button">ひな形（CSV）</button></div>
+    <div class="bar" style="margin-top:0"><button class="btn" id="impGo" type="button">ファイルを選んで読み込む</button></div>
     <input type="file" id="impF" accept=".xlsx,.xlsm,.csv,.tsv,.txt,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
   </section>
   <div class="bar" style="justify-content:flex-end"><button class="btn g" id="acX" type="button">閉じる</button></div>
@@ -2366,8 +2366,6 @@ $('impF').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)r
     const ex=[];if(r.dup)ex.push('登録済み'+r.dup+'件');if(r.blank)ex.push('品名が空'+r.blank+'行');
     ask(r.list.length+'件を読み込みます。'+(ex.length?'（'+ex.join('・')+'は除きます）':'')+'よろしいですか？',()=>{applyImport(r.list);notify(r.list.length+'件を読み込みました')})
   }catch(err){notify(err&&err.message==='nods'?'このブラウザでは.xlsxを読み込めません。CSVで保存して選んでください':'ファイルを読み込めませんでした。.xlsx かCSVを選んでください')}};
-$('impTpl').onclick=()=>{const t='\uFEFF品名,品番,メーカー,保管場所,在庫数\r\n六角ボルト,M8-100,A製作所,A-1棚,420\r\nナット,,A製作所,A-1棚,60\r\n',a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([t],{type:'text/csv'}));a.download='品目ひな形.csv';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)};
 })();
 /* ===== QRコード：自動生成・読み取り・ラベル印刷 ===== */
 let lvList=[];
