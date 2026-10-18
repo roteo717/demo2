@@ -917,6 +917,7 @@ html:has(body.dton),body.dton{overflow:hidden!important}
 #sc .vw{position:relative;background:#000;border-radius:10px;overflow:hidden;aspect-ratio:1/1;margin-top:10px}
 #sc video{width:100%;height:100%;object-fit:cover;display:block}
 #sc .fr{position:absolute;inset:18%;border:3px solid rgba(255,255,255,.9);border-radius:14px;box-shadow:0 0 0 999px rgba(0,0,0,.35);pointer-events:none}
+#sc button:focus,#sc button:focus-visible{outline:none;box-shadow:none} /* 開いた直後に「写真から読み取る」が選択されたように光らないようにする */
 #sc .hint{font-size:14px;color:var(--sub);margin-top:8px;line-height:1.5}
 
 /* ===== スマホ：置き場マップは右下ボタン → 下から出るシート ===== */
@@ -2309,9 +2310,9 @@ function scLoop(){if(!scStream)return;const v=$('scV');
   const r=jsqrLoad()(x.getImageData(0,0,w,h).data,w,h,{inversionAttempts:'dontInvert'});
   if(r&&r.data)scDone(r.data);else next()}
 async function scOpen(target){scTarget=target;$('scH').textContent='QRコードを枠の中に入れてください';
-  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){$('scH').textContent='この開き方ではカメラを使えません。「写真から読み取る」を使ってください。';$('sc').showModal();return}
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){$('scH').textContent='この開き方ではカメラを使えません。「写真から読み取る」を使ってください。';$('sc').showModal();if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();return}
   try{scDet=null;if('BarcodeDetector' in window){try{scDet=new BarcodeDetector({formats:['qr_code']})}catch(e){scDet=null}}
-    $('sc').showModal();
+    $('sc').showModal();if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();
     scStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});
     const v=$('scV');v.srcObject=scStream;await v.play();scLoop()}
   catch(e){scStop();$('scH').textContent='カメラを使えませんでした。許可を確認するか、「写真から読み取る」を使ってください。'}}
