@@ -90,7 +90,7 @@ html.dlgopen,html.dlgopen body{overflow:hidden}
 label{display:block;font-size:13px;color:var(--sub);margin-top:10px}
 dialog input,dialog select,dialog textarea{width:100%;padding:9px;border:1px solid var(--line);border-radius:8px;font-size:16px;background:var(--bg);color:var(--ink)}
 .row{display:flex;gap:8px}.row>*{flex:1}
-.row>#pickImg,.row>#rotImg,.row>#rmImg{white-space:nowrap;font-size:12px;padding-left:4px;padding-right:4px;min-width:0}
+.row>#pickImg,.row>#shotImg,.row>#rotImg,.row>#rmImg{white-space:nowrap;font-size:12px;padding-left:4px;padding-right:4px;min-width:0}
 .pv{width:100%;aspect-ratio:4/3;background:var(--bg);border:1px dashed var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--sub);overflow:hidden;margin-top:4px}
 .pv img{width:100%;height:100%;object-fit:contain}
 .pv:has(img){background:#e6e8eb}
@@ -374,6 +374,10 @@ img{-webkit-user-drag:none;user-drag:none}
 .pi img{width:100%;height:100%;object-fit:contain;display:block;transform-origin:center}
 .ph>button,.ph>.badge,.ph>.tag,.ph>.ploc{z-index:1}
 #pv{touch-action:none;cursor:grab}
+.pvh{display:none}
+/* スマホ：写真をタップして「調整中」にしてからでないと、ドラッグ・ピンチで動かない（画面をスクロールしたときに誤って写真がずれるのを防ぐ） */
+@media(max-width:600px){#pv{touch-action:auto;cursor:pointer}#pv.adj{touch-action:none;cursor:grab;box-shadow:0 0 0 2px #1f6fc5}.pvh{display:block;margin-top:4px;font-size:12px;color:var(--sub)}.pvh[hidden]{display:none}.pvh.on{color:#1f6fc5;font-weight:700}}
+@media(max-width:600px){.pvh.on{display:flex!important;align-items:center;justify-content:space-between;gap:8px}.pvdone{flex:none;min-height:34px;padding:0 16px;border:none;border-radius:8px;background:#1f6fc5;color:#fff;font-size:14px;font-weight:800;cursor:pointer}.phint{display:none}}
 #pv{position:relative}
 #pv:has(img)::after{content:"";position:absolute;inset:9% 8%;border:1px dashed rgba(31,111,197,.6);border-radius:4px;pointer-events:none}
 #pv.drg::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:repeating-linear-gradient(to bottom,#1f6fc5 0 5px,transparent 5px 9px) 50% 0/1px 100% no-repeat,repeating-linear-gradient(to right,#1f6fc5 0 5px,transparent 5px 9px) 0 50%/100% 1px no-repeat}
@@ -924,6 +928,12 @@ html:has(body.dton),body.dton{overflow:hidden!important}
 #qp .qpt select{margin-left:auto;padding:8px 10px;font-size:14px;width:auto;border:1.5px solid #c5ccd6;border-radius:10px;background:#fff;color:var(--ink)}
 #qpSum{margin-top:8px;font-size:14px;color:var(--sub)}
 .qrbox .qb .qn{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--sub)}
+#cm{width:min(520px,94vw)}
+#cm .vw{position:relative;background:#000;border-radius:10px;overflow:hidden;aspect-ratio:4/3;margin-top:10px}
+#cm video{width:100%;height:100%;object-fit:cover;display:block}
+#cm .gd{position:absolute;inset:9% 8%;border:2px dashed rgba(255,255,255,.95);border-radius:4px;box-shadow:0 0 0 1px rgba(0,0,0,.35);pointer-events:none}
+#cm .hint{font-size:14px;color:var(--sub);margin-top:8px;line-height:1.5}
+#cm button:focus,#cm button:focus-visible{outline:none;box-shadow:none}
 #sc{width:min(520px,94vw)}
 #sc .vw{position:relative;background:#000;border-radius:10px;overflow:hidden;aspect-ratio:1/1;margin-top:10px}
 #sc video{width:100%;height:100%;object-fit:cover;display:block}
@@ -1596,6 +1606,12 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
   <div id="qpSum"></div>
   <div class="bar" style="justify-content:flex-end;margin-top:10px"><button class="btn g" id="qpC" type="button">キャンセル</button><button class="btn" id="qpGo" type="button">印刷</button></div>
 </dialog>
+<dialog id="cm">
+  <h3 style="margin:0">写真を撮る</h3>
+  <div class="vw"><video id="cmV" playsinline muted></video><div class="gd"></div></div>
+  <div class="hint">点線の枠に収まるように撮ってください（編集画面の点線と同じ位置です）</div>
+  <div class="bar" style="justify-content:space-between;margin-top:10px"><button class="btn g" id="cmC" type="button">閉じる</button><button class="btn" id="cmS" type="button">撮影</button></div>
+</dialog>
 <dialog id="sc">
   <h3 style="margin:0">QRコードを読み取る</h3>
   <div class="vw"><video id="scV" playsinline muted></video><div class="fr"></div></div>
@@ -1608,11 +1624,11 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
   <h3 id="dt" style="margin:0">品目</h3>
   <div class="dl">
   <label>写真（あとから変更できます）</label>
-  <div class="pv" id="pv">写真なし</div>
+  <div class="pv" id="pv">写真なし</div><div class="pvh" id="pvh" hidden></div>
   <div class="prow"><label>拡大・縮小</label><input type="range" id="pZoom" min="50" max="300" step="5" value="100"><button class="btn g" id="pReset" type="button">戻す</button></div>
   <div class="phint">写真をドラッグすると位置を動かせます</div>
    <button class="btn g" id="pAuto" type="button" style="width:100%;margin-top:8px">被写体の大きさを自動でそろえる</button>
-  <div class="row" style="margin-top:6px"><input type="file" id="file" accept="image/*" hidden><button class="btn g" id="pickImg" type="button">写真を選ぶ</button><button class="btn g" id="rotImg" type="button">90°回転</button><button class="btn g" id="rmImg" type="button">写真を削除</button></div>
+  <div class="row" style="margin-top:6px"><input type="file" id="file" accept="image/*" hidden><button class="btn g" id="pickImg" type="button">写真を選ぶ</button><button class="btn g" id="shotImg" type="button">撮影</button><button class="btn g" id="rotImg" type="button">90°回転</button><button class="btn g" id="rmImg" type="button">写真を削除</button></div>
   </div>
   <div class="dr">
   <label>品名・品番（1行目が品名、Enterで改行して2行目が品番）</label><textarea id="fName" rows="2" placeholder="例）六角ボルト&#10;M812345-5412（品番）"></textarea>
@@ -2072,13 +2088,19 @@ $('pAuto').onclick=()=>autoFit();
 /* 1本指：ドラッグで移動／2本指：ピンチで拡大・縮小（スライダーは細かい調整用に残す） */
 const dist=()=>{const a=[...P.values()];return Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y)};
 const apply=()=>{const im=pv.querySelector('img');if(im)im.style.transform=`translate(${phx}%,${phy}%) scale(${phz})`};
-pv.addEventListener('pointerdown',e=>{if(!tmpImg)return;P.set(e.pointerId,{x:e.clientX,y:e.clientY});pv.classList.add('drg');try{pv.setPointerCapture(e.pointerId)}catch(_){}
+pv.addEventListener('pointerdown',e=>{if(!tmpImg)return;if(mob()&&!pv.classList.contains('adj'))return;P.set(e.pointerId,{x:e.clientX,y:e.clientY});pv.classList.add('drg');try{pv.setPointerCapture(e.pointerId)}catch(_){}
   if(P.size===2){pd=dist();pz=phz;d=null}else if(P.size===1)d={x:e.clientX,y:e.clientY}});
 pv.addEventListener('pointermove',e=>{if(!P.has(e.pointerId))return;P.set(e.pointerId,{x:e.clientX,y:e.clientY});
   if(P.size>=2){if(pd>0){phz=Math.max(.5,Math.min(3,pz*dist()/pd));$('pZoom').value=Math.round(phz*100);apply()}return}
   if(!d)return;const r=pv.getBoundingClientRect();phx=Math.max(-100,Math.min(100,phx+(e.clientX-d.x)/r.width*100));phy=Math.max(-100,Math.min(100,phy+(e.clientY-d.y)/r.height*100));d={x:e.clientX,y:e.clientY};apply()});
 const end=e=>{P.delete(e.pointerId);if(P.size===1){const p=[...P.values()][0];d={x:p.x,y:p.y}}else if(P.size===0){d=null;pv.classList.remove('drg')}};
 pv.addEventListener('pointerup',end);pv.addEventListener('pointercancel',end)})();
+/* スマホ：写真をタップ → 調整中（ドラッグ・ピンチで動かせる）。写真の外をタップすると終了 */
+function pvHint(){const h=$('pvh'),pv=$('pv');if(!h)return;if(!mob()||!tmpImg){h.hidden=true;pv.classList.remove('adj');return}const on=pv.classList.contains('adj');h.hidden=false;h.classList.toggle('on',on);h.textContent='';
+  if(on){const t=document.createElement('span');t.textContent='調整中：ドラッグで移動・2本指で拡大縮小';const b=document.createElement('button');b.type='button';b.className='pvdone';b.textContent='完了';b.addEventListener('click',()=>{pv.classList.remove('adj');pvHint()});h.append(t,b)}
+  else h.textContent='写真をタップすると、位置を調整できます'}
+$('pv').addEventListener('click',()=>{if(!mob()||!tmpImg)return;const pv=$('pv');if(!pv.classList.contains('adj')){pv.classList.add('adj');pvHint()}});
+document.addEventListener('pointerdown',e=>{const pv=$('pv');if(pv.classList.contains('adj')&&!pv.contains(e.target)){pv.classList.remove('adj');pvHint()}},true);
 let lvS={k:'',d:1},lvMks=new Set(),lvLs=new Set();/* 置き場所の絞り込み（棚を1つずつ・複数選択可） *//* メーカーの絞り込み（複数選択可。空なら「すべて」） */
 function lvRender(){const q=kq($('lvQ').value);
   const a=S.items.filter(i=>(!lvMks.size||lvMks.has(i.maker))&&(!lvLs.size||lvLs.has(i.loc||'未設定'))&&(!q||(q===scExact?kq(i.name)===q:kq(i.name+(i.loc||'')+i.maker).includes(q))));
@@ -2204,7 +2226,7 @@ $('grid').addEventListener('click',e=>{if(!document.body.classList.contains('deo
 
 function imgTag(o){const z=o.z||1,x=o.x||0,y=o.y||0;return `<img src="${o.img}" alt="" style="transform:translate(${x}%,${y}%) scale(${z});">`}
 let phz=1,phx=0,phy=0;
-function showPv(){$('pv').innerHTML=tmpImg?imgTag({img:tmpImg,z:phz,x:phx,y:phy}):'写真なし';$('pZoom').value=Math.round(phz*100);$('pAuto').disabled=!tmpImg;{const rb=$('rotImg');if(rb)rb.disabled=!tmpImg}}
+function showPv(){pvHint();$('pv').innerHTML=tmpImg?imgTag({img:tmpImg,z:phz,x:phx,y:phy}):'写真なし';$('pZoom').value=Math.round(phz*100);$('pAuto').disabled=!tmpImg;{const rb=$('rotImg');if(rb)rb.disabled=!tmpImg}}
 /* 被写体の範囲（写真に対する0〜1の位置）を調べる。透過PNGは透明でない部分、単色背景の写真は背景と違う部分。調べられなければnull */
 function subjBox(im){
   const k=Math.min(1,200/Math.max(im.naturalWidth,im.naturalHeight)),w=Math.max(1,Math.round(im.naturalWidth*k)),h=Math.max(1,Math.round(im.naturalHeight*k));
@@ -2235,7 +2257,7 @@ function autoFit(){
   im.src=tmpImg}
 function mkNewSync(){const on=$('fMaker').value==='__new__';$('fMakerNew').hidden=!on;if(on&&$('dlg').open)setTimeout(()=>$('fMakerNew').focus(),0)} /* 「新しいメーカーを追加…」を選んだときだけ、名前の入力欄を出す */
 $('fMaker').onchange=mkNewSync;
-function openEdit(id){if(!isAdmin()){notify('編集は管理者だけができます');return}
+function openEdit(id){$('pv').classList.remove('adj');if(!isAdmin()){notify('編集は管理者だけができます');return}
   editId=id;const i=id?S.items.find(x=>x.id===id):{name:'',maker:cur||S.makers[0],stock:0,min:0,unit:'個',loc:curLoc&&curLoc!=='未設定'?curLoc:'',img:''};
   $('dt').textContent=id?'品目を編集':'品目を追加';
   $('fMaker').innerHTML=S.makers.map(m=>`<option ${m===i.maker?'selected':''}>${esc(m)}</option>`).join('')+`<option value="__new__" ${S.makers.length?'':'selected'}>＋ メーカーを追加…</option>`;$('fMakerNew').value='';mkNewSync();
@@ -2287,7 +2309,24 @@ $('file').onchange=e=>{
 $('rotImg').onclick=()=>{
   if(!tmpImg)return;const im=new Image();
   im.onload=()=>{tmpImg=packCanvas(drawOriented(im,1,1,1));phx=0;phy=0;showPv()};im.src=tmpImg};
-$('pickImg').onclick=()=>$('file').click();
+$('pickImg').onclick=()=>{$('file').removeAttribute('capture');$('file').click()};
+/* アプリ内カメラ：撮影中も編集画面と同じ点線ガイドを表示（4:3の中央を切り出して保存） */
+let cmStream=null;
+function cmStop(){if(cmStream){cmStream.getTracks().forEach(t=>t.stop());cmStream=null}$('cmV').srcObject=null}
+function cmFallback(){$('file').setAttribute('capture','environment');$('file').click()}
+$('shotImg').onclick=async()=>{
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){cmFallback();return}
+  try{cmStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280}},audio:false});
+    $('cm').showModal();if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();
+    const v=$('cmV');v.srcObject=cmStream;await v.play()}
+  catch(e){cmStop();if($('cm').open)$('cm').close();cmFallback()}};
+$('cmS').onclick=()=>{
+  const v=$('cmV');if(!v.videoWidth)return;
+  const vw=v.videoWidth,vh=v.videoHeight;let sw=vw,sh=vw*3/4;if(sh>vh){sh=vh;sw=vh*4/3}
+  const k=Math.min(1,480/Math.max(sw,sh)),c=document.createElement('canvas');c.width=Math.round(sw*k);c.height=Math.round(sh*k);
+  c.getContext('2d').drawImage(v,(vw-sw)/2,(vh-sh)/2,sw,sh,0,0,c.width,c.height);
+  tmpImg=packCanvas(c);phz=1;phx=0;phy=0;$('file').value='';showPv();$('cm').close()};
+$('cmC').onclick=()=>$('cm').close();$('cm').addEventListener('close',cmStop);
 $('rmImg').onclick=()=>{tmpImg='';$('file').value='';showPv()};
 $('fCancel').onclick=()=>$('dlg').close();
 $('fSave').onclick=()=>{
