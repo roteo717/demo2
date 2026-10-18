@@ -1205,6 +1205,8 @@ html:has(body.dton),body.dton{overflow:hidden!important}
 @media(min-width:601px){.mhead .acb{display:none}}
 @media(max-width:600px){#acBtn{display:none}}
 body:not(.adm) #acPw,body:not(.adm) #clrLog,body:not(.adm) #rDel,body:not(.adm) #delBar,body:not(.adm) #delMaker,body:not(.adm) #dlMk,body:not(.adm) #mDelMk,body:not(.adm) #mkDel,body:not(.adm) #zDdel,body:not(.adm) #zEdit,body:not(.adm) #edMode,body:not(.adm) #hEdit,body:not(.adm) #mEdit,body:not(.adm) #edFab,body:not(.adm) #edBar,body:not(.adm) #rAdd,body:not(.adm) #addItem,body:not(.adm) #hAdd,body:not(.adm) #hAdd2,body:not(.adm) #nMaker,body:not(.adm) #barMaker,body:not(.adm) #addPop,body:not(.adm) #addMaker{display:none!important}
+/* スマホ：編集は「カードの長押し」で行うので、編集ボタン（ヘッダー・メニュー・右下・編集モード帯）は管理者にも出さない */
+@media(max-width:600px){#hEdit,#mEdit,#edFab,#edBar{display:none!important}}
 /* メーカー選択欄：「＋ 新しいメーカーを追加…」が2段にならないよう、文字を少し小さくして折り返さない */
 #fMaker{font-size:15px;white-space:nowrap;text-overflow:ellipsis}
 #fMaker option{font-size:15px;white-space:nowrap}
