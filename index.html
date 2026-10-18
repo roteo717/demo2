@@ -2296,12 +2296,12 @@ function packCanvas(c){
   try{const d=cx.getImageData(0,0,c.width,c.height).data;for(let n=3;n<d.length;n+=4){if(d[n]<250){hasA=true;break}}}catch(_){}
   if(hasA)return c.toDataURL('image/png');
   const c2=document.createElement('canvas');c2.width=c.width;c2.height=c.height;const x2=c2.getContext('2d');
-  x2.fillStyle='#e6e8eb';x2.fillRect(0,0,c2.width,c2.height);x2.drawImage(c,0,0);return c2.toDataURL('image/jpeg',.88)}
+  x2.fillStyle='#e6e8eb';x2.fillRect(0,0,c2.width,c2.height);x2.drawImage(c,0,0);return c2.toDataURL('image/jpeg',.9)}
 $('file').onchange=e=>{
   const f=e.target.files[0];if(!f)return;const r=new FileReader();
   r.onload=()=>{const im=new Image();im.onload=async()=>{
     const auto=await _exifTest,ori=auto?1:await readOrient(f);
-    const k=Math.min(1,1200/Math.max(im.width,im.height));
+    const k=Math.min(1,1600/Math.max(im.width,im.height));
     tmpImg=packCanvas(drawOriented(im,ori,k,0));
     phz=1;phx=0;phy=0;showPv()};im.src=r.result};r.readAsDataURL(f);
 };
@@ -2323,7 +2323,7 @@ $('shotImg').onclick=async()=>{
 $('cmS').onclick=()=>{
   const v=$('cmV');if(!v.videoWidth)return;
   const vw=v.videoWidth,vh=v.videoHeight;let sw=vw,sh=vw*3/4;if(sh>vh){sh=vh;sw=vh*4/3}
-  const k=Math.min(1,1200/Math.max(sw,sh)),c=document.createElement('canvas');c.width=Math.round(sw*k);c.height=Math.round(sh*k);
+  const k=Math.min(1,1600/Math.max(sw,sh)),c=document.createElement('canvas');c.width=Math.round(sw*k);c.height=Math.round(sh*k);
   c.getContext('2d').drawImage(v,(vw-sw)/2,(vh-sh)/2,sw,sh,0,0,c.width,c.height);
   tmpImg=packCanvas(c);phz=1;phx=0;phy=0;$('file').value='';showPv();$('cm').close()};
 $('cmC').onclick=()=>$('cm').close();$('cm').addEventListener('close',cmStop);
