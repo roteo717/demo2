@@ -1947,7 +1947,7 @@ document.addEventListener('click',e=>{
 });
 $('barMaker').onclick=()=>$('nMaker').click();
 $('q').oninput=render;
-function qToggle(open){const t=document.querySelector('.tools');t.classList.toggle('so',open);if($('hSearch'))$('hSearch').setAttribute('aria-pressed',open?'true':'false');$('qOpen').setAttribute('aria-pressed',open?'true':'false');if(open){$('q').focus()}else if($('q').value){$('q').value='';render()}window.dispatchEvent(new Event('resize'))}
+function qToggle(open){const t=document.querySelector('.tools');t.classList.toggle('so',open);if($('hSearch'))$('hSearch').setAttribute('aria-pressed',open?'true':'false');$('qOpen').setAttribute('aria-pressed',open?'true':'false');if(open){if(!mob())$('q').focus()}else if($('q').value){$('q').value='';render()}window.dispatchEvent(new Event('resize'))}
 $('qOpen').onclick=()=>qToggle(!document.querySelector('.tools').classList.contains('so'));
 $('q').addEventListener('keydown',e=>{if(e.key==='Escape')qToggle(false)});
 $('logF').onclick=e=>{const t=e.target.closest('[data-lf]');if(!t)return;logF=t.dataset.lf;render()};
