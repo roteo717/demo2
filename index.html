@@ -1219,8 +1219,8 @@ body:not(.adm) #acPw,body:not(.adm) #clrLog,body:not(.adm) #rDel,body:not(.adm) 
 /* スマホ：編集は「カードの長押し」で行うので、編集ボタン（ヘッダー・メニュー・右下・編集モード帯）は管理者にも出さない */
 @media(max-width:600px){#hEdit,#mEdit,#edFab,#edBar{display:none!important}}
 /* メーカー選択欄：「＋ 新しいメーカーを追加…」が2段にならないよう、文字を少し小さくして折り返さない */
-#fMaker{font-size:15px;white-space:nowrap;text-overflow:ellipsis}
-#fMaker option{font-size:15px;white-space:nowrap}
+#fMaker,#fLoc{font-size:15px;white-space:nowrap;text-overflow:ellipsis}
+#fMaker option,#fLoc option{font-size:15px;white-space:nowrap}
 #acBtn .il{max-width:4.5em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 /* 履歴：日付・＋/−の丸アイコン・品名／数量が、同じ高さ（行の縦中央）にそろうようにする */
@@ -1415,6 +1415,28 @@ body #grid .nm .n2 .nlb .lt,body #grid .msub .lt{display:inline-block;width:4em;
 body #grid.fit .hd2{flex:1 1 auto}
 body #grid.fit .kv2{flex:1 1 auto;display:flex;flex-direction:column}
 body #grid.fit .kvin{flex:1 1 auto;align-content:center}
+/* 品目ダイアログ：画面の高さを超えないようにし、項目が増えて収まらないときは中身だけスクロール（タイトル・キャンセル/保存は見えたまま） */
+@media(min-width:701px){
+  #dlg[open]{max-height:90vh;max-height:90dvh;overflow:hidden;grid-template-rows:auto minmax(0,1fr) auto}
+  #dlg>.dr,#dlg>.dl{min-height:0;overflow-y:auto;overscroll-behavior:contain}
+  #dlg>.dr{padding-right:6px;margin-right:-6px}
+}
+@media(min-width:701px) and (max-height:500px){#dlg[open]{max-height:96vh;max-height:96dvh}}
+@media(max-width:700px){
+  #dlg[open]{grid-template-columns:minmax(0,1fr)}
+  #dlg>.dl,#dlg>.dr{grid-column:1}
+  #dlg>.bar{position:sticky;bottom:0;z-index:5;background:var(--panel);margin:0 -16px calc(-16px - env(safe-area-inset-bottom,0px));padding:10px 16px calc(16px + env(safe-area-inset-bottom,0px));border-top:1px solid #e3e6ea}
+}
+/* メーカー・置き場所のプルダウン（4行まで表示、以降はスクロール） */
+#dlg .cdd{display:block;width:100%;box-sizing:border-box;padding:9px 34px 9px 9px;border:1.5px solid #b8c0cc;border-radius:8px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 12px center;color:var(--ink);font-size:15px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;min-height:44px}
+#dlg .cdd.open{border-color:#1f6fc5}
+.cddl{position:fixed;z-index:80;box-sizing:border-box;max-height:180px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:#fff;border:1.5px solid #b8c0cc;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.22)}
+.cddl[hidden]{display:none}
+.cddo{box-sizing:border-box;height:44px;padding:0 12px;display:flex;align-items:center;font-size:15px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;border-bottom:1px solid #eef0f3}
+.cddo:last-child{border-bottom:none}
+.cddo.on{background:#e8f1fb}
+.cddo.add{color:#1f6fc5;font-weight:700}
+.cddo:active{background:#dbe8f7}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1622,7 +1644,7 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
   <label>品名・品番（1行目が品名、Enterで改行して2行目が品番）</label><textarea id="fName" rows="2" placeholder="例）六角ボルト&#10;M812345-5412（品番）"></textarea>
   <label>メーカー</label><select id="fMaker"></select><input id="fMakerNew" placeholder="新しいメーカー名　例：D電機" maxlength="40" hidden style="margin-top:6px">
   <label>在庫数（個）</label><input id="fStock" type="number" inputmode="numeric" min="0">
-  <label>置き場所</label><input id="fLoc" placeholder="A-3棚">
+  <label>置き場所</label><select id="fLoc"></select><input id="fLocNew" placeholder="新しい置き場所　例：A-3棚" maxlength="40" hidden style="margin-top:6px">
   <div class="qrbox"><div class="qi" id="fQr">品名を入れるとQRができます</div><div class="qb"><small>品名から自動で作られます。このQRを読み取ると、検索で品目が見つかります。印刷は「一覧」の「QRラベル印刷」から。</small><button class="btn g" id="qrSave" type="button">QR画像を保存</button></div></div>
   </div>
   <div class="bar" style="justify-content:flex-end">
@@ -2245,11 +2267,35 @@ function autoFit(){
   im.src=tmpImg}
 function mkNewSync(){const on=$('fMaker').value==='__new__';$('fMakerNew').hidden=!on;if(on&&$('dlg').open)setTimeout(()=>$('fMakerNew').focus(),0)} /* 「新しいメーカーを追加…」を選んだときだけ、名前の入力欄を出す */
 $('fMaker').onchange=mkNewSync;
+/* 置き場所：既に使われている置き場所から選ぶ。「＋ 置き場所を追加…」で新しい名前を入力 */
+function locNewSync(){const on=$('fLoc').value==='__new__';$('fLocNew').hidden=!on;if(on&&$('dlg').open)setTimeout(()=>$('fLocNew').focus(),0)}
+function locFill(cur){const ls=[...new Set(S.items.map(i=>(i.loc||'').trim()).filter(Boolean))];if(cur&&!ls.includes(cur))ls.push(cur);ls.sort((a,b)=>a.localeCompare(b,'ja',{numeric:true}));
+  const none=!ls.length&&!cur;
+  $('fLoc').innerHTML=`<option value="" ${!cur&&!none?'selected':''}>未設定</option>`+ls.map(l=>`<option value="${esc(l)}" ${l===cur?'selected':''}>${esc(l)}</option>`).join('')+`<option value="__new__" ${none?'selected':''}>＋ 置き場所を追加…</option>`;$('fLocNew').value='';locNewSync()}
+$('fLoc').onchange=locNewSync;
+/* メーカー・置き場所のプルダウン：4行まで表示し、それ以降はスクロール（中身の<select>はそのまま使い、見た目と開き方だけ置き換える） */
+function cdd(sel){
+  const dlg=$('dlg'),btn=document.createElement('button');btn.type='button';btn.className='cdd';sel.style.display='none';sel.after(btn);
+  const list=document.createElement('div');list.className='cddl';list.hidden=true;dlg.appendChild(list);
+  const sync=()=>{const o=sel.options[sel.selectedIndex];btn.textContent=o?o.textContent:''};
+  const close=()=>{list.hidden=true;btn.classList.remove('open')};
+  const open=()=>{
+    list.innerHTML='';[...sel.options].forEach((o,i)=>{const d=document.createElement('div');d.className='cddo'+(i===sel.selectedIndex?' on':'')+(o.value==='__new__'?' add':'');d.textContent=o.textContent;d.dataset.cdx=i;list.appendChild(d)});
+    const r=btn.getBoundingClientRect();list.style.width=r.width+'px';list.style.left=r.left+'px';list.hidden=false;
+    const h=list.offsetHeight;let top=r.bottom+4;if(top+h>innerHeight-8&&r.top>h+12)top=r.top-h-4;list.style.top=top+'px';
+    btn.classList.add('open');const on=list.querySelector('.on');if(on)list.scrollTop=Math.max(0,on.offsetTop-list.clientHeight/2+on.offsetHeight/2)};
+  btn.onclick=()=>list.hidden?open():close();
+  list.addEventListener('click',e=>{const d=e.target.closest('.cddo');if(!d)return;sel.selectedIndex=+d.dataset.cdx;sync();close();sel.dispatchEvent(new Event('change',{bubbles:true}))});
+  document.addEventListener('pointerdown',e=>{if(!list.hidden&&!list.contains(e.target)&&e.target!==btn)close()},true);
+  dlg.addEventListener('scroll',e=>{if(!list.contains(e.target))close()},true);
+  addEventListener('resize',close);dlg.addEventListener('close',close);
+  sel.addEventListener('change',sync);new MutationObserver(sync).observe(sel,{childList:true,subtree:true,attributes:true});sync()}
+cdd($('fMaker'));cdd($('fLoc'));
 function openEdit(id){$('pv').classList.remove('adj');if(!isAdmin()){notify('編集は管理者だけができます');return}
   editId=id;const i=id?S.items.find(x=>x.id===id):{name:'',maker:cur||S.makers[0],stock:0,min:0,unit:'個',loc:curLoc&&curLoc!=='未設定'?curLoc:'',img:''};
   $('dt').textContent=id?'品目を編集':'品目を追加';
   $('fMaker').innerHTML=S.makers.map(m=>`<option ${m===i.maker?'selected':''}>${esc(m)}</option>`).join('')+`<option value="__new__" ${S.makers.length?'':'selected'}>＋ メーカーを追加…</option>`;$('fMakerNew').value='';mkNewSync();
-  $('fName').value=i.name;$('fStock').value=i.stock;$('fLoc').value=i.loc;
+  $('fName').value=i.name;$('fStock').value=i.stock;locFill(i.loc||'');
   tmpImg=i.img;phz=i.z||1;phx=i.x||0;phy=i.y||0;$('file').value='';showPv();
   {const B=document.body,tmpHide=!mob()&&!B.classList.contains('hist')&&!B.classList.contains('hhide');/* 履歴パネルを出しているとカードが狭くなり写真枠の比率が変わるので、一瞬だけ隠して「履歴なし」のときの比率で測る */if(tmpHide){B.classList.add('hhide');fit()}const ph=document.querySelector('#grid .ph'),r=ph&&ph.getBoundingClientRect();if(tmpHide){B.classList.remove('hhide');fit()}$('pv').style.aspectRatio=r&&r.width>0&&r.height>0?(r.width/r.height).toFixed(3):''} /* カードの写真枠と同じ比率にする */
   $('dlg').showModal();$('dlg').scrollTop=0;
@@ -2304,7 +2350,9 @@ $('fSave').onclick=()=>{
   const name=$('fName').value.replace(/[ \t\u3000]*\r?\n[ \t\u3000]*/g,'\n').replace(/\n+/g,'\n').trim();if(!name){notify('品名を入力してください');return}
   let mk=$('fMaker').value;
   if(mk==='__new__'){mk=$('fMakerNew').value.trim();if(!mk){notify('メーカー名を入力してください');$('fMakerNew').focus();return}if(!S.makers.includes(mk))S.makers.push(mk)}
-  const v={name,maker:mk,stock:Math.max(0,+$('fStock').value||0),unit:'個',loc:$('fLoc').value.trim(),img:tmpImg,z:phz,x:phx,y:phy};
+  let lc=$('fLoc').value;
+  if(lc==='__new__'){lc=$('fLocNew').value.trim();if(!lc){notify('置き場所を入力してください');$('fLocNew').focus();return}}
+  const v={name,maker:mk,stock:Math.max(0,+$('fStock').value||0),unit:'個',loc:lc,img:tmpImg,z:phz,x:phx,y:phy};
   if(editId){const it=S.items.find(x=>x.id===editId),d=v.stock-it.stock;
     if(d){/* 編集画面で在庫数を直したときも履歴に残す（e:1＝編集による修正） */const n=new Date();S.log.unshift({id:it.id,name:v.name,d,e:1,u:curUser,t:`${n.getMonth()+1}/${n.getDate()} ${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`});S.log=S.log.slice(0,300)}
     Object.assign(it,v)}else S.items.push({id:S.nid++,...v});
