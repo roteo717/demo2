@@ -1200,7 +1200,7 @@ html:has(body.dton),body.dton{overflow:hidden!important}
 .mb.acb .acn{max-width:5em;overflow:hidden;text-overflow:ellipsis}
 @media(min-width:601px){.mhead .acb{display:none}}
 @media(max-width:600px){#acBtn{display:none}}
-body:not(.adm) #acPw,body:not(.adm) #clrLog,body:not(.adm) #rDel,body:not(.adm) #delBar,body:not(.adm) #delMaker,body:not(.adm) #dlMk,body:not(.adm) #mDelMk,body:not(.adm) #mkDel,body:not(.adm) #zDdel,body:not(.adm) #zEdit{display:none!important}
+body:not(.adm) #acPw,body:not(.adm) #clrLog,body:not(.adm) #rDel,body:not(.adm) #delBar,body:not(.adm) #delMaker,body:not(.adm) #dlMk,body:not(.adm) #mDelMk,body:not(.adm) #mkDel,body:not(.adm) #zDdel,body:not(.adm) #zEdit,body:not(.adm) #edMode,body:not(.adm) #hEdit,body:not(.adm) #mEdit,body:not(.adm) #edFab,body:not(.adm) #edBar,body:not(.adm) #rAdd,body:not(.adm) #addItem,body:not(.adm) #hAdd,body:not(.adm) #hAdd2,body:not(.adm) #nMaker,body:not(.adm) #barMaker,body:not(.adm) #addPop,body:not(.adm) #addMaker{display:none!important}
 /* メーカー選択欄：「＋ 新しいメーカーを追加…」が2段にならないよう、文字を少し小さくして折り返さない */
 #fMaker{font-size:15px;white-space:nowrap;text-overflow:ellipsis}
 #fMaker option{font-size:15px;white-space:nowrap}
@@ -1863,7 +1863,7 @@ function acSync(){
     if(b){/* スマホの右上は、名前の頭文字を丸に入れるだけ。フルネームはタップで開くアカウント画面に出す */
       el.textContent=curAcc?(Array.from(curAcc.name)[0]||''):'';b.classList.toggle('has',!!curAcc);b.setAttribute('aria-label',curAcc?curAcc.name+'さんのアカウント':'アカウント')}
     else el.textContent=curAcc?curAcc.name:'ユーザー'});
-  document.body.classList.toggle('adm',isAdmin());if(!isAdmin()&&document.body.classList.contains('deon'))delSet(false)}
+  document.body.classList.toggle('adm',isAdmin());if(!isAdmin()&&document.body.classList.contains('deon'))delSet(false);if(!isAdmin()&&document.body.classList.contains('edon'))edSet(false)}
 function setAcc(a){curAcc=a;curUser=a?a.name:'';try{a?localStorage.setItem(SESS,a.id):localStorage.removeItem(SESS)}catch(e){}acSync()}
 let lgFail=0,lgWait=0;
 function lgOpen(){
@@ -1958,7 +1958,7 @@ document.addEventListener('click',e=>{
   else if(t.dataset.i)move(+t.dataset.i,1);
   else if(t.dataset.h){if(!S.hshow&&!mob()){S.hshow=true;save();hApply()}logF=logF==='i:'+t.dataset.h&&!mob()?'':'i:'+t.dataset.h;render();if(mob())document.body.classList.add('hist')}
   else if(t.dataset.e){if(document.body.classList.contains('edon'))openEdit(+t.dataset.e)}
-  else if(t.id==='addMaker'){$('mkN').value='';$('mk').showModal()}
+  else if(t.id==='addMaker'){if(!isAdmin()){notify('編集は管理者だけができます');return}$('mkN').value='';$('mk').showModal()}
 });
 $('barMaker').onclick=()=>$('nMaker').click();
 $('q').oninput=render;
@@ -2101,7 +2101,7 @@ $('lvSort').addEventListener('click',()=>{$('lv').dataset.dd='';ddSync()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('lv').hidden&&!document.querySelector('dialog[open]'))lvClose()});
 $('hAdd').onclick=()=>openEdit(null);
 $('hAdd2').onclick=()=>{$('mMenu').hidden=true;$('mMenuBtn').setAttribute('aria-expanded','false');openEdit(null)};
-$('nMaker').onclick=()=>{$('mkN').value='';$('mkDel').textContent=cur?`「${cur}」を削除`:'';$('mkDel').hidden=!cur;$('mk').showModal()};
+$('nMaker').onclick=()=>{if(!isAdmin()){notify('編集は管理者だけができます');return}$('mkN').value='';$('mkDel').textContent=cur?`「${cur}」を削除`:'';$('mkDel').hidden=!cur;$('mk').showModal()};
 $('mkDel').onclick=()=>{$('mk').close();$('delMaker').click()};
 const mClose=()=>{$('mMenu').hidden=true;$('mMenuBtn').setAttribute('aria-expanded','false')};
 $('mEdit').onclick=()=>{mClose();$('edMode').click()};
@@ -2219,7 +2219,7 @@ function autoFit(){
   im.src=tmpImg}
 function mkNewSync(){const on=$('fMaker').value==='__new__';$('fMakerNew').hidden=!on;if(on&&$('dlg').open)setTimeout(()=>$('fMakerNew').focus(),0)} /* 「新しいメーカーを追加…」を選んだときだけ、名前の入力欄を出す */
 $('fMaker').onchange=mkNewSync;
-function openEdit(id){
+function openEdit(id){if(!isAdmin()){notify('編集は管理者だけができます');return}
   editId=id;const i=id?S.items.find(x=>x.id===id):{name:'',maker:cur||S.makers[0],stock:0,min:0,unit:'個',loc:curLoc&&curLoc!=='未設定'?curLoc:'',img:''};
   $('dt').textContent=id?'品目を編集':'品目を追加';
   $('fMaker').innerHTML=S.makers.map(m=>`<option ${m===i.maker?'selected':''}>${esc(m)}</option>`).join('')+`<option value="__new__" ${S.makers.length?'':'selected'}>＋ メーカーを追加…</option>`;$('fMakerNew').value='';mkNewSync();
@@ -2451,6 +2451,18 @@ $('grid').addEventListener('click',e=>{if(!mob())return;const b=document.body.cl
   const c=e.target.closest('.card');if(!c||e.target.closest('button'))return;const el=c.querySelector('[data-e]');if(!el)return;const id=+el.dataset.e;
   if(b.contains('edon')){if(!e.target.closest('[data-e]'))openEdit(id);return}
   dtOpen(id)});
+/* スマホ：カードを長押し（約0.5秒）すると、編集モードにしなくてもその品目の編集画面を開く。指が動いたら（スクロール・スワイプ）キャンセル */
+{const g=$('grid');let lt=null,lx=0,ly=0,lid=null,fired=false;
+  const lcancel=()=>{clearTimeout(lt);lt=null};
+  g.addEventListener('touchstart',e=>{lcancel();fired=false;if(!mob()||!isAdmin()||e.touches.length!==1)return;
+    const b=document.body.classList;if(b.contains('edon')||b.contains('deon')||b.contains('mvon'))return;
+    if(e.target.closest('button'))return;const c=e.target.closest('.card');if(!c)return;const el=c.querySelector('[data-e]');if(!el)return;
+    lid=+el.dataset.e;lx=e.touches[0].clientX;ly=e.touches[0].clientY;
+    lt=setTimeout(()=>{lt=null;fired=true;try{navigator.vibrate&&navigator.vibrate(30)}catch(_){}if(dtId!==null)dtClose();openEdit(lid)},500)},{passive:true});
+  g.addEventListener('touchmove',e=>{if(lt===null)return;const t=e.touches[0];if(Math.abs(t.clientX-lx)>10||Math.abs(t.clientY-ly)>10)lcancel()},{passive:true});
+  g.addEventListener('touchend',()=>{lcancel();if(fired)setTimeout(()=>{fired=false},600)},{passive:true});g.addEventListener('touchcancel',lcancel,{passive:true});
+  g.addEventListener('click',e=>{if(fired){fired=false;e.stopImmediatePropagation();e.preventDefault()}},true); /* 長押しのあとに出る「タップ」は無視（詳細が開かないように） */
+  g.addEventListener('contextmenu',e=>{if(mob()&&(lt!==null||fired))e.preventDefault()})}
 render();
 /* 起動時：前回ログインしたIDが残っていればそのまま、なければログイン画面を出す */
 {let sid='';try{sid=localStorage.getItem(SESS)||''}catch(e){}const a=sid&&accOf(sid);if(a){setAcc(a)}else lgOpen()}
@@ -2462,7 +2474,7 @@ $('mvMode').onclick=()=>mvSet(!document.body.classList.contains('mvon'));
 document.addEventListener('pointerdown',()=>{if(document.body.classList.contains('mvon')){clearTimeout(mvTimer);mvTimer=setTimeout(()=>mvSet(false),90000)}},true);
 /* 編集モードの切り替え（90秒操作がなければ自動で閉じる／入出庫モードとは同時に使わない） */
 let edTimer=null;
-function edSet(on){if(on&&document.body.classList.contains('mvon'))mvSet(false);if(on&&document.body.classList.contains('deon'))delSet(false);document.body.classList.toggle('edon',on);const b=$('edMode');b.setAttribute('aria-pressed',on?'true':'false');if($('hEdit'))$('hEdit').setAttribute('aria-pressed',on?'true':'false');b.setAttribute('aria-label',on?'編集ボタンを隠す':'編集ボタンを表示');clearTimeout(edTimer);if(on)edTimer=setTimeout(()=>edSet(false),90000);window.dispatchEvent(new Event('resize'))}
+function edSet(on){if(on&&!isAdmin()){notify('編集は管理者だけができます');return}if(on&&document.body.classList.contains('mvon'))mvSet(false);if(on&&document.body.classList.contains('deon'))delSet(false);document.body.classList.toggle('edon',on);const b=$('edMode');b.setAttribute('aria-pressed',on?'true':'false');if($('hEdit'))$('hEdit').setAttribute('aria-pressed',on?'true':'false');b.setAttribute('aria-label',on?'編集ボタンを隠す':'編集ボタンを表示');clearTimeout(edTimer);if(on)edTimer=setTimeout(()=>edSet(false),90000);window.dispatchEvent(new Event('resize'))}
 $('edMode').onclick=()=>edSet(!document.body.classList.contains('edon'));
 document.addEventListener('pointerdown',()=>{if(document.body.classList.contains('edon')){clearTimeout(edTimer);edTimer=setTimeout(()=>edSet(false),90000)}},true);
 </script>
