@@ -243,6 +243,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   .mb.sr{width:40px;padding:0;justify-content:center;background:none}
   .mb.sr svg{display:block;width:20px;height:20px;stroke-width:2.2}
   .mb.sr[aria-pressed="true"]{background:none;color:var(--red)}
+  .mb.sr{background:none!important}
   .mmenu{position:fixed;right:8px;top:calc(60px + env(safe-area-inset-top,0px));z-index:60;background:#fff;border-radius:10px;box-shadow:0 4px 18px rgba(0,0,0,.25);padding:4px;min-width:150px}
   .mmenu[hidden]{display:none}
   .mi{display:block;width:100%;text-align:left;background:none;border:none;border-radius:8px;padding:13px 14px;font-size:15px;font-weight:700;color:#222}
@@ -882,6 +883,10 @@ html:has(body.dton),body.dton{overflow:hidden!important}
 .tools input[type=search]:focus,.tools #q:focus,#lvQ:focus{outline:none;box-shadow:none;border-color:#c5ccd6}
 /* スマホ：キーボード表示中は、ダイアログをキーボードの上に収める（高さも見えている範囲に合わせる） */
 @media(max-width:600px){html.kbopen dialog[open]{margin-bottom:var(--kb,0px)!important;max-height:calc(100dvh - var(--kb,0px) - 12px)!important;padding-bottom:16px!important}}
+/* スマホ：右下の丸い編集ボタンは出さない（編集は上のバーの鉛筆アイコンから） */
+@media(max-width:600px){#edFab{display:none!important}}
+/* スマホでは「品目の読み込み（Excel）」は出さない（パソコンだけ） */
+@media(max-width:600px){#acImp{display:none!important}}
 /* ===== QRコード（自動生成・読み取り・ラベル印刷） ===== */
 .qrbox{display:flex;gap:12px;align-items:center;margin-top:12px;padding:10px;border:1.5px dashed #b8c0cc;border-radius:10px;background:#fff}
 .qrbox .qi{flex:none;width:96px;height:96px;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:12px;text-align:center}
@@ -1402,6 +1407,7 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
 <header class="mhead">
   <div class="mst"><div><small>登録品目</small><span><b id="h1">0</b><i>品</i></span></div></div>
   <button class="mb f" id="hAdd" type="button">品目追加</button>
+  <button class="mb sr" id="hEdit" type="button" aria-pressed="false" aria-label="編集"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17v3zM14 7l3 3"/></svg></button>
   <button class="mb sr" id="hSearch" type="button" aria-pressed="false" aria-label="検索"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button>
   <button class="mb acb" id="acBtn2" type="button" aria-label="アカウント"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg><span class="acn"></span></button>
   <button class="mb mm" id="mMenuBtn" type="button" aria-label="メニュー" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
@@ -1533,6 +1539,12 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
       <select id="acNRl"><option value="user">作業者</option><option value="admin">管理者</option></select>
       <button class="btn" id="acNAdd" type="button">ユーザーを追加</button>
     </div>
+  </section>
+  <section class="zs" id="acImp" hidden>
+    <div class="zst">品目の読み込み<small>Excel・管理者だけ</small></div>
+    <div class="zhint" style="margin:0 0 10px;font-size:13px;color:var(--sub);line-height:1.6">Excel（.xlsx）かCSVから、品目をまとめて追加します。1行目に「品名・品番・メーカー・保管場所・在庫数」と書き、2行目から品目を入れてください（品名以外は空白でOK）。</div>
+    <div class="bar" style="margin-top:0"><button class="btn" id="impGo" type="button">ファイルを選んで読み込む</button><button class="btn g" id="impTpl" type="button">ひな形（CSV）</button></div>
+    <input type="file" id="impF" accept=".xlsx,.xlsm,.csv,.tsv,.txt,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
   </section>
   <div class="bar" style="justify-content:flex-end"><button class="btn g" id="acX" type="button">閉じる</button></div>
 </dialog>
@@ -1884,7 +1896,7 @@ $('login').addEventListener('cancel',e=>e.preventDefault());/* Escで閉じさ�
 /* ===== アカウント画面・ユーザー管理・パスワード変更 ===== */
 function acDraw(){
   $('acMe').innerHTML=curAcc?'<b>'+esc(curAcc.name)+'</b>さんでログイン中<small>ID：'+esc(curAcc.id)+'・'+(isAdmin()?'管理者':'作業者')+'</small>':'';
-  $('acAdm').hidden=!isAdmin();
+  $('acAdm').hidden=!isAdmin();$('acImp').hidden=!isAdmin();
   if(!isAdmin())return;
   const admins=S.accounts.filter(a=>a.role==='admin').length;
   $('acList').innerHTML=S.accounts.map(a=>`<div class="acr" data-id="${esc(a.id)}"><div class="acn2"><b>${esc(a.name)}</b><small>${esc(a.id)}・${a.role==='admin'?'管理者':'作業者'}</small></div><button class="btn g" data-rs="1" type="button">PW再設定</button>${a.id===curAcc.id||(a.role==='admin'&&admins<2)?'':'<button class="btn g dg" data-rm="1" type="button">削除</button>'}</div>`).join('')}
@@ -1931,7 +1943,8 @@ function commit(){
   if(!curUser){notify('ログインしてください');return}
   const q=Math.floor(+$('mvQ').value);
   if(!(q>=1)){notify('数量を入力してください');$('mvQ').focus();return}
-  const d=mvSign*q;if(i.stock+d<0){notify('在庫が足りません（現在 '+i.stock+'）');$('mvQ').focus();return}
+  let d=mvSign*q;if(i.stock+d<0)d=-i.stock;/* 在庫より多く出庫したときは、メッセージは出さず在庫0までで止める（マイナスにはしない） */
+  if(d===0){$('mv').close();return}
   i.stock+=d;const n=new Date();
   S.log.unshift({id:i.id,name:i.name,d,u:curUser,t:`${n.getMonth()+1}/${n.getDate()} ${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`});
   S.log=S.log.slice(0,300);save();$('mv').close();render();if(dtId!==null)dtDraw();
@@ -2018,9 +2031,9 @@ $('zmap').onclick=e=>{if(!mob())return;const c=e.target.closest('[data-z]');if(!
   const m=zm(),ls=m.labels.slice(0,m.c*m.r),L=ls[+c.dataset.z],pick=$('zPick');
   const cand=[...new Set(S.items.map(i=>i.loc||'未設定'))].filter(s=>s!=='未設定'&&zcell(s,ls)===L).sort((a,b)=>a.localeCompare(b,'ja',{numeric:true}));
   if(!cand.length){pick.hidden=false;pick.innerHTML='<span class="zpl">「'+esc(L)+'」に置いている品目はありません</span>';return}
-  if(cand.length===1){curLoc=curLoc===cand[0]?'':cand[0];render();zSheet(false);topScroll();return}
+  if(cand.length===1){curLoc=curLoc===cand[0]?'':cand[0];render();zSheet(false);if(!document.body.classList.contains('hist'))topScroll();return}
   pick.hidden=false;pick.innerHTML='<span class="zpl">「'+esc(L)+'」の置き場所を選んでください</span>'+cand.map(s=>`<button type="button" data-sh="${esc(s)}">${esc(s)}</button>`).join('')};
-$('zPick').onclick=e=>{const b=e.target.closest('button[data-sh]');if(!b)return;curLoc=b.dataset.sh;render();zSheet(false);topScroll()};
+$('zPick').onclick=e=>{const b=e.target.closest('button[data-sh]');if(!b)return;curLoc=b.dataset.sh;render();zSheet(false);if(!document.body.classList.contains('hist'))topScroll()};
 {const z=document.querySelector('.zmap');let y0=null;
   z.addEventListener('touchstart',e=>{y0=(e.target.closest('.zgrab,.zh')&&!e.target.closest('button'))?e.touches[0].clientY:null},{passive:true});
   z.addEventListener('touchmove',e=>{if(y0===null)return;const dy=e.touches[0].clientY-y0;z.style.transition='none';if(dy>0)z.style.transform='translateY('+dy+'px)'},{passive:true});
@@ -2101,9 +2114,14 @@ function btSync(){const b=document.body.classList,lvo=!$('lv').hidden,zs=b.conta
 $('hSearch').onclick=()=>{btCloseAll();qToggle(!document.querySelector('.tools').classList.contains('so'))};
 $('btHome').onclick=()=>{const b=document.body.classList,over=!$('lv').hidden||b.contains('zsheet')||b.contains('hist')||dtId!==null;btCloseAll();if(!over)topScroll(true)};
 $('btList').onclick=()=>{if(!$('lv').hidden)return;btCloseAll();lvOpen()};
-$('btMap').onclick=()=>{if(document.body.classList.contains('zsheet')){btCloseAll();return}btCloseAll();zSheet(true)};
+$('btMap').onclick=()=>{const b=document.body.classList;
+  if(b.contains('zsheet')){zSheet(false);return} /* マップだけ閉じる（履歴を開いていたら履歴に戻る） */
+  if(b.contains('hist')){zSheet(true);return} /* 履歴は閉じずに、その上にマップを重ねる */
+  btCloseAll();zSheet(true)};
+function leaveHist(){if(document.body.classList.contains('hist')){document.body.classList.remove('hist');logF=''}} /* 履歴を開いたままマップで棚を選んだら、履歴をその置き場所で絞り込む（ホームには戻らない）。leaveHistは現在未使用 */
 {const mo=new MutationObserver(btSync);mo.observe(document.body,{attributes:true,attributeFilter:['class']});mo.observe($('lv'),{attributes:true,attributeFilter:['hidden']});mo.observe($('dv'),{attributes:true,attributeFilter:['hidden']});btSync()}
 $('edFab').onclick=()=>$('edMode').click();
+$('hEdit').onclick=()=>$('edMode').click();
 
 $('mMap').onclick=()=>{mClose();if(mob())zSheet(true);else $('zBtn').click()};
 $('mDelMk').onclick=()=>{$('mMenu').hidden=true;$('mMenuBtn').setAttribute('aria-expanded','false');$('delMaker').click()};
@@ -2267,6 +2285,74 @@ $('fSave').onclick=()=>{
   if(cur&&cur!==v.maker)cur=v.maker;if(curLoc&&(v.loc||'未設定')!==curLoc)curLoc='';save();$('dlg').close();render();
 };
 
+/* ===== Excel（.xlsx）／CSVから品目をまとめて読み込む ===== */
+(()=>{
+const AL={name:['品名','名称','品目','品目名','商品名','名前','name'],pn:['品番','型番','型式','部品番号','pn','partno'],maker:['メーカー','メーカー名','製造元','maker'],loc:['保管場所','置き場所','置場所','置き場','場所','棚','保管棚','location'],stock:['在庫','在庫数','個数','数量','数','stock']};
+const nz=v=>String(v==null?'':v).replace(/[\s\u3000]/g,'').toLowerCase();
+const str=v=>String(v==null?'':v).replace(/\r\n?/g,'\n').trim();
+const colIdx=s=>{let n=0;for(const ch of s)n=n*26+ch.charCodeAt(0)-64;return n-1};
+/* xlsxはzipなので、ブラウザ標準の解凍機能で中身を取り出す（外部ライブラリなし） */
+async function unzip(buf){const u8=new Uint8Array(buf),dv=new DataView(buf);let e=u8.length-22;while(e>=0&&dv.getUint32(e,true)!==0x06054b50)e--;if(e<0)throw new Error('zip');
+  const n=dv.getUint16(e+10,true);let p=dv.getUint32(e+16,true);const files={};
+  for(let k=0;k<n;k++){if(dv.getUint32(p,true)!==0x02014b50)break;const method=dv.getUint16(p+10,true),csz=dv.getUint32(p+20,true),nl=dv.getUint16(p+28,true),el=dv.getUint16(p+30,true),cl=dv.getUint16(p+32,true),lo=dv.getUint32(p+42,true);
+    files[new TextDecoder().decode(u8.subarray(p+46,p+46+nl))]={method,csz,lo};p+=46+nl+el+cl}
+  return{async read(name){const f=files[name];if(!f)return null;const ln=dv.getUint16(f.lo+26,true),le=dv.getUint16(f.lo+28,true),st=f.lo+30+ln+le,data=u8.subarray(st,st+f.csz);
+    if(f.method===0)return data;if(typeof DecompressionStream==='undefined')throw new Error('nods');
+    const ds=new DecompressionStream('deflate-raw'),w=ds.writable.getWriter();w.write(data);w.close();return new Uint8Array(await new Response(ds.readable).arrayBuffer())}}}
+async function readXlsx(buf){const z=await unzip(buf),td=new TextDecoder(),dp=new DOMParser();
+  const xml=async n=>{const u=await z.read(n);return u?dp.parseFromString(td.decode(u),'application/xml'):null};
+  let path='xl/worksheets/sheet1.xml';const wb=await xml('xl/workbook.xml'),rel=await xml('xl/_rels/workbook.xml.rels');
+  if(wb&&rel){const sh=wb.getElementsByTagName('sheet')[0];if(sh){const rid=sh.getAttribute('r:id')||sh.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships','id');
+    for(const r of rel.getElementsByTagName('Relationship'))if(r.getAttribute('Id')===rid){const t=r.getAttribute('Target')||'';path=t.startsWith('/')?t.slice(1):'xl/'+t.replace(/^\.\//,'')}}}
+  const sd=await xml(path);if(!sd)throw new Error('sheet');
+  const ss=[],sst=await xml('xl/sharedStrings.xml');
+  if(sst)for(const si of sst.getElementsByTagName('si')){let t='';const walk=n=>{for(const c of n.childNodes){if(c.nodeType!==1)continue;if(c.localName==='t')t+=c.textContent;else if(c.localName!=='rPh')walk(c)}};walk(si);ss.push(t)}
+  const rows=[];
+  for(const c of sd.getElementsByTagName('c')){const m=/^([A-Z]+)(\d+)$/.exec(c.getAttribute('r')||'');if(!m)continue;
+    const ty=c.getAttribute('t'),ve=c.getElementsByTagName('v')[0];let v='';
+    if(ty==='s')v=ss[+(ve&&ve.textContent)]||'';else if(ty==='inlineStr')v=[...c.getElementsByTagName('t')].map(x=>x.textContent).join('');else if(ve)v=ve.textContent;
+    if(v==='')continue;const ri=+m[2]-1;(rows[ri]||(rows[ri]=[]))[colIdx(m[1])]=v}
+  return Array.from(rows,r=>r||[])}
+function readCsv(buf){let t;try{t=new TextDecoder('utf-8',{fatal:true}).decode(buf)}catch(e){t=new TextDecoder('shift_jis').decode(buf)}
+  t=t.replace(/^\uFEFF/,'');const first=t.split(/\r?\n/,1)[0],d=(first.includes('\t')&&!first.includes(','))?'\t':',';
+  const rows=[];let r=[],f='',q=false;
+  for(let i=0;i<t.length;i++){const ch=t[i];
+    if(q){if(ch==='"'){if(t[i+1]==='"'){f+='"';i++}else q=false}else f+=ch}
+    else if(ch==='"')q=true;
+    else if(ch===d){r.push(f);f=''}
+    else if(ch==='\n'||ch==='\r'){if(ch==='\r'&&t[i+1]==='\n')i++;r.push(f);rows.push(r);r=[];f=''}
+    else f+=ch}
+  if(f!==''||r.length){r.push(f);rows.push(r)}return rows}
+/* 表 → 品目。1行目が見出しならその列名で、なければ「品名・品番・メーカー・保管場所・在庫数」の順で読む。品名が空の行は飛ばす */
+function toItems(rows){rows=rows.filter(r=>r.some(c=>str(c)!==''));if(!rows.length)return null;
+  const head=rows[0].map(nz);let map={};
+  for(const k in AL)head.forEach((h,i)=>{if(h&&map[k]===undefined&&AL[k].map(nz).includes(h))map[k]=i});
+  let body=rows;if(Object.keys(map).length){body=rows.slice(1);if(map.name===undefined)return null}else map={name:0,pn:1,maker:2,loc:3,stock:4};
+  const g=(r,k)=>map[k]===undefined?'':str(r[map[k]]);
+  const seen=new Set(S.items.map(i=>(i.maker||'')+'\u0001'+nz(i.name)));
+  const list=[];let blank=0,dup=0;
+  for(const r of body){const ln=g(r,'name').split('\n').map(x=>x.trim()).filter(Boolean);if(!ln.length){blank++;continue}
+    const pn=g(r,'pn').replace(/\n+/g,' ')||ln.slice(1).join(' '),name=pn?ln[0]+'\n'+pn:ln[0],maker=g(r,'maker').replace(/\n+/g,' ');
+    const key=maker+'\u0001'+nz(name);if(seen.has(key)){dup++;continue}seen.add(key);
+    const sn=parseFloat(g(r,'stock').replace(/[０-９．]/g,c=>c==='．'?'.':String.fromCharCode(c.charCodeAt(0)-0xFEE0)).replace(/[,，個\s]/g,''));
+    list.push({name,maker,loc:g(r,'loc').replace(/\n+/g,' '),stock:isFinite(sn)&&sn>0?Math.floor(sn):0})}
+  return{list,blank,dup}}
+function applyImport(list){for(const x of list){if(x.maker&&!S.makers.includes(x.maker))S.makers.push(x.maker);S.items.push({id:S.nid++,maker:x.maker,name:x.name,stock:x.stock,min:0,unit:'個',loc:x.loc,img:''})}
+  save();if($('ac').open)$('ac').close();render()}
+$('impGo').onclick=()=>$('impF').click();
+$('impF').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
+  try{const nm=f.name.toLowerCase();let rows;
+    if(/\.xls$/.test(nm)){notify('古い形式（.xls）は読み込めません。Excelの「名前を付けて保存」で、.xlsx かCSVにしてから選んでください');return}
+    const buf=await f.arrayBuffer();rows=/\.xls[xm]$/.test(nm)?await readXlsx(buf):readCsv(buf);
+    const r=toItems(rows);
+    if(!r){notify('「品名」の列が見つかりません。1行目に「品名」と書いてください');return}
+    if(!r.list.length){notify('読み込める品目がありません'+(r.dup?'（'+r.dup+'件は登録済み）':'')+(r.blank?'（品名が空の'+r.blank+'行は除きます）':''));return}
+    const ex=[];if(r.dup)ex.push('登録済み'+r.dup+'件');if(r.blank)ex.push('品名が空'+r.blank+'行');
+    ask(r.list.length+'件を読み込みます。'+(ex.length?'（'+ex.join('・')+'は除きます）':'')+'よろしいですか？',()=>{applyImport(r.list);notify(r.list.length+'件を読み込みました')})
+  }catch(err){notify(err&&err.message==='nods'?'このブラウザでは.xlsxを読み込めません。CSVで保存して選んでください':'ファイルを読み込めませんでした。.xlsx かCSVを選んでください')}};
+$('impTpl').onclick=()=>{const t='\uFEFF品名,品番,メーカー,保管場所,在庫数\r\n六角ボルト,M8-100,A製作所,A-1棚,420\r\nナット,,A製作所,A-1棚,60\r\n',a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([t],{type:'text/csv'}));a.download='品目ひな形.csv';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)};
+})();
 /* ===== QRコード：自動生成・読み取り・ラベル印刷 ===== */
 let lvList=[];
 function qrMake(text,cell,margin){try{const q=qrcode(0,'M');q.addData(String(text),'Byte');q.make();
@@ -2376,7 +2462,7 @@ $('mvMode').onclick=()=>mvSet(!document.body.classList.contains('mvon'));
 document.addEventListener('pointerdown',()=>{if(document.body.classList.contains('mvon')){clearTimeout(mvTimer);mvTimer=setTimeout(()=>mvSet(false),90000)}},true);
 /* 編集モードの切り替え（90秒操作がなければ自動で閉じる／入出庫モードとは同時に使わない） */
 let edTimer=null;
-function edSet(on){if(on&&document.body.classList.contains('mvon'))mvSet(false);if(on&&document.body.classList.contains('deon'))delSet(false);document.body.classList.toggle('edon',on);const b=$('edMode');b.setAttribute('aria-pressed',on?'true':'false');b.setAttribute('aria-label',on?'編集ボタンを隠す':'編集ボタンを表示');clearTimeout(edTimer);if(on)edTimer=setTimeout(()=>edSet(false),90000);window.dispatchEvent(new Event('resize'))}
+function edSet(on){if(on&&document.body.classList.contains('mvon'))mvSet(false);if(on&&document.body.classList.contains('deon'))delSet(false);document.body.classList.toggle('edon',on);const b=$('edMode');b.setAttribute('aria-pressed',on?'true':'false');if($('hEdit'))$('hEdit').setAttribute('aria-pressed',on?'true':'false');b.setAttribute('aria-label',on?'編集ボタンを隠す':'編集ボタンを表示');clearTimeout(edTimer);if(on)edTimer=setTimeout(()=>edSet(false),90000);window.dispatchEvent(new Event('resize'))}
 $('edMode').onclick=()=>edSet(!document.body.classList.contains('edon'));
 document.addEventListener('pointerdown',()=>{if(document.body.classList.contains('edon')){clearTimeout(edTimer);edTimer=setTimeout(()=>edSet(false),90000)}},true);
 </script>
