@@ -354,7 +354,7 @@ img{-webkit-user-drag:none;user-drag:none}
 .zc b{max-width:100%;white-space:normal;word-break:break-all;text-align:center;padding:0 2px;box-sizing:border-box} /* 文字の大きさは文字数に関係なく固定。長い名前は折り返す */
 #zPv .zc input{width:100%;min-width:0;padding:8px 2px;border:none;border-radius:6px;background:transparent;color:var(--ink);font:inherit;font-size:16px;font-weight:800;text-align:center;outline:none}
 #zPv .zc:focus-within{outline:3px solid var(--red);outline-offset:-3px}
-.zc.on{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 0 0 3px rgba(31,111,197,.25),0 0 14px rgba(31,111,197,.5)}
+.zc.on{background:#e3effb;border-color:#9cc3ec;color:#14509a;box-shadow:0 0 0 2px rgba(31,111,197,.12)} /* 選択中の棚：薄い青（濃い塗りつぶしをやめた） */
 .zc.sel{outline:3px solid var(--warn);outline-offset:-3px}
 .zdoor{position:absolute;display:flex;align-items:center;justify-content:center;background:var(--gold);border:2px solid #444;border-radius:4px;font-style:normal;font-size:10px;font-weight:800;color:#222;z-index:1}
 .zdoor.t,.zdoor.b{width:38px;height:18px;left:calc(var(--p) - 19px)}
@@ -1234,7 +1234,7 @@ body:not(.adm) #acPw,body:not(.adm) #clrLog,body:not(.adm) #rDel,body:not(.adm) 
 }
 /* PC：検索欄は、メーカーの行の右側（ボタン群の手前）に出す。1段ぶん空いて写真を大きくできる */
 @media(min-width:601px){
-  .lrow .tools{flex:0 1 var(--cw,280px);min-width:150px;margin:0} /* 検索バーの幅＝品名カード1枚の幅（--cwはfit0で自動計算） */
+  .lrow .tools{flex:0 1 var(--cw,280px);min-width:150px;margin:0 0 0 var(--cl,0px)} /* 検索バーの幅＝品名カード1枚の幅（--cwはfit0で自動計算） */
   .tools{display:flex!important} /* PC：検索バーは常時表示。右の「検索」ボタンは不要なので隠す */
   #qOpen{display:none!important}
   .lrow .tools #q{flex:1 1 0;max-width:none;width:100%}
@@ -1819,9 +1819,12 @@ try{new ResizeObserver(()=>syncSearchW()).observe(document.getElementById('tabs'
 function topScroll(sm){const o={top:0,behavior:sm?'smooth':'auto'};try{document.body.scrollTo(o)}catch(e){document.body.scrollTop=0}window.scrollTo(o)} /* スマホはbodyの中でスクロールするので、body側も先頭へ戻す */
 /* 品目を消したら、その品目の入出庫履歴も一緒に消す（サンプルデータの片づけ用。運用が始まったらこの関数の中身を空にすれば、履歴は残る） */
 function pruneLog(){const ids=new Set(S.items.map(x=>x.id)),names=new Set(S.items.map(x=>x.name));S.log=S.log.filter(l=>l.id!==undefined?ids.has(l.id):names.has(l.name))}
-function syncSearchW(){const r=document.documentElement.style;const tb=document.getElementById('tabs');if(tb&&tb.offsetHeight)r.setProperty('--tabH',tb.offsetHeight+'px');if(!matchMedia('(min-width:601px)').matches){r.removeProperty('--cw');return}
+function syncSearchW(){const r=document.documentElement.style;const tb=document.getElementById('tabs');if(tb&&tb.offsetHeight)r.setProperty('--tabH',tb.offsetHeight+'px');if(!matchMedia('(min-width:601px)').matches){r.removeProperty('--cw');r.removeProperty('--cl');return}
   const c=[...document.querySelectorAll('#grid .card')].find(x=>x.style.display!=='none'&&x.offsetWidth>0);
-  if(c)r.setProperty('--cw',Math.round(c.getBoundingClientRect().width)+'px');else r.removeProperty('--cw')}
+  if(c)r.setProperty('--cw',Math.round(c.getBoundingClientRect().width)+'px');else r.removeProperty('--cw');
+  /* 検索バーの左端を、いちばん左のカードの左端にそろえる（履歴の有無でカードが中央寄せになっても、バーとカードの位置が同じになる） */
+  r.removeProperty('--cl');const tl=document.querySelector('.lrow .tools');
+  if(c&&tl&&tl.offsetWidth){const d=Math.round(c.getBoundingClientRect().left-tl.getBoundingClientRect().left);if(d>0)r.setProperty('--cl',d+'px')}}
 $('pgPrev').onclick=()=>{if(page>0){page--;fit()}};
 $('pgNext').onclick=()=>{page++;fit()};
 let tx=null;
