@@ -90,7 +90,7 @@ html.dlgopen,html.dlgopen body{overflow:hidden}
 label{display:block;font-size:13px;color:var(--sub);margin-top:10px}
 dialog input,dialog select,dialog textarea{width:100%;padding:9px;border:1px solid var(--line);border-radius:8px;font-size:16px;background:var(--bg);color:var(--ink)}
 .row{display:flex;gap:8px}.row>*{flex:1}
-.row>#pickImg,.row>#shotImg,.row>#rotImg,.row>#rmImg{white-space:nowrap;font-size:12px;padding-left:4px;padding-right:4px;min-width:0}
+.row>#pickImg,.row>#rotImg,.row>#rmImg{white-space:nowrap;font-size:12px;padding-left:4px;padding-right:4px;min-width:0}
 .pv{width:100%;aspect-ratio:4/3;background:var(--bg);border:1px dashed var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--sub);overflow:hidden;margin-top:4px}
 .pv img{width:100%;height:100%;object-fit:contain}
 .pv:has(img){background:#e6e8eb}
@@ -928,12 +928,6 @@ html:has(body.dton),body.dton{overflow:hidden!important}
 #qp .qpt select{margin-left:auto;padding:8px 10px;font-size:14px;width:auto;border:1.5px solid #c5ccd6;border-radius:10px;background:#fff;color:var(--ink)}
 #qpSum{margin-top:8px;font-size:14px;color:var(--sub)}
 .qrbox .qb .qn{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--sub)}
-#cm{width:min(520px,94vw)}
-#cm .vw{position:relative;background:#000;border-radius:10px;overflow:hidden;aspect-ratio:4/3;margin-top:10px}
-#cm video{width:100%;height:100%;object-fit:cover;display:block}
-#cm .gd{position:absolute;inset:9% 8%;border:2px dashed rgba(255,255,255,.95);border-radius:4px;box-shadow:0 0 0 1px rgba(0,0,0,.35);pointer-events:none}
-#cm .hint{font-size:14px;color:var(--sub);margin-top:8px;line-height:1.5}
-#cm button:focus,#cm button:focus-visible{outline:none;box-shadow:none}
 #sc{width:min(520px,94vw)}
 #sc .vw{position:relative;background:#000;border-radius:10px;overflow:hidden;aspect-ratio:1/1;margin-top:10px}
 #sc video{width:100%;height:100%;object-fit:cover;display:block}
@@ -1606,12 +1600,6 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
   <div id="qpSum"></div>
   <div class="bar" style="justify-content:flex-end;margin-top:10px"><button class="btn g" id="qpC" type="button">キャンセル</button><button class="btn" id="qpGo" type="button">印刷</button></div>
 </dialog>
-<dialog id="cm">
-  <h3 style="margin:0">写真を撮る</h3>
-  <div class="vw"><video id="cmV" playsinline muted></video><div class="gd"></div></div>
-  <div class="hint">点線の枠に収まるように撮ってください（編集画面の点線と同じ位置です）</div>
-  <div class="bar" style="justify-content:space-between;margin-top:10px"><button class="btn g" id="cmC" type="button">閉じる</button><button class="btn" id="cmS" type="button">撮影</button></div>
-</dialog>
 <dialog id="sc">
   <h3 style="margin:0">QRコードを読み取る</h3>
   <div class="vw"><video id="scV" playsinline muted></video><div class="fr"></div></div>
@@ -1628,7 +1616,7 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
   <div class="prow"><label>拡大・縮小</label><input type="range" id="pZoom" min="50" max="300" step="5" value="100"><button class="btn g" id="pReset" type="button">戻す</button></div>
   <div class="phint">写真をドラッグすると位置を動かせます</div>
    <button class="btn g" id="pAuto" type="button" style="width:100%;margin-top:8px">被写体の大きさを自動でそろえる</button>
-  <div class="row" style="margin-top:6px"><input type="file" id="file" accept="image/*" hidden><button class="btn g" id="pickImg" type="button">写真を選ぶ</button><button class="btn g" id="shotImg" type="button">撮影</button><button class="btn g" id="rotImg" type="button">90°回転</button><button class="btn g" id="rmImg" type="button">写真を削除</button></div>
+  <div class="row" style="margin-top:6px"><input type="file" id="file" accept="image/*" hidden><button class="btn g" id="pickImg" type="button">写真を選ぶ</button><button class="btn g" id="rotImg" type="button">90°回転</button><button class="btn g" id="rmImg" type="button">写真を削除</button></div>
   </div>
   <div class="dr">
   <label>品名・品番（1行目が品名、Enterで改行して2行目が品番）</label><textarea id="fName" rows="2" placeholder="例）六角ボルト&#10;M812345-5412（品番）"></textarea>
@@ -2309,24 +2297,7 @@ $('file').onchange=e=>{
 $('rotImg').onclick=()=>{
   if(!tmpImg)return;const im=new Image();
   im.onload=()=>{tmpImg=packCanvas(drawOriented(im,1,1,1));phx=0;phy=0;showPv()};im.src=tmpImg};
-$('pickImg').onclick=()=>{$('file').removeAttribute('capture');$('file').click()};
-/* アプリ内カメラ：撮影中も編集画面と同じ点線ガイドを表示（4:3の中央を切り出して保存） */
-let cmStream=null;
-function cmStop(){if(cmStream){cmStream.getTracks().forEach(t=>t.stop());cmStream=null}$('cmV').srcObject=null}
-function cmFallback(){$('file').setAttribute('capture','environment');$('file').click()}
-$('shotImg').onclick=async()=>{
-  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){cmFallback();return}
-  try{cmStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1920}},audio:false});
-    $('cm').showModal();if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();
-    const v=$('cmV');v.srcObject=cmStream;await v.play()}
-  catch(e){cmStop();if($('cm').open)$('cm').close();cmFallback()}};
-$('cmS').onclick=()=>{
-  const v=$('cmV');if(!v.videoWidth)return;
-  const vw=v.videoWidth,vh=v.videoHeight;let sw=vw,sh=vw*3/4;if(sh>vh){sh=vh;sw=vh*4/3}
-  const k=Math.min(1,1600/Math.max(sw,sh)),c=document.createElement('canvas');c.width=Math.round(sw*k);c.height=Math.round(sh*k);
-  c.getContext('2d').drawImage(v,(vw-sw)/2,(vh-sh)/2,sw,sh,0,0,c.width,c.height);
-  tmpImg=packCanvas(c);phz=1;phx=0;phy=0;$('file').value='';showPv();$('cm').close()};
-$('cmC').onclick=()=>$('cm').close();$('cm').addEventListener('close',cmStop);
+$('pickImg').onclick=()=>$('file').click();
 $('rmImg').onclick=()=>{tmpImg='';$('file').value='';showPv()};
 $('fCancel').onclick=()=>$('dlg').close();
 $('fSave').onclick=()=>{
