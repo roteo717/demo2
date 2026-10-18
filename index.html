@@ -2344,7 +2344,13 @@ $('rotImg').onclick=()=>{
   if(!tmpImg)return;const im=new Image();
   im.onload=()=>{tmpImg=packCanvas(drawOriented(im,1,1,1));phx=0;phy=0;showPv()};im.src=tmpImg};
 $('pickImg').onclick=()=>$('file').click();
-$('rmImg').onclick=()=>{tmpImg='';$('file').value='';showPv()};
+/* 写真を削除：編集中の品目なら、保存を待たずにその場で保存済みの写真データも消す（確認あり） */
+$('rmImg').onclick=()=>{
+  const it=editId?S.items.find(x=>x.id===editId):null;
+  const run=()=>{tmpImg='';phz=1;phx=0;phy=0;$('file').value='';
+    if(it&&it.img){it.img='';delete it.z;delete it.x;delete it.y;save();render()}
+    showPv()};
+  if(it&&it.img)ask('この写真を削除しますか？（保存済みの写真も消え、元に戻せません）',run);else run()};
 $('fCancel').onclick=()=>$('dlg').close();
 $('fSave').onclick=()=>{
   const name=$('fName').value.replace(/[ \t\u3000]*\r?\n[ \t\u3000]*/g,'\n').replace(/\n+/g,'\n').trim();if(!name){notify('品名を入力してください');return}
