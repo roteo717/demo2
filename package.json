@@ -1,0 +1,9 @@
+{
+  "name": "inventory-app",
+  "version": "1.0.0",
+  "description": "工場在庫管理 PWA (依存パッケージなし)",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=16" },
+  "private": true
+}
