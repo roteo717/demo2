@@ -819,21 +819,21 @@ html:has(body.dton),body.dton{overflow:hidden!important}
 .dth svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .dtback{position:absolute;left:12px;top:calc(env(safe-area-inset-top,0px) + 12px);z-index:4;width:42px;height:42px;border-radius:50%;border:none;background:rgba(255,255,255,.95);box-shadow:0 1px 6px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;padding:0;color:#222;cursor:pointer}
 .dtback svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
-.dtb{flex:1 1 auto;display:flex;flex-direction:column;padding:14px 20px 8px}
+.dtb{flex:1 1 auto;display:flex;flex-direction:column;padding:40px 20px 8px} /* 上は、写真から下にはみ出す履歴ボタン（30px）と品名が重ならないよう空ける */
 /* 写真は4:3で固定。下に余った高さは、メーカー・品番・保管場所の行と在庫数の帯が分け合う（上限あり） */
 .dtb .dtn{flex:1 1 0;max-height:96px;display:flex;align-items:center;margin-top:0} /* 品名の行も余りを分け合い、文字は縦の真ん中 */
 .dtb .dtr{flex:1 1 0;max-height:80px}
 .dtb .dts2{flex:1 1 auto;max-height:150px}
-.dtm{font-size:15px;color:#8b9099}
-.dtn{font-size:22px;font-weight:800;line-height:1.25;margin-top:2px;word-break:break-all}
-.dtp{font-size:15px;color:#8b9099;margin-top:4px}
-.dts2{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding:12px 16px;border-radius:14px;background:#eaf2fb;font-size:15px;font-weight:700;color:#333}
+.dtm{font-size:14px;color:#8b9099}
+.dtn{font-size:19px;font-weight:800;line-height:1.2;margin-top:2px;word-break:break-all}
+.dtp{font-size:14px;color:#8b9099;margin-top:4px}
+.dts2{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;padding:10px 16px;border-radius:14px;background:#eaf2fb;font-size:14px;font-weight:700;color:#333}
 .dts2>span:first-child{display:flex;align-items:center;gap:8px}
 .dts2 .dsv{display:flex;align-items:baseline;gap:6px;min-width:0}
-.dts2 b{font-size:38px;font-weight:800;line-height:1;background:linear-gradient(180deg,#3a8fe6 0%,#1f6fc5 55%,#1556a8 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.dts2 b{font-size:32px;font-weight:800;line-height:1;background:linear-gradient(180deg,#3a8fe6 0%,#1f6fc5 55%,#1556a8 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
 .dts2 .dsv>span{color:#1f6fc5;font-weight:700}
-.dtr{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px;padding:10px 0;border-top:1px solid #eceff3;border-bottom:1px solid #eceff3;font-size:15px;color:#555}
-.dtr b{font-size:18px;color:#111;text-align:right}
+.dtr{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:8px;padding:8px 0;border-top:1px solid #eceff3;border-bottom:1px solid #eceff3;font-size:14px;color:#555}
+.dtr b{font-size:16px;color:#111;text-align:right}
 .dtr>span{white-space:nowrap;flex:none}
 .dtr b{min-width:0;word-break:break-all;overflow-wrap:anywhere}
 .dtr+.dtr{margin-top:0;border-top:none}
@@ -1663,7 +1663,17 @@ let S={makers:['A製作所','B工業','Cパーツ'],items:[
  {id:3,maker:'B工業',name:'ベアリング 6204',stock:35,min:20,unit:'個',loc:'B-2棚',img:''},
  {id:4,maker:'B工業',name:'ゴムシール 40mm',stock:12,min:30,unit:'個',loc:'B-2棚',img:''},
  {id:5,maker:'Cパーツ',name:'制御基板 Rev.3',stock:8,min:5,unit:'個',loc:'C-棚',img:''}],log:[],nid:6};
-try{const r=localStorage.getItem(KEY);if(r)S=JSON.parse(r);(S.items||[]).forEach(x=>x.unit='個')}catch(e){}
+/* データの置き場：サーバー（SQLite＋写真ファイル）につながるときはサーバー、つながらないときはこの端末の中（localStorage） */
+let useSrv=false,apiVer=0,migratePending=false,srvBusy=false,srvAgain=false;
+function xhr(method,url,body,type){const x=new XMLHttpRequest();x.open(method,url,false);if(type)x.setRequestHeader('Content-Type',type);x.send(body===undefined?null:body);return x}
+try{
+  const x=xhr('GET','api/state?'+Date.now());
+  if(x.status!==200)throw new Error('no server');
+  const j=JSON.parse(x.responseText);useSrv=true;apiVer=j.version||0;
+  if(j.state)S=j.state;
+  else{const r=localStorage.getItem(KEY);if(r){S=JSON.parse(r);migratePending=true}}/* サーバーが空で、この端末に古いデータがあれば、引き継いで送る */
+}catch(e){useSrv=false;try{const r=localStorage.getItem(KEY);if(r)S=JSON.parse(r)}catch(_){}}
+(S.items||[]).forEach(x=>x.unit='個');
 if(!Array.isArray(S.accounts))S.accounts=[];/* ログイン用アカウント（ID・表示名・権限・パスワードのハッシュ） */
 let curUser='',curAcc=null;/* curUser＝ログイン中の人の表示名（履歴の記録に使う） */
 const mob=()=>matchMedia('(max-width:600px)').matches;let navLow=false,curLoc='',locMk='';
@@ -1677,7 +1687,30 @@ $('msgC').onclick=()=>{msgCb=null;$('msg').close()};
 function addMaker(){const n=$('mkN').value.trim();if(!n)return;if(S.makers.includes(n)){notify('同じ名前のメーカーがあります');return}S.makers.push(n);cur=n;save();$('mk').close();render()}
 $('mkOk').onclick=addMaker;$('mkC').onclick=()=>$('mk').close();
 $('mkN').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();addMaker()}};
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){notify('保存容量がいっぱいです。写真を減らしてください。')}}
+function save(){
+  if(!useSrv){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){notify('保存容量がいっぱいです。写真を減らしてください。')}return}
+  try{/* 新しい写真はここでサーバーに送り、品目には写真の場所（URL）だけを持たせる */
+    for(const it of S.items){if(it.img&&it.img.startsWith('data:')){const x=xhr('POST','api/photo',it.img,'text/plain');if(x.status!==200)throw new Error('photo');it.img=JSON.parse(x.responseText).url}}
+  }catch(e){notify('写真をサーバーに送れませんでした。接続を確認して、もう一度保存してください。');return}
+  srvFlush()}
+async function srvFlush(){
+  if(srvBusy){srvAgain=true;return}
+  srvBusy=true;
+  try{
+    do{srvAgain=false;
+      const body=JSON.stringify({baseVersion:apiVer,state:S});
+      const r=await fetch('api/state',{method:'PUT',headers:{'Content-Type':'application/json'},body,keepalive:body.length<60000});
+      if(r.status===200){apiVer=(await r.json()).version}
+      else if(r.status===409){srvAgain=false;srvBusy=false;await srvReload(true);return}
+      else throw new Error('HTTP '+r.status)
+    }while(srvAgain)
+  }catch(e){notify('サーバーに保存できませんでした。接続を確認して、もう一度操作してください。')}
+  srvBusy=false}
+async function srvReload(msg){
+  const r=await fetch('api/state?'+Date.now(),{cache:'no-store'});const j=await r.json();apiVer=j.version||0;
+  if(j.state){S=j.state;(S.items||[]).forEach(x=>x.unit='個');if(!Array.isArray(S.accounts))S.accounts=[]}
+  render();if(msg)notify('他の人が先に更新していたため、最新の内容に更新しました。もう一度操作してください。')}
+async function srvPoll(){try{if(srvBusy||document.hidden||document.querySelector('dialog[open]'))return;const r=await fetch('api/version?'+Date.now(),{cache:'no-store'});const j=await r.json();if(j.version>apiVer)await srvReload(false)}catch(e){}}
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const ZDEF=()=>({c:3,r:2,labels:['A','B','C','D','E','F'],doors:[{s:'b',p:1,t:'入口'}]});
 function zm(){if(!S.zmap||!S.zmap.labels)S.zmap=ZDEF();const m=S.zmap;if(!m.doors){m.doors=m.door?[{s:m.door.s,p:m.door.p,t:'入口'}]:[];delete m.door}return m}
@@ -2542,6 +2575,7 @@ $('grid').addEventListener('click',e=>{if(!mob())return;const b=document.body.cl
   g.addEventListener('click',e=>{if(fired){fired=false;e.stopImmediatePropagation();e.preventDefault()}},true); /* 長押しのあとに出る「タップ」は無視（詳細が開かないように） */
   g.addEventListener('contextmenu',e=>{if(mob()&&(lt!==null||fired))e.preventDefault()})}
 render();
+if(useSrv){if(migratePending)save();setInterval(srvPoll,15000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)srvPoll()})}
 /* 起動時：前回ログインしたIDが残っていればそのまま、なければログイン画面を出す */
 {let sid='';try{sid=localStorage.getItem(SESS)||''}catch(e){}const a=sid&&accOf(sid);if(a){setAcc(a)}else lgOpen()}
 /* 入出庫モードの切り替え（90秒操作がなければ自動で閉じる） */
