@@ -1188,7 +1188,10 @@ html:has(body.dton),body.dton{overflow:hidden!important}
 .mb.acb .acn{max-width:5em;overflow:hidden;text-overflow:ellipsis}
 @media(min-width:601px){.mhead .acb{display:none}}
 @media(max-width:600px){#acBtn{display:none}}
-body:not(.adm) #acPw,body:not(.adm) #clrLog,body:not(.adm) #rDel,body:not(.adm) #delBar,body:not(.adm) #delMaker,body:not(.adm) #dlMk,body:not(.adm) #mDelMk,body:not(.adm) #mkDel,body:not(.adm) #zDdel{display:none!important}
+body:not(.adm) #acPw,body:not(.adm) #clrLog,body:not(.adm) #rDel,body:not(.adm) #delBar,body:not(.adm) #delMaker,body:not(.adm) #dlMk,body:not(.adm) #mDelMk,body:not(.adm) #mkDel,body:not(.adm) #zDdel,body:not(.adm) #zEdit{display:none!important}
+/* メーカー選択欄：「＋ 新しいメーカーを追加…」が2段にならないよう、文字を少し小さくして折り返さない */
+#fMaker{font-size:15px;white-space:nowrap;text-overflow:ellipsis}
+#fMaker option{font-size:15px;white-space:nowrap}
 #acBtn .il{max-width:4.5em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 /* 履歴：日付・＋/−の丸アイコン・品名／数量が、同じ高さ（行の縦中央）にそろうようにする */
@@ -1950,7 +1953,7 @@ $('hOpen').onclick=()=>{dtBack=null;document.body.classList.add('hist')};
 $('hClose').onclick=()=>{const bk=dtBack;dtBack=null;document.body.classList.remove('hist');logF='';render();if(bk!==null&&mob()&&S.items.some(x=>x.id===bk))dtOpen(bk)};/* 詳細から開いた履歴は、閉じると詳細に戻る *//* 履歴を閉じたら、カードの選択も外す */
 $('mMenuBtn').onclick=e=>{e.stopPropagation();const m=$('mMenu');$('mEdit').textContent=document.body.classList.contains('edon')?'編集を終了':'編集';$('mMap').textContent=mob()?'置き場マップ':($('zBtn').getAttribute('aria-pressed')==='true'?'置き場マップを隠す':'置き場マップを表示');$('mDelMk').textContent=cur?`「${cur}」を削除`:'メーカーを削除';m.hidden=!m.hidden;$('mMenuBtn').setAttribute('aria-expanded',String(!m.hidden))};
 document.addEventListener('click',()=>{$('mMenu').hidden=true;$('mMenuBtn').setAttribute('aria-expanded','false')});
-$('zEdit').onclick=()=>{zt=JSON.parse(JSON.stringify(zm()));zSync();$('zd').showModal();if(document.activeElement&&document.activeElement.blur)document.activeElement.blur()};
+$('zEdit').onclick=()=>{if(!isAdmin()){notify('マップの編集は管理者だけができます');return}zt=JSON.parse(JSON.stringify(zm()));zSync();$('zd').showModal();if(document.activeElement&&document.activeElement.blur)document.activeElement.blur()};
 $('zC').onchange=$('zR').onchange=()=>{zt.c=+$('zC').value;zt.r=+$('zR').value;zFit();zTot();zPv()};
 /* 目印：1回タップ＝時計回りに1か所移動、すばやく2回タップ＝名前変更・削除の欄を出す */
 let zdTm=null,zdLast=-1;
@@ -2176,7 +2179,7 @@ function openEdit(id){
   $('fName').value=i.name;$('fStock').value=i.stock;$('fLoc').value=i.loc;
   tmpImg=i.img;phz=i.z||1;phx=i.x||0;phy=i.y||0;$('file').value='';showPv();
   {const B=document.body,tmpHide=!mob()&&!B.classList.contains('hist')&&!B.classList.contains('hhide');/* 履歴パネルを出しているとカードが狭くなり写真枠の比率が変わるので、一瞬だけ隠して「履歴なし」のときの比率で測る */if(tmpHide){B.classList.add('hhide');fit()}const ph=document.querySelector('#grid .ph'),r=ph&&ph.getBoundingClientRect();if(tmpHide){B.classList.remove('hhide');fit()}$('pv').style.aspectRatio=r&&r.width>0&&r.height>0?(r.width/r.height).toFixed(3):''} /* カードの写真枠と同じ比率にする */
-  $('dlg').showModal();
+  $('dlg').showModal();$('dlg').scrollTop=0;
 }
 /* ---- 写真の向き補正 ---- */
 /* ブラウザがEXIFの向きを自動反映するか判定（反映しない環境でだけ自前で回す＝二重回転を防ぐ） */
@@ -2351,6 +2354,19 @@ document.addEventListener('pointerdown',()=>{if(document.body.classList.contains
 <script>
 /* PWA: Service Worker 登録（HTTPS または localhost のときのみ。失敗してもアプリ本体には影響しない） */
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).catch(function(){})})}
+</script>
+<script>
+/* 開き直したとき（バックグラウンドから戻ったとき）は、一番上から表示する。入力ダイアログなどを開いている間は何もしない */
+(function(){
+  function toTop(){
+    try{
+      if(document.querySelector('dialog[open]'))return;
+      if(typeof topScroll==='function')topScroll(false);else window.scrollTo(0,0);
+    }catch(e){}
+  }
+  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')toTop()});
+  window.addEventListener('pageshow',function(e){if(e.persisted)toTop()});
+})();
 </script>
 </body>
 </html>
