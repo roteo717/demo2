@@ -880,6 +880,8 @@ html:has(body.dton),body.dton{overflow:hidden!important}
 }
 /* 検索バーを選択しても外枠を太くしない */
 .tools input[type=search]:focus,.tools #q:focus,#lvQ:focus{outline:none;box-shadow:none;border-color:#c5ccd6}
+/* スマホ：キーボード表示中は、ダイアログをキーボードの上に収める（高さも見えている範囲に合わせる） */
+@media(max-width:600px){html.kbopen dialog[open]{margin-bottom:var(--kb,0px)!important;max-height:calc(100dvh - var(--kb,0px) - 12px)!important;padding-bottom:16px!important}}
 /* ===== QRコード（自動生成・読み取り・ラベル印刷） ===== */
 .qrbox{display:flex;gap:12px;align-items:center;margin-top:12px;padding:10px;border:1.5px dashed #b8c0cc;border-radius:10px;background:#fff}
 .qrbox .qi{flex:none;width:96px;height:96px;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:12px;text-align:center}
@@ -1974,8 +1976,21 @@ $('zAddDoor').onclick=()=>{if(zt.doors.length>=6)return;zt.doors.push({s:'t',p:1
 $('zPv').oninput=e=>{const t=e.target;if(t.dataset.n===undefined)return;zt.labels[+t.dataset.n]=t.value}; /* 入力中は描き直さない（キーボードが閉じるため） */
 $('zRs').onclick=()=>{zt=ZDEF();zSync()};
 $('zCn').onclick=()=>$('zd').close();
-const dlgSync=()=>document.documentElement.classList.toggle('dlgopen',!!document.querySelector('dialog[open]'));
+let dlgLockY=null;
+const dlgSync=()=>{const op=!!document.querySelector('dialog[open]');document.documentElement.classList.toggle('dlgopen',op);
+  /* スマホ：入力でキーボードが出たとき、後ろの画面が動かないように、ダイアログを開いている間は後ろを固定する */
+  if(!(mob()&&matchMedia('(pointer:coarse)').matches))return;
+  const st=document.body.style;
+  if(op&&dlgLockY===null){dlgLockY=window.scrollY||document.documentElement.scrollTop||0;st.position='fixed';st.top=(-dlgLockY)+'px';st.left='0';st.right='0';st.width='100%'}
+  else if(!op&&dlgLockY!==null){const y=dlgLockY;dlgLockY=null;st.position='';st.top='';st.left='';st.right='';st.width='';window.scrollTo(0,y)}};
 new MutationObserver(dlgSync).observe(document.body,{subtree:true,attributes:true,attributeFilter:['open']});
+/* スマホ：キーボードが出たら、ダイアログをキーボードの上（見えている範囲）に収める。入力欄が隠れないので、画面が引っ張られて後ろが動くのを防ぐ */
+(function(){const vv=window.visualViewport;if(!vv)return;const de=document.documentElement;
+  function kbFit(){const op=!!document.querySelector('dialog[open]');
+    const kb=(op&&mob())?Math.max(0,Math.round(window.innerHeight-vv.height-vv.offsetTop)):0;
+    de.style.setProperty('--kb',kb+'px');de.classList.toggle('kbopen',kb>80)}
+  vv.addEventListener('resize',kbFit);vv.addEventListener('scroll',kbFit);
+  new MutationObserver(kbFit).observe(document.body,{subtree:true,attributes:true,attributeFilter:['open']})})();
 function placeMap(){const z=document.querySelector('.zmap');if(!z)return;let moved=false;
   if(mob()){const row=$('locs').closest('.lrow')||$('locs'),an=document.querySelector('.tools')||row;if(z.parentNode!==an.parentNode||z.previousElementSibling!==an){an.parentNode.insertBefore(z,an.nextSibling);moved=true}}
   else{const cl=$('clrLog');if(cl&&(z.parentNode!==cl.parentNode||z.nextElementSibling!==cl)){cl.parentNode.insertBefore(z,cl);moved=true}}
@@ -2024,10 +2039,17 @@ $('zOk').onclick=()=>{
 $('pZoom').oninput=()=>{phz=+$('pZoom').value/100;showPv()};
 $('pReset').onclick=()=>{phz=1;phx=0;phy=0;showPv()};
 $('pAuto').onclick=()=>autoFit();
-(()=>{let d=null;const pv=$('pv');
-pv.addEventListener('pointerdown',e=>{if(!tmpImg)return;d={x:e.clientX,y:e.clientY};pv.classList.add('drg');pv.setPointerCapture(e.pointerId)});
-pv.addEventListener('pointermove',e=>{if(!d)return;const r=pv.getBoundingClientRect();phx=Math.max(-100,Math.min(100,phx+(e.clientX-d.x)/r.width*100));phy=Math.max(-100,Math.min(100,phy+(e.clientY-d.y)/r.height*100));d={x:e.clientX,y:e.clientY};const im=pv.querySelector('img');if(im)im.style.transform=`translate(${phx}%,${phy}%) scale(${phz})`});
-const end=()=>{d=null;pv.classList.remove('drg')};pv.addEventListener('pointerup',end);pv.addEventListener('pointercancel',end)})();
+(()=>{let d=null,pd=0,pz=1;const pv=$('pv'),P=new Map();
+/* 1本指：ドラッグで移動／2本指：ピンチで拡大・縮小（スライダーは細かい調整用に残す） */
+const dist=()=>{const a=[...P.values()];return Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y)};
+const apply=()=>{const im=pv.querySelector('img');if(im)im.style.transform=`translate(${phx}%,${phy}%) scale(${phz})`};
+pv.addEventListener('pointerdown',e=>{if(!tmpImg)return;P.set(e.pointerId,{x:e.clientX,y:e.clientY});pv.classList.add('drg');try{pv.setPointerCapture(e.pointerId)}catch(_){}
+  if(P.size===2){pd=dist();pz=phz;d=null}else if(P.size===1)d={x:e.clientX,y:e.clientY}});
+pv.addEventListener('pointermove',e=>{if(!P.has(e.pointerId))return;P.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(P.size>=2){if(pd>0){phz=Math.max(.5,Math.min(3,pz*dist()/pd));$('pZoom').value=Math.round(phz*100);apply()}return}
+  if(!d)return;const r=pv.getBoundingClientRect();phx=Math.max(-100,Math.min(100,phx+(e.clientX-d.x)/r.width*100));phy=Math.max(-100,Math.min(100,phy+(e.clientY-d.y)/r.height*100));d={x:e.clientX,y:e.clientY};apply()});
+const end=e=>{P.delete(e.pointerId);if(P.size===1){const p=[...P.values()][0];d={x:p.x,y:p.y}}else if(P.size===0){d=null;pv.classList.remove('drg')}};
+pv.addEventListener('pointerup',end);pv.addEventListener('pointercancel',end)})();
 let lvS={k:'',d:1},lvMks=new Set(),lvLs=new Set();/* 置き場所の絞り込み（棚を1つずつ・複数選択可） *//* メーカーの絞り込み（複数選択可。空なら「すべて」） */
 function lvRender(){const q=kq($('lvQ').value);
   const a=S.items.filter(i=>(!lvMks.size||lvMks.has(i.maker))&&(!lvLs.size||lvLs.has(i.loc||'未設定'))&&(!q||(q===scExact?kq(i.name)===q:kq(i.name+(i.loc||'')+i.maker).includes(q))));
