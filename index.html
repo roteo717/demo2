@@ -2175,7 +2175,7 @@ $('fMaker').onchange=mkNewSync;
 function openEdit(id){
   editId=id;const i=id?S.items.find(x=>x.id===id):{name:'',maker:cur||S.makers[0],stock:0,min:0,unit:'個',loc:curLoc&&curLoc!=='未設定'?curLoc:'',img:''};
   $('dt').textContent=id?'品目を編集':'品目を追加';
-  $('fMaker').innerHTML=S.makers.map(m=>`<option ${m===i.maker?'selected':''}>${esc(m)}</option>`).join('')+`<option value="__new__" ${S.makers.length?'':'selected'}>＋ 新しいメーカーを追加…</option>`;$('fMakerNew').value='';mkNewSync();
+  $('fMaker').innerHTML=S.makers.map(m=>`<option ${m===i.maker?'selected':''}>${esc(m)}</option>`).join('')+`<option value="__new__" ${S.makers.length?'':'selected'}>＋ メーカーを追加…</option>`;$('fMakerNew').value='';mkNewSync();
   $('fName').value=i.name;$('fStock').value=i.stock;$('fLoc').value=i.loc;
   tmpImg=i.img;phz=i.z||1;phx=i.x||0;phy=i.y||0;$('file').value='';showPv();
   {const B=document.body,tmpHide=!mob()&&!B.classList.contains('hist')&&!B.classList.contains('hhide');/* 履歴パネルを出しているとカードが狭くなり写真枠の比率が変わるので、一瞬だけ隠して「履歴なし」のときの比率で測る */if(tmpHide){B.classList.add('hhide');fit()}const ph=document.querySelector('#grid .ph'),r=ph&&ph.getBoundingClientRect();if(tmpHide){B.classList.remove('hhide');fit()}$('pv').style.aspectRatio=r&&r.width>0&&r.height>0?(r.width/r.height).toFixed(3):''} /* カードの写真枠と同じ比率にする */
