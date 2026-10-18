@@ -1191,7 +1191,13 @@ html:has(body.dton),body.dton{overflow:hidden!important}
 #ac .acme{font-size:16px;line-height:1.5}
 #ac .acme small{display:block;font-size:12px;color:var(--sub)}
 #ac .acbar .btn{flex:1 1 0}
-#ac>.bar:last-child{margin-top:0} /* 「閉じる」の上の余白：ダイアログのgap(12px)と.barのmargin-topが二重に効いていたので、gapだけにする */
+#ac>.bar:last-child{margin-top:0}
+#ac .achd{display:flex;align-items:center;justify-content:space-between}
+#ac .acx{display:block;width:32px;height:32px;margin:-4px -6px -4px 0;padding:0;border:none;border-radius:8px;background:none;color:#6b7488;font-size:18px;line-height:1;cursor:pointer}
+#ac .acx:hover{background:#e3e7ee}
+/* 閉じるは右上の✕（パソコン・スマホ共通。下の「閉じる」ボタンは出さない）。スマホは押しやすいよう少し大きく */
+#ac>.bar:last-child{display:none}
+@media(max-width:600px){#ac .acx{width:40px;height:40px;margin:-8px -8px -8px 0;font-size:20px}} /* 「閉じる」の上の余白：ダイアログのgap(12px)と.barのmargin-topが二重に効いていたので、gapだけにする */
 #ac .acr{display:flex;align-items:center;gap:6px;padding:8px 0;border-top:1px solid #dde1e7}
 #ac .acr:first-child{border-top:none}
 #ac .acn2{flex:1 1 auto;min-width:0}
@@ -1533,11 +1539,11 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
 </dialog>
 
 <dialog id="ac">
-  <h3 style="margin:0">アカウント</h3>
+  <div class="achd"><h3 style="margin:0">アカウント</h3><button class="acx" id="acX2" type="button" tabindex="-1" aria-label="閉じる" title="閉じる">✕</button></div>
   <div class="acme" id="acMe"></div>
   <div class="bar acbar"><button class="btn g" id="acPw" type="button">パスワード変更</button><button class="btn g" id="acOut" type="button">ログアウト</button></div>
   <section class="zs" id="acAdm" hidden>
-    <div class="zst">ユーザー管理<small>管理者だけ</small></div>
+    <div class="zst">ユーザー管理</div>
     <div id="acList"></div>
     <div class="acadd">
       <input id="acNId" inputmode="numeric" placeholder="ID" autocapitalize="off" autocomplete="off">
@@ -1548,7 +1554,7 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
     </div>
   </section>
   <section class="zs" id="acImp" hidden>
-    <div class="zst">品目の読み込み<small>Excel・管理者だけ</small></div>
+    <div class="zst">品目の読み込み</div>
     <div class="zhint" style="margin:0 0 10px;font-size:13px;color:var(--sub);line-height:1.6">Excel（.xlsx）かCSVから、品目をまとめて追加します。1行目に「品名・品番・メーカー・保管場所・在庫数」と書き、2行目から品目を入れてください（品名以外は空白でOK）。</div>
     <div class="bar" style="margin-top:0"><button class="btn" id="impGo" type="button">ファイルを選んで読み込む</button><button class="btn g" id="impTpl" type="button">ひな形（CSV）</button></div>
     <input type="file" id="impF" accept=".xlsx,.xlsm,.csv,.tsv,.txt,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
@@ -1606,7 +1612,7 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
   <div class="prow"><label>拡大・縮小</label><input type="range" id="pZoom" min="50" max="300" step="5" value="100"><button class="btn g" id="pReset" type="button">戻す</button></div>
   <div class="phint">写真をドラッグすると位置を動かせます</div>
    <button class="btn g" id="pAuto" type="button" style="width:100%;margin-top:8px">被写体の大きさを自動でそろえる</button>
-  <div class="row" style="margin-top:6px"><input type="file" id="file" accept="image/*" hidden><button class="btn g" id="pickImg" type="button">写真を選ぶ</button><button class="btn g" id="rotImg" type="button">⟳ 90°回転</button><button class="btn g" id="rmImg" type="button">写真を削除</button></div>
+  <div class="row" style="margin-top:6px"><input type="file" id="file" accept="image/*" hidden><button class="btn g" id="pickImg" type="button">写真を選ぶ</button><button class="btn g" id="rotImg" type="button">90°回転</button><button class="btn g" id="rmImg" type="button">写真を削除</button></div>
   </div>
   <div class="dr">
   <label>品名・品番（1行目が品名、Enterで改行して2行目が品番）</label><textarea id="fName" rows="2" placeholder="例）六角ボルト&#10;M812345-5412（品番）"></textarea>
@@ -1912,7 +1918,7 @@ function acDraw(){
   $('acList').innerHTML=S.accounts.map(a=>`<div class="acr" data-id="${esc(a.id)}"><div class="acn2"><b>${esc(a.name)}</b><small>${esc(a.id)}・${a.role==='admin'?'管理者':'作業者'}</small></div><button class="btn g" data-rs="1" type="button">PW再設定</button>${a.id===curAcc.id||(a.role==='admin'&&admins<2)?'':'<button class="btn g dg" data-rm="1" type="button">削除</button>'}</div>`).join('')}
 function acOpen(){acDraw();$('ac').showModal()}
 $('acBtn').onclick=$('acBtn2').onclick=acOpen;
-$('acX').onclick=()=>$('ac').close();
+$('acX').onclick=$('acX2').onclick=()=>$('ac').close();
 $('acOut').onclick=()=>{$('ac').close();setAcc(null);lgOpen()};
 let pwTarget=null;
 function pwOpen(a){if(!isAdmin()){notify('パスワードの変更は管理者だけができます');return}pwTarget=a;$('pwT').textContent=a.id===curAcc.id?'パスワード変更':a.name+'さんのパスワード再設定';$('pwA').value='';$('pwB').value='';$('pwErr').hidden=true;$('pwd').showModal();setTimeout(()=>$('pwA').focus(),50)}
