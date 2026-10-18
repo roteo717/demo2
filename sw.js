@@ -8,8 +8,8 @@
 const CACHE_VERSION = 'inventory-pwa-v1';
 const STATIC_ASSETS = [
   'manifest.json',
-  'icons/inventory-icon-192.png',
-  'icons/inventory-icon-512.png'
+  'inventory-icon-192.png',
+  'inventory-icon-512.png'
 ];
 
 self.addEventListener('install', (event) => {
