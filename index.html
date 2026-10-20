@@ -1634,8 +1634,9 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
 #zmap .zc .zcn{position:absolute;right:3px;bottom:2px;z-index:1;font-style:normal;font-size:9px;font-weight:800;line-height:1;color:#fff;max-width:calc(100% - 4px);overflow:hidden;white-space:nowrap;text-shadow:0 0 2px #000}
 #zmap .zc .zmn{font-size:min(12px,22cqw)} /* 列が増えて区画が細くなっても、補足（メーカー名など）が横4文字で収まるよう文字を縮める */
 #zmap .zc.hc{padding-bottom:12px}
-/* 十字の通路の四隅：線の角を丸くつなぐ（半径6px・線の太さ1.5px） */
-#zmap .zaisle.zrc::after{content:"";position:absolute;inset:0;pointer-events:none;background-repeat:no-repeat;background-size:8px 8px;background-position:0 0,100% 0,0 100%,100% 100%;background-image:radial-gradient(circle at .75px .75px,transparent 5.25px,#cfd4da 5.25px 6.75px,transparent 6.75px),radial-gradient(circle at 7.25px .75px,transparent 5.25px,#cfd4da 5.25px 6.75px,transparent 6.75px),radial-gradient(circle at .75px 7.25px,transparent 5.25px,#cfd4da 5.25px 6.75px,transparent 6.75px),radial-gradient(circle at 7.25px 7.25px,transparent 5.25px,#cfd4da 5.25px 6.75px,transparent 6.75px)}
+/* L字・T字・十字の通路：内側の角を丸くつなぎ、Lの外側の角も丸める（半径6px・線の太さ1.5px） */
+#zmap .zaisle.zrc::after{content:"";position:absolute;inset:0;pointer-events:none;background-repeat:no-repeat;background-size:8px 8px;background-position:var(--qp,0 0);background-image:var(--qb,none)}
+#zmap .zaisle.n.zw::before{border-radius:var(--rd,0)}
 /* 置き場マップの見出し（マップ切り替え） */
 .zsw{display:inline-flex;align-items:center;gap:6px;max-width:100%;background:transparent;border:1px solid rgba(255,255,255,.4);color:#fff;font:inherit;font-size:16px;font-weight:700;letter-spacing:.04em;padding:4px 10px;border-radius:8px;cursor:pointer}
 .zsw span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.zsw i{font-style:normal;font-size:11px;opacity:.8}
@@ -1644,6 +1645,26 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
 .zsc.on{background:#2f7fe8;border-color:#2f7fe8;color:#fff}.zsc.zadd{border-style:dashed;background:transparent;color:#cfd4da}
 #zNm{width:100%;box-sizing:border-box;font-size:16px;padding:8px 10px;margin-top:6px}
 #zDelMap[hidden]{display:none}
+/* マップの切り替え：メーカー選択と同じプルダウン式（白い入力欄＋下に開く一覧） */
+.zmap{position:relative}
+.zsw{flex:1 1 auto;min-width:0;max-width:240px;justify-content:flex-start;box-sizing:border-box;height:40px;padding:0 34px 0 12px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 12px center;border:1.5px solid #b8c0cc;border-radius:8px;color:#1b2330;font-size:15px;font-weight:600;letter-spacing:0;text-align:left}
+.zsw i{display:none}
+.zsw[aria-expanded="true"]{border-color:#1f6fc5}
+.zsw.nosw{background-image:none;padding-right:12px;cursor:default}
+#zSwM{position:absolute;z-index:6;left:0;top:0;display:block;margin:0;max-height:180px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:#fff;border:1.5px solid #b8c0cc;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+#zSwM[hidden]{display:none}
+.zso{display:flex;align-items:center;width:100%;box-sizing:border-box;height:44px;padding:0 12px;margin:0;border:0;border-bottom:1px solid #eef0f3;border-radius:0;background:#fff;color:#1b2330;font:inherit;font-size:15px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.zso:last-child{border-bottom:none}
+.zso.on{background:#e8f1fb}
+.zso.zadd{color:#1f6fc5;font-weight:700}
+.zso.zmax{color:#8a93a0;font-size:13px;cursor:default}
+/* 区画をタップしたときの選択肢：小さな1行にして、出たり消えたりしてもマップの大きさ・位置が変わらないよう、場所を常に確保する */
+#zPick{display:flex;flex-wrap:nowrap;align-items:center;gap:6px;box-sizing:border-box;height:34px;margin-top:6px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+#zPick::-webkit-scrollbar{display:none}
+#zPick[hidden]{display:flex;visibility:hidden}
+#zPick .zpl{flex:0 0 auto;font-size:11px;font-weight:700;white-space:nowrap}
+#zPick button{flex:0 0 auto;min-height:28px;padding:2px 10px;font-size:12px;white-space:nowrap}
+.zso:active{background:#dbe8f7}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1933,6 +1954,12 @@ const zn=s=>String(s||'').normalize('NFKC').trim().toUpperCase();
 let scExact='';/* QR読み取り直後は、品名が完全に一致する品目だけを出す */
 const kq=s=>kn(s).replace(/\s+/g,'');
 const kn=s=>String(s||'').normalize('NFKC').toLowerCase().replace(/[\u30a1-\u30f6]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60));
+/* 置き場所のタブを選んだとき、今のマップにその場所がなければ、その場所がのっている別のマップへ自動で切り替える（マップを手で切り替えたときは、そのまま） */
+let zAutoLoc='';
+function zAutoSel(){if(!curLoc||curLoc==='未設定'||!Array.isArray(S.zmaps))return;
+  const has=i=>{const m=S.zmaps[i],keep=zi;if(!m||!m.labels)return false;zi=i;try{return !!zcell(curLoc,m.labels.slice(0,m.c*m.r))}finally{zi=keep}};
+  if(has(zi))return;const j=S.zmaps.findIndex((_,i)=>has(i));
+  if(j>=0){zi=j;try{localStorage.setItem('zmapIdx',String(zi))}catch(e){}}}
 function zcell(loc,labels){const n=zn(loc),sbs=(zm().subs)||[];let b=null,bl=0;labels.forEach((L,i)=>{/* 区画名・「／」で分けた各部分・補足の各部分（例：パナ／リン）のどれかで、置き場所の先頭と合えば紐づく（長く合うほうを優先） */const ps=[zn(L),...String(L).split(/[\/／]/).map(zn),...String(sbs[i]||'').split(/[\/／]/).map(zn)];for(const l of ps){if(l&&n.startsWith(l)&&l.length>bl){b=L;bl=l.length}}});return b}
 function zhtml(m,o){o=o||{};const n=m.c*m.r,ed=!!o.edit,W=m.c*2+1,H=m.r*2+1,
   /* 通路は「区画の一辺」ごとに持つ。格子の座標(x,y)：両方が奇数＝区画、x偶数・y奇数＝縦の辺、x奇数・y偶数＝横の辺、両方偶数＝角（つなぎ目）。
@@ -1943,6 +1970,7 @@ function zhtml(m,o){o=o||{};const n=m.c*m.r,ed=!!o.edit,W=m.c*2+1,H=m.r*2+1,
   br=(x,y)=>x%2===0&&y%2===1?(ca(x-1,y)&&ca(x+1,y)):(x%2===1&&y%2===0?(ca(x,y-1)&&ca(x,y+1)):false), /* 通路の区画どうしの間（自動でつながる） */
   oa=(x,y)=>ca(x,y)&&[[1,1],[1,-1],[-1,1],[-1,-1]].some(q=>ca(x+2*q[0],y)&&ca(x,y+2*q[1])&&ca(x+2*q[0],y+2*q[1])), /* 2×2以上に広がった通路（広場）の区画：中に線を引かない */
   sg=(x,y)=>on(x,y)||br(x,y),cr=(x,y)=>x>0&&y>0&&x<W-1&&y<H-1&&[[0,-1],[0,1],[-1,0],[1,0]].every(q=>on(x+q[0],y+q[1])&&!br(x+q[0],y+q[1])), /* 十字に交わる場所：四隅の線を丸くつなぐ */
+  jn=(x,y)=>x>0&&y>0&&x<W-1&&y<H-1&&((on(x,y-1)&&!br(x,y-1))||(on(x,y+1)&&!br(x,y+1)))&&((on(x-1,y)&&!br(x-1,y))||(on(x+1,y)&&!br(x+1,y))), /* L字・T字・十字に交わる場所：内側の角の線を丸くつなぐ */
   cols=[],rows=[],wx=[],wy=[];
   for(let x=0;x<W;x++){if(x%2){cols.push('minmax(0,1fr)');continue}
     let w=false;for(let i=0;i<m.r;i++)if(sg(x,2*i+1)){w=true;break}
@@ -1970,21 +1998,30 @@ function zhtml(m,o){o=o||{};const n=m.c*m.r,ed=!!o.edit,W=m.c*2+1,H=m.r*2+1,
     else if(((x+y)&1)===1){const v=x%2===0;
       if(br(x,y)){const a=v?[x-1,y]:[x,y-1],b=v?[x+1,y]:[x,y+1];ai+=`<i class="zaisle ${v?'h':'v'}" style="grid-column:${x+1};grid-row:${y+1}${oa(a[0],a[1])&&oa(b[0],b[1])?';background-image:none':''}"></i>`;continue}
       if(!ed&&!on(x,y))continue;
-      const E=(cx,cy)=>(v?(cy<=0||cy>=H-1):(cx<=0||cx>=W-1))?10:(!ed&&cr(cx,cy))?.75:((v?(sg(cx-1,cy)||sg(cx+1,cy)):(sg(cx,cy-1)||sg(cx,cy+1)))?6:3),
+      const E=(cx,cy)=>(v?(cy<=0||cy>=H-1):(cx<=0||cx>=W-1))?10:(!ed&&jn(cx,cy))?.75:((v?(sg(cx-1,cy)||sg(cx+1,cy)):(sg(cx,cy-1)||sg(cx,cy+1)))?6:3),
         e1=v?E(x,y-1):E(x-1,y),e2=v?E(x,y+1):E(x+1,y);
       ai+=`<i class="zaisle ${v?'v':'h'}${on(x,y)?'':' off'}" style="grid-column:${x+1};grid-row:${y+1};--e1:${e1}px;--e2:${e2}px"${ed?` data-ak="${x},${y}" role="button" aria-label="通路"`:''}></i>`}
     else { /* 角：まわりの通路がつながっている向きに合わせて、まっすぐ・曲がり角・T字・十字に描く */
       const d={u:on(x,y-1)&&!br(x,y-1),d:on(x,y+1)&&!br(x,y+1),l:on(x-1,y)&&!br(x-1,y),r:on(x+1,y)&&!br(x+1,y)},ks=Object.keys(d).filter(k=>d[k]),nb=[br(x,y-1),br(x,y+1),br(x-1,y),br(x+1,y)].filter(Boolean).length;
       if(!ks.length&&nb<2)continue;
       let rad='';if(ks.length===2&&d.u!==d.d&&d.l!==d.r){const ou=!d.u,ol=!d.l;rad=`border-radius:${ou&&ol?'8px 0 0 0':ou?'0 8px 0 0':ol?'0 0 0 8px':'0 0 8px 0'};`}
-      ai+=`<i class="zaisle n${ed?'':' zw'}${!ed&&cr(x,y)?' zrc':''}" style="grid-column:${x+1};grid-row:${y+1};${bg(ks)}${rad}${ed?'':(()=>{const o={u:d.u||y===0,d:d.d||y===H-1,l:d.l||x===0,r:d.r||x===W-1};return `--in:${o.u?0:6}px ${o.r?0:6}px ${o.d?0:6}px ${o.l?0:6}px;--bw:${o.u?0:1.5}px ${o.r?0:1.5}px ${o.d?0:1.5}px ${o.l?0:1.5}px`})()}"></i>`}}
+      ai+=`<i class="zaisle n${ed?'':' zw'}${!ed&&jn(x,y)?' zrc':''}" style="grid-column:${x+1};grid-row:${y+1};${bg(ks)}${rad}${ed?'':(()=>{const o={u:d.u||y===0,d:d.d||y===H-1,l:d.l||x===0,r:d.r||x===W-1};const q=[[d.u&&d.l,.75,.75,'0 0'],[d.u&&d.r,7.25,.75,'100% 0'],[d.d&&d.l,.75,7.25,'0 100%'],[d.d&&d.r,7.25,7.25,'100% 100%']].filter(a=>a[0]),
+          qb=q.map(a=>`radial-gradient(circle at ${a[1]}px ${a[2]}px,transparent 5.25px,#cfd4da 5.25px 6.75px,transparent 6.75px)`).join(','),
+          rd=(ks.length===2&&d.u!==d.d&&d.l!==d.r)?((!d.u&&!d.l)?'6px 0 0 0':!d.u?'0 6px 0 0':!d.l?'0 0 0 6px':'0 0 6px 0'):'0';
+        return `--in:${o.u?0:6}px ${o.r?0:6}px ${o.d?0:6}px ${o.l?0:6}px;--bw:${o.u?0:1.5}px ${o.r?0:1.5}px ${o.d?0:1.5}px ${o.l?0:1.5}px;--rd:${rd};--qb:${qb||'none'};--qp:${q.map(a=>a[3]).join(',')||'0 0'}`})()}"></i>`}}
   let al='',vm=-1;if(!ed){
     for(let x=2;x<W-1;x+=2){let k=0,a=99,z=0;for(let i=0;i<m.r;i++)if(sg(x,2*i+1)){k++;a=Math.min(a,2*i+1);z=Math.max(z,2*i+1)}if(k>=Math.min(2,m.r)&&k>0){vm=Math.max(vm,x);al+=`<i class="zal v" style="grid-column:${x+1};grid-row:${a+1}/${z+2}"><s>↑</s><u>通路</u><s>↓</s></i>`}}
     for(let y=2;y<H-1;y+=2){let k=0,a=99,z=0;for(let i=0;i<m.c;i++)if(2*i+1>vm&&sg(2*i+1,y)){k++;a=Math.min(a,2*i+1);z=Math.max(z,2*i+1)}if(k>=Math.min(2,m.c)&&k>0)al+=`<i class="zal h" style="grid-row:${y+1};grid-column:${a+1}/${z+2}"><s>←</s><u>通路</u><s>→</s></i>`}}
   return `<div class="zframe" style="grid-template-columns:${cols.join(' ')};grid-template-rows:${rows.join(' ')};gap:0">${cells}${ai}${al}${m.doors.map((d,i)=>`<i class="zdoor ${d.s}${d.k==='door'?' gp':''}${zAn(d,W,H)?' ax':''}${d.o&&d.k!=='door'?' out':''}${o.dsel===i?' dsel':''}" style="${zAn(d,W,H)?((d.s==='t'||d.s==='b')?`grid-column:${d.an+1}/${d.an+2};`:`grid-row:${d.an+1}/${d.an+2};`):''}--o:${d.of||0}px;--p:${typeof d.q==='number'?d.q:[17,50,83][d.p]}%"${o.edit?` data-dk="${i}" role="button" aria-label="目印 ${esc(d.t)}"`:` title="${esc(d.t)}"`}>${d.k==='door'?'':esc(d.t)}</i>`).join('')}</div>`}
 
 const zAn=(d,W,H)=>d.an!=null&&d.an>=0&&d.an<((d.s==='t'||d.s==='b')?W:H);
-function updZ(){const m=zm(),ls=m.labels.slice(0,m.c*m.r);zSwRender();$('zmap').innerHTML=zhtml(m,{on:zcell(curLoc,ls)})/* 品目数（「3品」など）は表示しない */}
+/* マップを切り替えても枠の高さが変わらないよう、いちばん高いマップに合わせる（区画が縦に広がる。枠の幅は今までどおり） */
+function zEq(){const el=$('zmap'),f0=el.querySelector('.zframe');if(!f0||!f0.offsetHeight||!Array.isArray(S.zmaps)||S.zmaps.length<2)return;
+  const tot=f=>{const c=getComputedStyle(f);return f.offsetHeight+(parseFloat(c.marginTop)||0)+(parseFloat(c.marginBottom)||0)}; /* 枠＋外の目印の余白をあわせた高さ */
+  const keep=el.innerHTML,cur=zm();let hmax=0;
+  S.zmaps.forEach(mm=>{if(mm===cur||!mm.labels)return;el.innerHTML=zhtml(mm,{});const f=el.querySelector('.zframe');if(f)hmax=Math.max(hmax,tot(f))});
+  el.innerHTML=keep;const f=el.querySelector('.zframe');if(f&&hmax>tot(f)){const c=getComputedStyle(f);f.style.minHeight=(hmax-(parseFloat(c.marginTop)||0)-(parseFloat(c.marginBottom)||0))+'px'}}
+function updZ(){if(curLoc!==zAutoLoc){zAutoLoc=curLoc;zAutoSel()}const m=zm(),ls=m.labels.slice(0,m.c*m.r);zSwRender();$('zmap').innerHTML=zhtml(m,{on:zcell(curLoc,ls)});zEq()/* 品目数（「3品」など）は表示しない */}
 let zt=null;
 function zFit(){const n=zt.c*zt.r,u=new Set(zt.labels);let c=65;while(zt.labels.length<n){while(u.has(String.fromCharCode(c)))c++;const L=String.fromCharCode(c);zt.labels.push(L);u.add(L)}}
 const ZT=['入口','出口','出入口','非常口'],ZS=[['t','上'],['b','下'],['l','左'],['r','右']];
@@ -2429,13 +2466,13 @@ $('zFab').onclick=()=>zSheet(true);
 $('zBack').onclick=$('zX').onclick=()=>zSheet(false);
 addEventListener('keydown',e=>{if(e.key==='Escape'&&document.body.classList.contains('zsheet')&&!document.querySelector('dialog[open]'))zSheet(false)});
 addEventListener('resize',()=>{if(!mob())zSheet(false)});
-$('zmap').onclick=e=>{if(!mob())return;const c=e.target.closest('[data-z]');if(!c||c.classList.contains('emp'))return;
-  const m=zm(),ls=m.labels.slice(0,m.c*m.r),L=ls[+c.dataset.z],pick=$('zPick');
+$('zmap').onclick=e=>{const c=e.target.closest('[data-z]');if(!c||c.classList.contains('emp'))return;
+  const m=zm(),ls=m.labels.slice(0,m.c*m.r),L=ls[+c.dataset.z],sb=String((m.subs&&m.subs[+c.dataset.z])||'').trim(),nm=sb?sb+'（'+L+'）':L,pick=$('zPick');
   const cand=[...new Set(S.items.map(i=>i.loc||'未設定'))].filter(s=>s!=='未設定'&&zcell(s,ls)===L).sort((a,b)=>a.localeCompare(b,'ja',{numeric:true}));
-  if(!cand.length){pick.hidden=false;pick.innerHTML='<span class="zpl">「'+esc(L)+'」に置いている品目はありません</span>';return}
-  if(cand.length===1){curLoc=curLoc===cand[0]?'':cand[0];render();zSheet(false);if(!document.body.classList.contains('hist'))topScroll();return}
-  pick.hidden=false;pick.innerHTML='<span class="zpl">「'+esc(L)+'」の置き場所を選んでください</span>'+cand.map(s=>`<button type="button" data-sh="${esc(s)}">${esc(s)}</button>`).join('')};
-$('zPick').onclick=e=>{const b=e.target.closest('button[data-sh]');if(!b)return;curLoc=b.dataset.sh;render();zSheet(false);if(!document.body.classList.contains('hist'))topScroll()};
+  if(!cand.length){pick.hidden=false;pick.innerHTML='<span class="zpl">「'+esc(nm)+'」に置いている品目はありません</span>';return}
+  if(cand.length===1){curLoc=curLoc===cand[0]?'':cand[0];pick.hidden=true;render();if(mob()){zSheet(false);if(!document.body.classList.contains('hist'))topScroll()}return}
+  pick.hidden=false;pick.innerHTML='<span class="zpl">'+esc(nm)+'の置き場所：</span>'+cand.map(s=>`<button type="button" data-sh="${esc(s)}">${esc(s)}</button>`).join('')};
+$('zPick').onclick=e=>{const b=e.target.closest('button[data-sh]');if(!b)return;curLoc=b.dataset.sh;$('zPick').hidden=true;render();if(mob()){zSheet(false);if(!document.body.classList.contains('hist'))topScroll()}};
 {const z=document.querySelector('.zmap');let y0=null;
   z.addEventListener('touchstart',e=>{y0=(e.target.closest('.zgrab,.zh')&&!e.target.closest('button'))?e.touches[0].clientY:null},{passive:true});
   z.addEventListener('touchmove',e=>{if(y0===null)return;const dy=e.touches[0].clientY-y0;z.style.transition='none';if(dy>0)z.style.transform='translateY('+dy+'px)'},{passive:true});
@@ -2444,10 +2481,13 @@ $('zPick').onclick=e=>{const b=e.target.closest('button[data-sh]');if(!b)return;
 
 /* ===== 置き場マップの切り替え（最大5個）：見出しをタップして選ぶ。どれを表示しているかは端末ごとに覚える ===== */
 function zSwRender(){const m=zm(),n=S.zmaps.length;$('zSwT').textContent=m.name;
-  const box=$('zSwM');box.innerHTML=S.zmaps.map((x,i)=>`<button type="button" class="zsc${i===zi?' on':''}" data-zi="${i}">${esc(x.name||('マップ'+(i+1)))}</button>`).join('')+(isAdmin()&&n<ZMAX?'<button type="button" class="zsc zadd" data-zadd="1">＋ 追加</button>':'')}
-function zSwOpen(on){const b=$('zSwM');b.hidden=!on;$('zSw').setAttribute('aria-expanded',String(on))}
-function zGo(i){zi=i;try{localStorage.setItem('zmapIdx',String(zi))}catch(e){}curLoc=curLoc;$('zPick').hidden=true;zSwOpen(false);render()}
-$('zSw').onclick=()=>{if(S.zmaps.length<2&&!(isAdmin()&&S.zmaps.length<ZMAX))return;zSwOpen($('zSwM').hidden)};
+  $('zSw').classList.toggle('nosw',n<2&&!(isAdmin()&&n<ZMAX));
+  const box=$('zSwM');box.innerHTML=S.zmaps.map((x,i)=>`<button type="button" class="zso${i===zi?' on':''}" data-zi="${i}">${esc(x.name||('マップ'+(i+1)))}</button>`).join('')+(isAdmin()?(n<ZMAX?'<button type="button" class="zso zadd" data-zadd="1">＋ マップを追加…</button>':`<div class="zso zmax">マップは${ZMAX}つまで作成できます</div>`):'')}
+function zSwOpen(on){const b=$('zSwM'),t=$('zSw');b.hidden=!on;t.setAttribute('aria-expanded',String(on));if(on){b.style.left=t.offsetLeft+'px';b.style.top=(t.offsetTop+t.offsetHeight+4)+'px';b.style.width=t.offsetWidth+'px';const c=b.querySelector('.on');if(c)b.scrollTop=Math.max(0,c.offsetTop-b.clientHeight/2+c.offsetHeight/2)}}
+function zGo(i){zi=i;zAutoLoc=curLoc;try{localStorage.setItem('zmapIdx',String(zi))}catch(e){}curLoc=curLoc;$('zPick').hidden=true;zSwOpen(false);render()}
+$('zSw').onclick=()=>{zSwRender(); /* 開くたびに一覧を作り直す（ログイン状態・マップ数を最新にする） */
+  if(S.zmaps.length<2&&!(isAdmin()&&S.zmaps.length<ZMAX))return;zSwOpen($('zSwM').hidden)};
+document.addEventListener('pointerdown',e=>{if(!$('zSwM').hidden&&!$('zSwM').contains(e.target)&&!$('zSw').contains(e.target))zSwOpen(false)},true);
 $('zSwM').onclick=e=>{const b=e.target.closest('button');if(!b)return;
   if(b.dataset.zadd){if(!isAdmin()||S.zmaps.length>=ZMAX)return;const m=ZDEF();m.name='マップ'+(S.zmaps.length+1);S.zmaps.push(m);save();zGo(S.zmaps.length-1);$('zEdit').click();return}
   if(b.dataset.zi!==undefined)zGo(+b.dataset.zi)};
