@@ -18,7 +18,7 @@ box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:en
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
 body{margin:0;background:#eef1f5;color:var(--ink);font-family:"Hiragino Kaku Gothic ProN","Noto Sans JP",Meiryo,sans-serif}
-.app{display:grid;grid-template-columns:minmax(0,1fr) clamp(230px,22vw,290px);gap:12px;padding:10px max(10px,env(safe-area-inset-right)) 10px max(10px,env(safe-area-inset-left));max-width:none;margin:0}
+.app{display:grid;grid-template-columns:minmax(0,1fr) clamp(300px,32vw,480px);gap:12px;padding:10px max(10px,env(safe-area-inset-right)) 10px max(10px,env(safe-area-inset-left));max-width:none;margin:0}
 @media(max-width:820px){.app{grid-template-columns:1fr}}
 .tabs{display:flex;align-items:flex-end;gap:6px;overflow-x:auto;padding-bottom:0}
 .tab{flex:none;padding:10px 18px;border:1px solid var(--line);border-bottom:none;border-radius:10px 10px 0 0;background:var(--tab);color:var(--ink);font-size:16px;font-weight:700;cursor:pointer}
@@ -168,7 +168,7 @@ dialog{max-height:90vh;max-height:90dvh;overflow:auto}
 /* ===== PC・タブレット：スクロールなしで1画面に収める ===== */
 @media(min-width:601px) and (min-height:520px){
   html,body{height:100%;overflow:hidden}
-  .app{height:calc(100vh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));grid-template-columns:minmax(0,1fr) clamp(210px,20vw,290px);grid-template-rows:auto minmax(0,1fr);padding-top:10px;padding-bottom:10px}
+  .app{height:calc(100vh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));grid-template-columns:minmax(0,1fr) clamp(300px,32vw,480px);grid-template-rows:auto minmax(0,1fr);padding-top:10px;padding-bottom:10px}
   .tabs{grid-column:1;grid-row:1}
   .main{grid-column:1;grid-row:2;display:flex;flex-direction:column;min-height:0}
   .side{grid-column:2;grid-row:2;display:flex;flex-direction:column;position:static;height:100%;max-height:none;min-height:0;margin-top:0}
@@ -1244,12 +1244,15 @@ html:has(body.dton),body.dton{overflow:hidden!important}
 .mb.acb .acn{max-width:5em;overflow:hidden;text-overflow:ellipsis}
 @media(min-width:601px){.mhead .acb{display:none}}
 @media(max-width:600px){#acBtn{display:none}}
+#acBtn:focus,#acBtn:focus-visible,#acBtn2:focus,#acBtn2:focus-visible{outline:none;box-shadow:none;-webkit-tap-highlight-color:transparent} /* ログイン後にアカウントのアイコンへ黒い枠が出ないようにする */
 /* 管理者だけ：パスワード・履歴クリア・削除・マップ配置の編集 */
 body:not(.adm) #acPw,body:not(.adm) #clrLog,body:not(.adm) #rDel,body:not(.adm) #delBar,body:not(.adm) #delMaker,body:not(.adm) #dlMk,body:not(.adm) #mDelMk,body:not(.adm) #mkDel,body:not(.adm) #zDdel,body:not(.adm) #zEdit{display:none!important}
 /* 管理者・作業者の両方：品目・メーカーの追加と編集（ログイン中なら使える） */
 body:not(.edt) #edMode,body:not(.edt) #hEdit,body:not(.edt) #mEdit,body:not(.edt) #edFab,body:not(.edt) #edBar,body:not(.edt) #rAdd,body:not(.edt) #addItem,body:not(.edt) #hAdd,body:not(.edt) #hAdd2,body:not(.edt) #nMaker,body:not(.edt) #barMaker,body:not(.edt) #addPop,body:not(.edt) #addMaker{display:none!important}
 /* スマホ：編集は「カードの長押し」で行うので、編集ボタン（ヘッダー・メニュー・右下・編集モード帯）は管理者にも出さない */
 @media(max-width:600px){#hEdit,#mEdit,#edFab,#edBar{display:none!important}}
+/* 作業者は品目を追加できない（管理者だけ）：追加ボタンを出さない */
+body:not(.adm) #rAdd,body:not(.adm) #addItem,body:not(.adm) #hAdd,body:not(.adm) #hAdd2,body:not(.adm) #apItem{display:none!important}
 /* メーカー選択欄：「＋ 新しいメーカーを追加…」が2段にならないよう、文字を少し小さくして折り返さない */
 #fMaker,#fLoc{font-size:15px;white-space:nowrap;text-overflow:ellipsis}
 #fMaker option,#fLoc option{font-size:15px;white-space:nowrap}
@@ -1476,13 +1479,13 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
 @media(min-width:601px){
   .app{padding-left:max(10px,env(safe-area-inset-left,0px))}
   /* 履歴カードと同じ幅（右の列と同じ clamp）・同じ右端にして、ボタンを均等に並べる */
-  .lrow .ibs{left:auto;right:max(10px,env(safe-area-inset-right,0px));top:0;bottom:auto;width:clamp(210px,20vw,290px);height:auto;margin:0;flex-direction:row;align-items:center;justify-content:space-between;gap:2px;
+  .lrow .ibs{left:auto;right:max(10px,env(safe-area-inset-right,0px));top:0;bottom:auto;width:clamp(300px,32vw,480px);height:auto;margin:0;flex-direction:row;align-items:center;justify-content:space-between;gap:8px;
     padding:calc(4px + env(safe-area-inset-top,0px)) 0 4px;
     background:transparent;border:none;overflow:visible}
-  .lrow .ibs .ib,.lrow .ibs #lvOpen.ib{flex:1 1 0;width:auto;min-width:0;height:46px;gap:2px;border-radius:10px;padding:0}
-  .lrow .ibs .ib svg{width:20px;height:20px}
+  .lrow .ibs .ib,.lrow .ibs #lvOpen.ib{flex:1 1 0;width:auto;min-width:0;height:42px;gap:2px;border-radius:10px;padding:0}
+  .lrow .ibs .ib svg{width:18px;height:18px}
   .lrow .ibs .il{font-size:10px}
-  .lrow .ibs .rsep{flex:none;width:1px;height:30px;margin:0 2px}
+  .lrow .ibs .rsep{flex:none;width:1px;height:28px;margin:0 4px}
 }
 @media(min-width:601px) and (max-width:820px){
   .app{padding-top:calc(60px + env(safe-area-inset-top,0px))} /* 1列表示の幅では、右上のボタンとタブが重ならないよう上に余白をとる */
@@ -1556,6 +1559,91 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
 #zmap{--zd:#fff}
 /* 通路の点線の後ろの暗い帯はなくす（点線だけを残す） */
 .zaisle,.zaisle.n,.zaisle.h,.zaisle.v{background-color:transparent}
+/* ===== 置き場マップ：間取り図（非常口案内図）風 ===== */
+.zframe{background:#2a2d31;border:3px solid #e8ebef;border-radius:2px;padding:9px}
+#zmap .zc{align-items:flex-start;justify-content:center;text-align:left;padding:8px 8px 8px 9px;min-height:58px;border:1.5px solid #aeb5bd;border-radius:3px;overflow:hidden;gap:2px;--zk:#aeb5bd;--zm:#2a2d31}
+#zmap .zc{position:relative;padding:6px 4px 6px 6px;min-height:64px}
+#zmap .zc b{text-align:left;padding:0;font-size:12px;letter-spacing:0;word-break:break-all;overflow-wrap:anywhere;white-space:normal;line-height:1.2;max-width:100%}
+#zmap .zc .zsub{display:block;font-style:normal;font-size:min(9px,19cqw);word-break:normal;font-weight:500;line-height:1.3;color:#b9c0c8;letter-spacing:.04em}
+#zmap .zc small{font-size:10px;margin-top:2px;color:#8f98a3}
+/* マップ：横に4文字まで入る幅に自動調整（最大13px）。5文字以上は折り返す */
+#zmap .zc{container-type:inline-size;padding:6px 3px;align-items:center;text-align:center}
+#zmap .zc b{font-size:min(13px,24cqw);text-align:center}
+#zmap .zc .zsub,#zmap .zc small{text-align:center}
+/* 作業者の編集画面：変更できない項目はグレー表示 */
+#dlg.lim .pv{pointer-events:none;opacity:.75}
+#dlg.lim #fName,#dlg.lim #fMaker,#dlg.lim .cdd:disabled{background:#e9edf1;color:#7a8591;cursor:default}
+#dlg.lim .prow,#dlg.lim #pAuto,#dlg.lim #pickImg,#dlg.lim #rotImg,#dlg.lim #rmImg{opacity:.45}
+#zmap .zc.on{--zk:#ff453a;--zm:#553233;border-color:#ff453a;background:rgba(255,69,58,.2)}
+#zmap .zc.on .zsub{color:#ffd0cc}
+#zmap .zc:not(.emp)::after{content:"";position:absolute;right:-1px;bottom:-1px;width:12px;height:12px;pointer-events:none;background:linear-gradient(135deg,transparent calc(50% - 1px),var(--zk) calc(50% - 1px) 50%,var(--zm) 50%)}
+.zal{display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:2;font-style:normal;color:#cfd4da;font-size:11px;line-height:1}
+.zal s,.zal u{text-decoration:none;background:#2a2d31;padding:3px 0}
+.zal.v{flex-direction:column;gap:2px}
+.zal.v{gap:6px;font-size:10px}
+.zal.v u{letter-spacing:0;padding:4px 0;white-space:nowrap}
+.zal.v s{font-size:12px}
+.zal.h{flex-direction:row;gap:6px}
+.zal.h s,.zal.h u{padding:0 4px}
+#zmap{--zd:transparent}
+/* 通路：点線をやめて、両側に細い壁の線を引き、中は空けておく */
+#zmap .zaisle.h,#zmap .zaisle.v{position:relative}
+#zmap .zaisle.h::before,#zmap .zaisle.v::before{content:"";position:absolute;pointer-events:none}
+#zmap .zaisle.h::before{left:calc(var(--e1,3px)*-1);right:calc(var(--e2,3px)*-1);top:6px;bottom:6px;border-top:1.5px solid #cfd4da;border-bottom:1.5px solid #cfd4da}
+#zmap .zaisle.v::before{top:calc(var(--e1,3px)*-1);bottom:calc(var(--e2,3px)*-1);left:6px;right:6px;border-left:1.5px solid #cfd4da;border-right:1.5px solid #cfd4da}
+#zPv .zc{flex-direction:column}
+#zPv .zc input.zsi{font-size:11px;font-weight:500;padding:3px 2px;color:#b9c3cf}
+/* 目印を外枠の外に置く */
+#zmap .zdoor.out.t{top:-28px}#zmap .zdoor.out.b{bottom:-28px}#zmap .zdoor.out.l{left:-28px}#zmap .zdoor.out.r{right:-28px}
+#zPv .zdoor.out.t{top:-36px}#zPv .zdoor.out.b{bottom:-36px}#zPv .zdoor.out.l{left:-36px}#zPv .zdoor.out.r{right:-36px}
+#zmap .zframe:has(.zdoor.t.out),#zPv .zframe:has(.zdoor.t.out){margin-top:44px}
+#zmap .zframe:has(.zdoor.b.out),#zPv .zframe:has(.zdoor.b.out){margin-bottom:44px}
+/* 左右どちらかに外の目印があるときは、左右に同じだけ余白をとって、枠を中央に置く */
+#zmap .zframe:has(.zdoor.l.out),#zmap .zframe:has(.zdoor.r.out),#zPv .zframe:has(.zdoor.l.out),#zPv .zframe:has(.zdoor.r.out){width:calc(100% - 88px);margin-left:auto;margin-right:auto}
+#zd #zDout[aria-pressed="true"]{background:#e3effb;border-color:#9cc3ec;color:var(--red);font-weight:700}
+#zd #zDout[hidden]{display:none}
+/* つなぎ目（角）にも壁の線を引いて、通路の線が途切れないようにする */
+#zmap .zaisle.n.zw{position:relative}
+#zmap .zaisle.n.zw::before{content:"";position:absolute;inset:var(--in,0);border:0 solid #cfd4da;border-width:var(--bw,0);pointer-events:none}
+/* 扉：外枠の壁の太さに合わせて、枠からはみ出さないようにする */
+#zmap .zdoor.gp.t,#zmap .zdoor.gp.b,#zPv .zdoor.gp.t,#zPv .zdoor.gp.b{height:5px;background-size:3px 100%,3px 100%,calc(100% - 6px) 100%}
+#zmap .zdoor.gp.l,#zmap .zdoor.gp.r,#zPv .zdoor.gp.l,#zPv .zdoor.gp.r{width:5px;background-size:100% 3px,100% 3px,100% calc(100% - 6px)}
+#zmap .zdoor.gp.t,#zPv .zdoor.gp.t{top:-4px}#zmap .zdoor.gp.b,#zPv .zdoor.gp.b{bottom:-4px}
+#zmap .zdoor.gp.l,#zPv .zdoor.gp.l{left:-4px}#zmap .zdoor.gp.r,#zPv .zdoor.gp.r{right:-4px}
+#zPv .zdoor.gp::before{inset:-9px}
+/* 通路の中心に合わせた目印（ずらした分は --o） */
+#zmap .zdoor.ax.t,#zmap .zdoor.ax.b,#zPv .zdoor.ax.t,#zPv .zdoor.ax.b{left:calc(50% + var(--o,0px));transform:translateX(-50%)}
+#zmap .zdoor.ax.l,#zmap .zdoor.ax.r,#zPv .zdoor.ax.l,#zPv .zdoor.ax.r{top:calc(50% + var(--o,0px));transform:translateY(-50%)}
+#zd #zDe #zDm,#zd #zDe #zDp{padding:0 12px}
+.zal.v u{display:none}
+.zal.v{gap:60px}
+/* PC：マップ編集の画面を横に広げて、区画名・補足の文字が見えるようにする */
+@media(min-width:700px){#zd{width:min(820px,92vw)}#zd #zPv{max-width:700px}#zPv .zc input.zsi{font-size:12px}}
+/* 区画名が2行になるとき、1文字だけ次の行に落ちないよう、行の長さをそろえる */
+#zmap .zc b,#zmap .zc .zsub{text-wrap:balance}
+/* PC：「目印を追加」と「扉を追加」を横に1列で並べる（スマホは縦のまま） */
+@media(min-width:700px){#zd #zAddRow{display:flex;gap:8px;margin-top:8px}#zd #zAddRow #zAddDoor,#zd #zAddRow #zAddDr{flex:1 1 0;width:auto;margin-top:0}}
+/* 区画名に「／」があるとき、上下に分けて、それぞれを小さな囲み（タグ）で見せる */
+#zmap .zc b .zpt{display:block;margin:2px auto;padding:1px 4px;border-radius:4px;background:rgba(255,255,255,.14);font-size:.92em;line-height:1.25;width:fit-content;max-width:100%}
+#zmap .zc.on b .zpt{background:rgba(255,255,255,.22)}
+#zmap .zc b .zpt{padding:1px 2px}
+#zDm,#zDp{display:none!important} /* 目印・扉の「少しずらす」矢印ボタンは出さない（移動はドラッグ） */
+#zmap .zc.hc{padding-left:2px;padding-right:2px}
+/* 補足があるとき：メーカー名などを中央に、棚の名前（区画名）を右下の三角に入れる */
+#zmap .zc.hc::after{width:24px;height:24px}
+#zmap .zc .zcn{position:absolute;right:3px;bottom:2px;z-index:1;font-style:normal;font-size:9px;font-weight:800;line-height:1;color:#fff;max-width:calc(100% - 4px);overflow:hidden;white-space:nowrap;text-shadow:0 0 2px #000}
+#zmap .zc .zmn{font-size:min(12px,22cqw)} /* 列が増えて区画が細くなっても、補足（メーカー名など）が横4文字で収まるよう文字を縮める */
+#zmap .zc.hc{padding-bottom:12px}
+/* 十字の通路の四隅：線の角を丸くつなぐ（半径6px・線の太さ1.5px） */
+#zmap .zaisle.zrc::after{content:"";position:absolute;inset:0;pointer-events:none;background-repeat:no-repeat;background-size:8px 8px;background-position:0 0,100% 0,0 100%,100% 100%;background-image:radial-gradient(circle at .75px .75px,transparent 5.25px,#cfd4da 5.25px 6.75px,transparent 6.75px),radial-gradient(circle at 7.25px .75px,transparent 5.25px,#cfd4da 5.25px 6.75px,transparent 6.75px),radial-gradient(circle at .75px 7.25px,transparent 5.25px,#cfd4da 5.25px 6.75px,transparent 6.75px),radial-gradient(circle at 7.25px 7.25px,transparent 5.25px,#cfd4da 5.25px 6.75px,transparent 6.75px)}
+/* 置き場マップの見出し（マップ切り替え） */
+.zsw{display:inline-flex;align-items:center;gap:6px;max-width:100%;background:transparent;border:1px solid rgba(255,255,255,.4);color:#fff;font:inherit;font-size:16px;font-weight:700;letter-spacing:.04em;padding:4px 10px;border-radius:8px;cursor:pointer}
+.zsw span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.zsw i{font-style:normal;font-size:11px;opacity:.8}
+#zSwM{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}#zSwM[hidden]{display:none}
+.zsc{background:#3a3e44;border:1px solid #5a6068;color:#e8ebef;font:inherit;font-size:13px;font-weight:600;padding:5px 12px;border-radius:999px;cursor:pointer}
+.zsc.on{background:#2f7fe8;border-color:#2f7fe8;color:#fff}.zsc.zadd{border-style:dashed;background:transparent;color:#cfd4da}
+#zNm{width:100%;box-sizing:border-box;font-size:16px;padding:8px 10px;margin-top:6px}
+#zDelMap[hidden]{display:none}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1618,7 +1706,7 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
     <button class="sclose" id="hClose" type="button" aria-label="閉じる" title="閉じる"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
     <div class="sh"><h3>入出庫の履歴</h3><div id="logF"></div></div>
         <div class="log" id="log"></div>
-    <div class="zmap" role="dialog" aria-label="置き場マップ"><span class="zgrab" aria-hidden="true"></span><div class="zh"><h3>置き場マップ</h3><span class="zbtns"><button class="lnk" id="zEdit" type="button" aria-label="配置を編集">編集</button><button class="lnk zx" id="zX" type="button">✕ 閉じる</button></span></div><div id="zmap"></div><div id="zPick" hidden></div></div>
+    <div class="zmap" role="dialog" aria-label="置き場マップ"><span class="zgrab" aria-hidden="true"></span><div class="zh"><button class="zsw" id="zSw" type="button" aria-haspopup="true" aria-expanded="false" aria-label="置き場マップを切り替える"><span id="zSwT">置き場マップ</span><i aria-hidden="true">▾</i></button><span class="zbtns"><button class="lnk" id="zEdit" type="button" aria-label="配置を編集">編集</button><button class="lnk zx" id="zX" type="button">✕ 閉じる</button></span></div><div id="zSwM" hidden></div><div id="zmap"></div><div id="zPick" hidden></div></div>
     <button class="btn d" id="clrLog">履歴をクリア</button>
   </aside>
 </div>
@@ -1644,6 +1732,7 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
 
 <dialog id="zd">
   <h3 style="margin:0">置き場マップを編集</h3>
+  <section class="zs"><div class="zst">マップの名前<small>上のマップ切り替えに表示されます</small></div><input id="zNm" maxlength="10" placeholder="例：1階倉庫" autocomplete="off"></section>
   <section class="zs">
     <div class="zst">区画の数<span class="zsn" id="zTot"></span></div>
     <div class="zrow zsz"><label>列</label><select id="zC"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select><span class="zxm">×</span><label>行</label><select id="zR"><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
@@ -1653,12 +1742,14 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
     <div id="zPv"></div>
     <div class="zhint"><b>通路</b>：区画のふちの点線をタップで追加　／　もう一度タップで削除。区画を<b>ダブルタップ</b>すると、その区画ごと通路にできます（通路にした区画も、もう一度ダブルタップで名前つきの区画に戻ります）。となり合う通路は自動でつながります（曲がり角・T字・十字も）</div>
     <div class="zhint"><b>目印</b>：ドラッグで移動　／　タップで名前変更・削除</div>
-    <div id="zDe" hidden><input id="zDn" maxlength="12" placeholder="目印の名前（例：入口・事務所）" autocomplete="off"><button class="btn g" id="zDdel" type="button">削除</button><button class="btn" id="zDok" type="button">完了</button></div>
+    <div id="zDe" hidden><input id="zDn" maxlength="12" placeholder="目印の名前（例：入口・事務所）" autocomplete="off"><button class="btn g" id="zDa" type="button">通路の中心へ</button><button class="btn g" id="zDm" type="button" aria-label="少しずらす（左・上）">←</button><button class="btn g" id="zDp" type="button" aria-label="少しずらす（右・下）">→</button><button class="btn g" id="zDout" type="button" aria-pressed="false">枠の外へ</button><button class="btn g" id="zDdel" type="button">削除</button><button class="btn" id="zDok" type="button">完了</button></div>
+    <div id="zAddRow">
     <button class="btn g" id="zAddDoor" type="button">＋ 目印を追加</button>
     <button class="btn g" id="zAddDr" type="button">＋ 扉を追加（外枠の切れ目）</button>
+    </div>
   </section>
   <div class="bar" style="justify-content:space-between">
-    <button class="btn g" id="zRs" type="button">初期に戻す</button>
+    <span style="display:flex;gap:8px"><button class="btn g" id="zRs" type="button">初期に戻す</button><button class="btn g dg" id="zDelMap" type="button">このマップを削除</button></span>
     <span style="display:flex;gap:8px"><button class="btn g" id="zCn" type="button">キャンセル</button><button class="btn" id="zOk" type="button">保存</button></span>
   </div>
 </dialog>
@@ -1762,6 +1853,7 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
   <div class="row" style="margin-top:6px"><input type="file" id="file" accept="image/*" hidden><button class="btn g" id="pickImg" type="button">写真を選ぶ</button><button class="btn g" id="rotImg" type="button">90°回転</button><button class="btn g" id="rmImg" type="button">写真を削除</button></div>
   </div>
   <div class="dr">
+  <div class="phint" id="edHint" hidden style="margin:0 0 6px;font-weight:700">作業者は「在庫数」と「置き場所」だけ変更できます</div>
   <label>品名・品番（1行目が品名、Enterで改行して2行目が品番）</label><textarea id="fName" rows="2" placeholder="例）六角ボルト&#10;M812345-5412（品番）"></textarea>
   <label>メーカー</label><select id="fMaker"></select><input id="fMakerNew" placeholder="新しいメーカー名　例：D電機" maxlength="40" hidden style="margin-top:6px">
   <label>在庫数（個）</label><input id="fStock" type="number" inputmode="numeric" min="0">
@@ -1833,13 +1925,15 @@ async function srvReload(msg){
   render();if(msg)notify('他の人が先に更新していたため、最新の内容に更新しました。もう一度操作してください。')}
 async function srvPoll(){try{if(srvBusy||document.hidden||document.querySelector('dialog[open]'))return;const r=await fetch('api/version?'+Date.now(),{cache:'no-store'});const j=await r.json();if(j.version>apiVer)await srvReload(false)}catch(e){}}
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const ZDEF=()=>({c:3,r:2,labels:['A','B','C','D','E','F'],doors:[{s:'b',p:1,t:'入口'}],ae:[]});
-function zm(){if(!S.zmap||!S.zmap.labels)S.zmap=ZDEF();const m=S.zmap;if(!m.doors){m.doors=m.door?[{s:m.door.s,p:m.door.p,t:'入口'}]:[];delete m.door}if(!Array.isArray(m.ae)){m.ae=[];(m.ac||[]).forEach(j=>{for(let i=0;i<m.r;i++)m.ae.push((2*j+2)+','+(2*i+1))});(m.ar||[]).forEach(j=>{for(let i=0;i<m.c;i++)m.ae.push((2*i+1)+','+(2*j+2))});delete m.ac;delete m.ar}return m} /* 旧データ（列・行ごとの通路）は、辺ごとの通路に変換 */
+let zi=0;try{zi=+localStorage.getItem('zmapIdx')||0}catch(e){}
+const ZMAX=5;
+const ZDEF=()=>({c:4,r:2,labels:['A-01','A-02','A-03','A-04','EV','B-01','B-02','B-03'],doors:[{s:'t',p:1,q:23,t:'扉',k:'door'},{s:'b',p:1,q:23,t:'扉',k:'door'}],ae:['2,1','2,3','1,2','3,2','5,2','7,2']});
+function zm(){if(!Array.isArray(S.zmaps)){S.zmaps=[S.zmap&&S.zmap.labels?S.zmap:ZDEF()];delete S.zmap}if(!S.zmaps.length)S.zmaps=[ZDEF()];if(!(zi>=0&&zi<S.zmaps.length))zi=0;const m=S.zmaps[zi];if(!m.labels)Object.assign(m,ZDEF());if(!m.name)m.name='マップ'+(zi+1);if(!m.doors){m.doors=m.door?[{s:m.door.s,p:m.door.p,t:'入口'}]:[];delete m.door}if(!Array.isArray(m.ae)){m.ae=[];(m.ac||[]).forEach(j=>{for(let i=0;i<m.r;i++)m.ae.push((2*j+2)+','+(2*i+1))});(m.ar||[]).forEach(j=>{for(let i=0;i<m.c;i++)m.ae.push((2*i+1)+','+(2*j+2))});delete m.ac;delete m.ar}return m} /* 旧データ（列・行ごとの通路）は、辺ごとの通路に変換 */
 const zn=s=>String(s||'').normalize('NFKC').trim().toUpperCase();
 let scExact='';/* QR読み取り直後は、品名が完全に一致する品目だけを出す */
 const kq=s=>kn(s).replace(/\s+/g,'');
 const kn=s=>String(s||'').normalize('NFKC').toLowerCase().replace(/[\u30a1-\u30f6]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60));
-function zcell(loc,labels){const n=zn(loc);let b=null;for(const L of labels){const l=zn(L);if(l&&n.startsWith(l)&&(!b||l.length>zn(b).length))b=L}return b}
+function zcell(loc,labels){const n=zn(loc),sbs=(zm().subs)||[];let b=null,bl=0;labels.forEach((L,i)=>{/* 区画名・「／」で分けた各部分・補足の各部分（例：パナ／リン）のどれかで、置き場所の先頭と合えば紐づく（長く合うほうを優先） */const ps=[zn(L),...String(L).split(/[\/／]/).map(zn),...String(sbs[i]||'').split(/[\/／]/).map(zn)];for(const l of ps){if(l&&n.startsWith(l)&&l.length>bl){b=L;bl=l.length}}});return b}
 function zhtml(m,o){o=o||{};const n=m.c*m.r,ed=!!o.edit,W=m.c*2+1,H=m.r*2+1,
   /* 通路は「区画の一辺」ごとに持つ。格子の座標(x,y)：両方が奇数＝区画、x偶数・y奇数＝縦の辺、x奇数・y偶数＝横の辺、両方偶数＝角（つなぎ目）。
      名前が空白の区画（両方奇数）も、通路にできる */
@@ -1848,17 +1942,23 @@ function zhtml(m,o){o=o||{};const n=m.c*m.r,ed=!!o.edit,W=m.c*2+1,H=m.r*2+1,
   ca=(x,y)=>{if(!(x%2&&y%2)||x<1||y<1||x>=W||y>=H||!ae.has(x+','+y))return false;return true}, /* 通路にした区画（名前は消さずに残しておき、戻すと元の名前に戻る） */
   br=(x,y)=>x%2===0&&y%2===1?(ca(x-1,y)&&ca(x+1,y)):(x%2===1&&y%2===0?(ca(x,y-1)&&ca(x,y+1)):false), /* 通路の区画どうしの間（自動でつながる） */
   oa=(x,y)=>ca(x,y)&&[[1,1],[1,-1],[-1,1],[-1,-1]].some(q=>ca(x+2*q[0],y)&&ca(x,y+2*q[1])&&ca(x+2*q[0],y+2*q[1])), /* 2×2以上に広がった通路（広場）の区画：中に線を引かない */
-  sg=(x,y)=>on(x,y)||br(x,y),cols=[],rows=[],wx=[],wy=[];
+  sg=(x,y)=>on(x,y)||br(x,y),cr=(x,y)=>x>0&&y>0&&x<W-1&&y<H-1&&[[0,-1],[0,1],[-1,0],[1,0]].every(q=>on(x+q[0],y+q[1])&&!br(x+q[0],y+q[1])), /* 十字に交わる場所：四隅の線を丸くつなぐ */
+  cols=[],rows=[],wx=[],wy=[];
   for(let x=0;x<W;x++){if(x%2){cols.push('minmax(0,1fr)');continue}
     let w=false;for(let i=0;i<m.r;i++)if(sg(x,2*i+1)){w=true;break}
-    wx[x]=w;const out=x===0||x===W-1;cols.push((w?(ed?22:16):(ed?14:(out?0:4)))+'px')}
+    wx[x]=w;const out=x===0||x===W-1;cols.push((w?(ed?22:32):(ed?14:(out?0:4)))+'px')}
   for(let y=0;y<H;y++){if(y%2){rows.push('auto');continue}
     let w=false;for(let i=0;i<m.c;i++)if(sg(2*i+1,y)){w=true;break}
-    wy[y]=w;const out=y===0||y===H-1;rows.push((w?(ed?22:16):(ed?14:(out?0:4)))+'px')}
-  const cells=m.labels.slice(0,n).map((L,i)=>{if(ca((i%m.c)*2+1,Math.floor(i/m.c)*2+1))return '';const emp=!String(L).trim(),cx=(i%m.c)*2+1,cy=Math.floor(i/m.c)*2+1;const cs=cx, /* 通常の表示では、通路でない側のすき間（幅の広いすき間）は、となりの区画が広がって埋める */
-    eL=!ed&&cx-1>=0&&wx[cx-1]&&!sg(cx-1,cy),eR=!ed&&cx+1<W&&wx[cx+1]&&!sg(cx+1,cy),eU=!ed&&cy-1>=0&&wy[cy-1]&&!sg(cx,cy-1),eD=!ed&&cy+1<H&&wy[cy+1]&&!sg(cx,cy+1),
-    mg=(eL||eR||eU||eD)?`;margin:${eU&&cy-1>0?2:0}px ${eR&&cx+1<W-1?2:0}px ${eD&&cy+1<H-1?2:0}px ${eL&&cx-1>0?2:0}px`:'';
-  return `<span class="zc${emp?' emp':''}${o.on===L&&!emp?' on':''}${o.sel===i?' sel':''}" data-z="${i}"${o.edit?` data-ck="${cx},${cy}"`:''} style="grid-column:${cs+1-(eL?1:0)}/${cs+2+(eR?1:0)};grid-row:${cy+1-(eU?1:0)}/${cy+2+(eD?1:0)}${mg}">${o.edit?`<input type="text" maxlength="6" data-n="${i}" value="${esc(L)}" aria-label="区画${i+1}の名前" autocomplete="off" placeholder="空白">`:(emp?'':`<b>${esc(L)}</b>`)}${o.counts&&!emp?`<small>${o.counts[L]||0}品</small>`:''}</span>`}).join('');
+    wy[y]=w;const out=y===0||y===H-1;rows.push((w?(ed?22:32):(ed?14:(out?0:4)))+'px')}
+  /* 区画が「すき間」に広がるときの判定。斜めに広がると、通路の角（つなぎ目）の上に区画が乗って通路の線と重なるので、その場合は縦方向の広がりをやめる */
+  const cj=(x,y)=>{if(x<0||y<0||x>=W||y>=H)return false;return [[0,-1],[0,1],[-1,0],[1,0]].some(q=>on(x+q[0],y+q[1])&&!br(x+q[0],y+q[1]))||[br(x,y-1),br(x,y+1),br(x-1,y),br(x+1,y)].filter(Boolean).length>=2},
+  ex=(cx,cy)=>{let L=!ed&&cx-1>=0&&!!wx[cx-1]&&!sg(cx-1,cy),R=!ed&&cx+1<W&&!!wx[cx+1]&&!sg(cx+1,cy),U=!ed&&cy-1>=0&&!!wy[cy-1]&&!sg(cx,cy-1),D=!ed&&cy+1<H&&!!wy[cy+1]&&!sg(cx,cy+1);
+    if(R&&D&&cj(cx+1,cy+1))D=false;if(R&&U&&cj(cx+1,cy-1))U=false;if(L&&D&&cj(cx-1,cy+1))D=false;if(L&&U&&cj(cx-1,cy-1))U=false;return{L,R,U,D}};
+  const cells=m.labels.slice(0,n).map((L,i)=>{if(ca((i%m.c)*2+1,Math.floor(i/m.c)*2+1))return '';const sb=String((m.subs&&m.subs[i])||'').trim(),emp=!String(L).trim(),cx=(i%m.c)*2+1,cy=Math.floor(i/m.c)*2+1;const cs=cx, /* 通常の表示では、通路でない側のすき間（幅の広いすき間）は、となりの区画が広がって埋める */
+    {L:eL,R:eR,U:eU,D:eD}=ex(cx,cy),
+    hf=(nx,ny,k)=>(nx>=1&&ny>=1&&nx<W&&ny<H&&!ca(nx,ny))?(ex(nx,ny)[k]?16:2):0, /* となりの区画も同じすき間に広がるので、すき間を半分ずつに分ける（重ならないように） */
+    mg=(eL||eR||eU||eD)?`;margin:${eU&&cy-1>0?2+hf(cx,cy-2,'D'):0}px ${eR&&cx+1<W-1?2+hf(cx+2,cy,'L'):0}px ${eD&&cy+1<H-1?2+hf(cx,cy+2,'U'):0}px ${eL&&cx-1>0?2+hf(cx-2,cy,'R'):0}px`:'';
+  return `<span class="zc${emp?' emp':''}${sb&&!emp&&!o.edit?' hc':''}${o.on===L&&!emp?' on':''}${o.sel===i?' sel':''}" data-z="${i}"${o.edit?` data-ck="${cx},${cy}"`:''} style="grid-column:${cs+1-(eL?1:0)}/${cs+2+(eR?1:0)};grid-row:${cy+1-(eU?1:0)}/${cy+2+(eD?1:0)}${mg}">${o.edit?`<input type="text" maxlength="6" data-n="${i}" value="${esc(L)}" aria-label="区画${i+1}の名前" autocomplete="off" placeholder="空白"><input class="zsi" type="text" maxlength="24" data-s="${i}" value="${esc(sb)}" aria-label="区画${i+1}の補足（／で改行）" autocomplete="off" placeholder="補足 例：パナ／リンナイ">`:(emp?'':(sb?`<b class="zmn">${sb.split(/[\/／]/).map(x=>x.trim()).filter(Boolean).map(x=>`<span class="zpt">${esc(x)}</span>`).join('')}</b><em class="zcn">${esc(L)}</em>`:`<b>${(()=>{const p=String(L).split(/[\/／]/).map(x=>x.trim()).filter(Boolean);return p.length>1?p.map(x=>`<span class="zpt">${esc(x)}</span>`).join(''):esc(L)})()}</b>`))}</span>`}).join('');
   const dv='repeating-linear-gradient(to bottom,var(--zd,#fff) 0 5px,transparent 5px 10px)',dh='repeating-linear-gradient(to right,var(--zd,#fff) 0 5px,transparent 5px 10px)',
     P={u:[dv,'2px 50%','50% 0'],d:[dv,'2px 50%','50% 100%'],l:[dh,'50% 2px','0 50%'],r:[dh,'50% 2px','100% 50%']},
     bg=ks=>ks.length?`background-image:${ks.map(k=>P[k][0]).join(',')};background-size:${ks.map(k=>P[k][1]).join(',')};background-position:${ks.map(k=>P[k][2]).join(',')};`:'';
@@ -1870,15 +1970,21 @@ function zhtml(m,o){o=o||{};const n=m.c*m.r,ed=!!o.edit,W=m.c*2+1,H=m.r*2+1,
     else if(((x+y)&1)===1){const v=x%2===0;
       if(br(x,y)){const a=v?[x-1,y]:[x,y-1],b=v?[x+1,y]:[x,y+1];ai+=`<i class="zaisle ${v?'h':'v'}" style="grid-column:${x+1};grid-row:${y+1}${oa(a[0],a[1])&&oa(b[0],b[1])?';background-image:none':''}"></i>`;continue}
       if(!ed&&!on(x,y))continue;
-      ai+=`<i class="zaisle ${v?'v':'h'}${on(x,y)?'':' off'}" style="grid-column:${x+1};grid-row:${y+1}"${ed?` data-ak="${x},${y}" role="button" aria-label="通路"`:''}></i>`}
+      const E=(cx,cy)=>(v?(cy<=0||cy>=H-1):(cx<=0||cx>=W-1))?10:(!ed&&cr(cx,cy))?.75:((v?(sg(cx-1,cy)||sg(cx+1,cy)):(sg(cx,cy-1)||sg(cx,cy+1)))?6:3),
+        e1=v?E(x,y-1):E(x-1,y),e2=v?E(x,y+1):E(x+1,y);
+      ai+=`<i class="zaisle ${v?'v':'h'}${on(x,y)?'':' off'}" style="grid-column:${x+1};grid-row:${y+1};--e1:${e1}px;--e2:${e2}px"${ed?` data-ak="${x},${y}" role="button" aria-label="通路"`:''}></i>`}
     else { /* 角：まわりの通路がつながっている向きに合わせて、まっすぐ・曲がり角・T字・十字に描く */
       const d={u:on(x,y-1)&&!br(x,y-1),d:on(x,y+1)&&!br(x,y+1),l:on(x-1,y)&&!br(x-1,y),r:on(x+1,y)&&!br(x+1,y)},ks=Object.keys(d).filter(k=>d[k]),nb=[br(x,y-1),br(x,y+1),br(x-1,y),br(x+1,y)].filter(Boolean).length;
       if(!ks.length&&nb<2)continue;
       let rad='';if(ks.length===2&&d.u!==d.d&&d.l!==d.r){const ou=!d.u,ol=!d.l;rad=`border-radius:${ou&&ol?'8px 0 0 0':ou?'0 8px 0 0':ol?'0 0 0 8px':'0 0 8px 0'};`}
-      ai+=`<i class="zaisle n" style="grid-column:${x+1};grid-row:${y+1};${bg(ks)}${rad}"></i>`}}
-  return `<div class="zframe" style="grid-template-columns:${cols.join(' ')};grid-template-rows:${rows.join(' ')};gap:0">${cells}${ai}${m.doors.map((d,i)=>`<i class="zdoor ${d.s}${d.k==='door'?' gp':''}${o.dsel===i?' dsel':''}" style="--p:${typeof d.q==='number'?d.q:[17,50,83][d.p]}%"${o.edit?` data-dk="${i}" role="button" aria-label="目印 ${esc(d.t)}"`:` title="${esc(d.t)}"`}>${d.k==='door'?'':esc(d.t)}</i>`).join('')}</div>`}
+      ai+=`<i class="zaisle n${ed?'':' zw'}${!ed&&cr(x,y)?' zrc':''}" style="grid-column:${x+1};grid-row:${y+1};${bg(ks)}${rad}${ed?'':(()=>{const o={u:d.u||y===0,d:d.d||y===H-1,l:d.l||x===0,r:d.r||x===W-1};return `--in:${o.u?0:6}px ${o.r?0:6}px ${o.d?0:6}px ${o.l?0:6}px;--bw:${o.u?0:1.5}px ${o.r?0:1.5}px ${o.d?0:1.5}px ${o.l?0:1.5}px`})()}"></i>`}}
+  let al='',vm=-1;if(!ed){
+    for(let x=2;x<W-1;x+=2){let k=0,a=99,z=0;for(let i=0;i<m.r;i++)if(sg(x,2*i+1)){k++;a=Math.min(a,2*i+1);z=Math.max(z,2*i+1)}if(k>=Math.min(2,m.r)&&k>0){vm=Math.max(vm,x);al+=`<i class="zal v" style="grid-column:${x+1};grid-row:${a+1}/${z+2}"><s>↑</s><u>通路</u><s>↓</s></i>`}}
+    for(let y=2;y<H-1;y+=2){let k=0,a=99,z=0;for(let i=0;i<m.c;i++)if(2*i+1>vm&&sg(2*i+1,y)){k++;a=Math.min(a,2*i+1);z=Math.max(z,2*i+1)}if(k>=Math.min(2,m.c)&&k>0)al+=`<i class="zal h" style="grid-row:${y+1};grid-column:${a+1}/${z+2}"><s>←</s><u>通路</u><s>→</s></i>`}}
+  return `<div class="zframe" style="grid-template-columns:${cols.join(' ')};grid-template-rows:${rows.join(' ')};gap:0">${cells}${ai}${al}${m.doors.map((d,i)=>`<i class="zdoor ${d.s}${d.k==='door'?' gp':''}${zAn(d,W,H)?' ax':''}${d.o&&d.k!=='door'?' out':''}${o.dsel===i?' dsel':''}" style="${zAn(d,W,H)?((d.s==='t'||d.s==='b')?`grid-column:${d.an+1}/${d.an+2};`:`grid-row:${d.an+1}/${d.an+2};`):''}--o:${d.of||0}px;--p:${typeof d.q==='number'?d.q:[17,50,83][d.p]}%"${o.edit?` data-dk="${i}" role="button" aria-label="目印 ${esc(d.t)}"`:` title="${esc(d.t)}"`}>${d.k==='door'?'':esc(d.t)}</i>`).join('')}</div>`}
 
-function updZ(){const m=zm(),ls=m.labels.slice(0,m.c*m.r),counts={};S.items.filter(i=>!cur||i.maker===cur).forEach(i=>{const k=zcell(i.loc,ls);if(k!==null)counts[k]=(counts[k]||0)+1});$('zmap').innerHTML=zhtml(m,{on:zcell(curLoc,ls),counts})}
+const zAn=(d,W,H)=>d.an!=null&&d.an>=0&&d.an<((d.s==='t'||d.s==='b')?W:H);
+function updZ(){const m=zm(),ls=m.labels.slice(0,m.c*m.r);zSwRender();$('zmap').innerHTML=zhtml(m,{on:zcell(curLoc,ls)})/* 品目数（「3品」など）は表示しない */}
 let zt=null;
 function zFit(){const n=zt.c*zt.r,u=new Set(zt.labels);let c=65;while(zt.labels.length<n){while(u.has(String.fromCharCode(c)))c++;const L=String.fromCharCode(c);zt.labels.push(L);u.add(L)}}
 const ZT=['入口','出口','出入口','非常口'],ZS=[['t','上'],['b','下'],['l','左'],['r','右']];
@@ -1888,9 +1994,9 @@ const zpi=d=>{const i=ZP.findIndex(x=>x[0]===d.s&&x[1]===d.p);return i<0?1:i};
 const zpn=d=>({t:'上',b:'下',l:'左',r:'右'}[d.s])+(d.s==='t'||d.s==='b'?['左','中','右']:['上','中','下'])[d.p];
 let zdSel=-1;
 function zDoorRows(){
-  $('zDc').textContent='目印 '+zt.doors.length+'/6';
-  $('zAddDoor').hidden=$('zAddDr').hidden=zt.doors.length>=6;
-  const e=zdSel>=0&&zt.doors[zdSel];$('zDe').hidden=!e;if(e&&$('zDn').value!==e.t)$('zDn').value=e.t;}
+  $('zDc').textContent='目印 '+zt.doors.length+'/10';
+  $('zAddDoor').hidden=$('zAddDr').hidden=zt.doors.length>=10;
+  const e=zdSel>=0&&zt.doors[zdSel];$('zDe').hidden=!e;if(e){const tb=e.s==='t'||e.s==='b';$('zDm').textContent=tb?'←':'↑';$('zDp').textContent=tb?'→':'↓';const b=$('zDout');b.hidden=e.k==='door';b.setAttribute('aria-pressed',e.o?'true':'false');b.textContent=e.o?'枠の外 ✓':'枠の外へ'}if(e&&$('zDn').value!==e.t)$('zDn').value=e.t;}
 function zPv(){$('zPv').innerHTML=zhtml(zt,{edit:true,dsel:zdSel})}
 function zTot(){$('zTot').textContent='全'+zt.c*zt.r+'区画'}
 function zSync(){$('zC').value=zt.c;$('zR').value=zt.r;zdSel=-1;zTot();zDoorRows();zPv()}
@@ -2229,10 +2335,15 @@ $('hOpen').onclick=()=>{dtBack=null;document.body.classList.add('hist')};
 $('hClose').onclick=()=>{const bk=dtBack;dtBack=null;document.body.classList.remove('hist');logF='';render();if(bk!==null&&mob()&&S.items.some(x=>x.id===bk))dtOpen(bk)};/* 詳細から開いた履歴は、閉じると詳細に戻る *//* 履歴を閉じたら、カードの選択も外す */
 $('mMenuBtn').onclick=e=>{e.stopPropagation();const m=$('mMenu');$('mEdit').textContent=document.body.classList.contains('edon')?'編集を終了':'編集';$('mMap').textContent=mob()?'置き場マップ':($('zBtn').getAttribute('aria-pressed')==='true'?'置き場マップを隠す':'置き場マップを表示');$('mDelMk').textContent=cur?`「${cur}」を削除`:'メーカーを削除';m.hidden=!m.hidden;$('mMenuBtn').setAttribute('aria-expanded',String(!m.hidden))};
 document.addEventListener('click',()=>{$('mMenu').hidden=true;$('mMenuBtn').setAttribute('aria-expanded','false')});
-$('zEdit').onclick=()=>{if(!isAdmin()){notify('マップの編集は管理者だけができます');return}zt=JSON.parse(JSON.stringify(zm()));zSync();$('zd').showModal();if(document.activeElement&&document.activeElement.blur)document.activeElement.blur()};
+$('zEdit').onclick=()=>{if(!isAdmin()){notify('マップの編集は管理者だけができます');return}zt=JSON.parse(JSON.stringify(zm()));$('zNm').value=zt.name||'';$('zDelMap').hidden=S.zmaps.length<2;zSync();$('zd').showModal();if(document.activeElement&&document.activeElement.blur)document.activeElement.blur()};
 $('zC').onchange=$('zR').onchange=()=>{zt.c=+$('zC').value;zt.r=+$('zR').value;zFit();zTot();zPv()};
 /* 目印：1回タップ＝時計回りに1か所移動、すばやく2回タップ＝名前変更・削除の欄を出す */
 let zdTm=null,zdLast=-1;
+/* その辺にある通路の中心の位置（枠の内側の左上からのpx）を返す */
+function zAc(fr,sd){const tb=sd==='t'||sd==='b',out=[];
+  if(tb){const row=String(sd==='t'?2:2*zt.r);fr.querySelectorAll('.zaisle.v:not(.off)').forEach(e=>{const an=parseInt(e.style.gridColumn)-1;if(e.style.gridRow===row&&an%2===0)out.push({an,c:e.offsetLeft+e.offsetWidth/2})})}
+  else{const col=String(sd==='l'?2:2*zt.c);fr.querySelectorAll('.zaisle.h:not(.off)').forEach(e=>{const an=parseInt(e.style.gridRow)-1;if(e.style.gridColumn===col&&an%2===0)out.push({an,c:e.offsetTop+e.offsetHeight/2})})}
+  return out}
 let zdSup=false;
 $('zPv').addEventListener('click',e=>{const dr=e.target.closest('[data-dk]');if(!dr||zdSup)return;const k=+dr.dataset.dk;
   zdSel=k;zDoorRows();zPv();if(matchMedia('(pointer:fine)').matches){$('zDn').focus();$('zDn').select()}}); /* 目印：タップ（クリック）で名前変更・削除の欄を出す。移動はドラッグ */
@@ -2246,8 +2357,11 @@ $('zPv').addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'&&e.button
       x=ev.clientX-L,y=ev.clientY-T,ds={t:y,b:h-y,l:x,r:w-x};
     let sd='t';for(const q of ['t','b','l','r'])if(ds[q]<ds[sd])sd=q;
     const f=(sd==='t'||sd==='b')?x/w:y/h,pc=Math.round(Math.min(94,Math.max(6,f*100))*10)/10;
-    d.s=sd;d.q=pc;d.p=pc<34?0:pc<67?1:2;
-    el.className='zdoor '+sd+(el.classList.contains('gp')?' gp':'')+(el.classList.contains('dsel')?' dsel':'');el.style.setProperty('--p',pc+'%')};
+    d.s=sd;d.q=pc;d.p=pc<34?0:pc<67?1:2;d.o=d.k!=='door'&&ds[sd]<-6;
+    const tb=sd==='t'||sd==='b',pos=tb?x:y;let bs=null;zAc(fr,sd).forEach(a=>{const dd=Math.abs(a.c-pos);if(dd<12&&(!bs||dd<bs.dd))bs={an:a.an,dd}});
+    if(bs){d.an=bs.an;d.of=0}else{delete d.an;delete d.of}
+    el.style.gridColumn=bs&&tb?(bs.an+1)+'/'+(bs.an+2):'';el.style.gridRow=bs&&!tb?(bs.an+1)+'/'+(bs.an+2):'';el.style.setProperty('--o','0px');
+    el.className='zdoor '+sd+(el.classList.contains('gp')?' gp':'')+(d.o?' out':'')+(bs?' ax':'')+(el.classList.contains('dsel')?' dsel':'');el.style.setProperty('--p',pc+'%')};
   const up=()=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',up);removeEventListener('pointercancel',up);
     if(moved){zdSup=true;setTimeout(()=>{zdSup=false},80);zPv()}};
   addEventListener('pointermove',mv);addEventListener('pointerup',up);addEventListener('pointercancel',up)});
@@ -2264,12 +2378,18 @@ $('zPv').addEventListener('click',e=>{const a=e.target.closest('[data-ak]');if(!
     zaTap={k:'',t:0}}
   const s=new Set(zt.ae||[]);s.has(k)?s.delete(k):s.add(k);zt.ae=[...s];zPv()});
 $('zDn').oninput=()=>{const d=zt.doors[zdSel];if(!d)return;d.t=$('zDn').value;zPv()};
+function zNudge(dir){const d=zt.doors[zdSel];if(!d)return;if(d.an!=null){d.of=(d.of||0)+dir*2}else{const f=Math.round(((typeof d.q==='number'?d.q:[17,50,83][d.p])+dir*0.7)*10)/10;d.q=Math.min(94,Math.max(6,f));d.p=d.q<34?0:d.q<67?1:2}zPv()}
+$('zDm').onclick=()=>zNudge(-1);$('zDp').onclick=()=>zNudge(1);
+$('zDa').onclick=()=>{const d=zt.doors[zdSel],fr=$('zPv').querySelector('.zframe');if(!d||!fr)return;const tb=d.s==='t'||d.s==='b',q=typeof d.q==='number'?d.q:[17,50,83][d.p],pos=q/100*(tb?fr.clientWidth:fr.clientHeight),cs=zAc(fr,d.s);
+  if(!cs.length){notify('この辺には通路がありません');return}
+  let b=cs[0];cs.forEach(a=>{if(Math.abs(a.c-pos)<Math.abs(b.c-pos))b=a});d.an=b.an;d.of=0;zPv()};
+$('zDout').onclick=()=>{const d=zt.doors[zdSel];if(!d||d.k==='door')return;d.o=!d.o;zDoorRows();zPv()};
 $('zDok').onclick=()=>{zdSel=-1;zDoorRows();zPv()};
 $('zDdel').onclick=()=>{if(!isAdmin())return;if(zdSel<0)return;zt.doors.splice(zdSel,1);zdSel=-1;zDoorRows();zPv()};
-$('zAddDr').onclick=()=>{if(zt.doors.length>=6)return;zt.doors.push({s:'t',p:1,t:'扉',k:'door'});zdSel=zt.doors.length-1;zDoorRows();zPv();$('zDn').focus();$('zDn').select()};
-$('zAddDoor').onclick=()=>{if(zt.doors.length>=6)return;zt.doors.push({s:'t',p:1,t:'目印'});zdSel=zt.doors.length-1;zDoorRows();zPv();$('zDn').focus();$('zDn').select()};
-$('zPv').oninput=e=>{const t=e.target;if(t.dataset.n===undefined)return;zt.labels[+t.dataset.n]=t.value;const zc=t.closest('.zc');if(zc)zc.classList.toggle('emp',!t.value.trim())}; /* 入力中は描き直さない（キーボードが閉じるため） */
-$('zRs').onclick=()=>{zt=ZDEF();zSync()};
+$('zAddDr').onclick=()=>{if(zt.doors.length>=10)return;zt.doors.push({s:'t',p:1,t:'扉',k:'door'});zdSel=zt.doors.length-1;zDoorRows();zPv();$('zDn').focus();$('zDn').select()};
+$('zAddDoor').onclick=()=>{if(zt.doors.length>=10)return;zt.doors.push({s:'t',p:1,t:'目印'});zdSel=zt.doors.length-1;zDoorRows();zPv();$('zDn').focus();$('zDn').select()};
+$('zPv').oninput=e=>{const t=e.target;if(t.dataset.s!==undefined){if(!zt.subs)zt.subs=[];zt.subs[+t.dataset.s]=t.value;return}if(t.dataset.n===undefined)return;zt.labels[+t.dataset.n]=t.value;const zc=t.closest('.zc');if(zc)zc.classList.toggle('emp',!t.value.trim())}; /* 入力中は描き直さない（キーボードが閉じるため） */
+$('zRs').onclick=()=>{const nm=$('zNm').value;zt=ZDEF();zt.name=nm;zSync()};
 $('zCn').onclick=()=>$('zd').close();
 let dlgLockY=null;
 const dlgSync=()=>{const op=!!document.querySelector('dialog[open]');document.documentElement.classList.toggle('dlgopen',op);
@@ -2321,6 +2441,17 @@ $('zPick').onclick=e=>{const b=e.target.closest('button[data-sh]');if(!b)return;
   z.addEventListener('touchmove',e=>{if(y0===null)return;const dy=e.touches[0].clientY-y0;z.style.transition='none';if(dy>0)z.style.transform='translateY('+dy+'px)'},{passive:true});
   const end=close=>e=>{if(y0===null)return;const dy=e.changedTouches[0].clientY-y0;y0=null;z.style.transition='';z.style.transform='';if(close&&dy>70)zSheet(false)};
   z.addEventListener('touchend',end(true));z.addEventListener('touchcancel',end(false))}
+
+/* ===== 置き場マップの切り替え（最大5個）：見出しをタップして選ぶ。どれを表示しているかは端末ごとに覚える ===== */
+function zSwRender(){const m=zm(),n=S.zmaps.length;$('zSwT').textContent=m.name;
+  const box=$('zSwM');box.innerHTML=S.zmaps.map((x,i)=>`<button type="button" class="zsc${i===zi?' on':''}" data-zi="${i}">${esc(x.name||('マップ'+(i+1)))}</button>`).join('')+(isAdmin()&&n<ZMAX?'<button type="button" class="zsc zadd" data-zadd="1">＋ 追加</button>':'')}
+function zSwOpen(on){const b=$('zSwM');b.hidden=!on;$('zSw').setAttribute('aria-expanded',String(on))}
+function zGo(i){zi=i;try{localStorage.setItem('zmapIdx',String(zi))}catch(e){}curLoc=curLoc;$('zPick').hidden=true;zSwOpen(false);render()}
+$('zSw').onclick=()=>{if(S.zmaps.length<2&&!(isAdmin()&&S.zmaps.length<ZMAX))return;zSwOpen($('zSwM').hidden)};
+$('zSwM').onclick=e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.zadd){if(!isAdmin()||S.zmaps.length>=ZMAX)return;const m=ZDEF();m.name='マップ'+(S.zmaps.length+1);S.zmaps.push(m);save();zGo(S.zmaps.length-1);$('zEdit').click();return}
+  if(b.dataset.zi!==undefined)zGo(+b.dataset.zi)};
+$('zDelMap').onclick=()=>{if(!isAdmin()||S.zmaps.length<2)return;if(!confirm('「'+(zm().name)+'」を削除しますか？（品目や置き場所のデータは消えません）'))return;S.zmaps.splice(zi,1);zi=Math.max(0,zi-1);try{localStorage.setItem('zmapIdx',String(zi))}catch(e){}save();$('zd').close();render()};
 $('zOk').onclick=()=>{
   const n=zt.c*zt.r,L=zt.labels.slice(0,n).map(x=>String(x).trim());
   const aeS=new Set(zt.ae||[]),Lf=L.filter((x,i)=>x&&!aeS.has(((i%zt.c)*2+1)+','+(Math.floor(i/zt.c)*2+1))); /* 空白の区画は「何もない場所」として許可。通路にした区画（名前だけ残してある）は重複チェックに入れない */
@@ -2329,9 +2460,9 @@ $('zOk').onclick=()=>{
   old.forEach((o,i)=>{if(i<n&&o&&L[i]&&zn(o)!==zn(L[i])&&!nw.has(zn(o)))ren[o]=L[i]});
   const mv=loc=>{const b=zcell(loc,old);if(b===null||!(b in ren))return loc;for(let k=1;k<=loc.length;k++){if(zn(loc.slice(0,k))===zn(b))return ren[b]+loc.slice(k)}return loc};
   if(Object.keys(ren).length){S.items.forEach(i=>{i.loc=mv(i.loc)});curLoc=mv(curLoc)}
-  zt.labels=L.concat(zt.labels.slice(n));
+  zt.labels=L.concat(zt.labels.slice(n));zt.subs=Array.from({length:zt.labels.length},(_,i)=>String((zt.subs&&zt.subs[i])||'').trim());
   zt.ae=(zt.ae||[]).filter(k=>{const q=String(k).split(',').map(Number);if(!(q[0]<=zt.c*2&&q[1]<=zt.r*2))return false;return true});delete zt.ac;delete zt.ar;
-  S.zmap=zt;save();$('zd').close();render()};
+  zt.name=($('zNm').value||'').trim()||('マップ'+(zi+1));S.zmaps[zi]=zt;save();$('zd').close();render()};
 $('pZoom').oninput=()=>{phz=+$('pZoom').value/100;showPv()};
 $('pReset').onclick=()=>{phz=1;phx=0;phy=0;showPv()};
 $('pAuto').onclick=()=>autoFit();
@@ -2518,27 +2649,29 @@ $('fLoc').onchange=locNewSync;
 function cdd(sel){
   const dlg=$('dlg'),btn=document.createElement('button');btn.type='button';btn.className='cdd';sel.style.display='none';sel.after(btn);
   const list=document.createElement('div');list.className='cddl';list.hidden=true;dlg.appendChild(list);
-  const sync=()=>{const o=sel.options[sel.selectedIndex];btn.textContent=o?o.textContent:''};
+  const sync=()=>{const o=sel.options[sel.selectedIndex];btn.textContent=o?o.textContent:'';btn.disabled=sel.disabled};
   const close=()=>{list.hidden=true;btn.classList.remove('open')};
   const open=()=>{
     list.innerHTML='';[...sel.options].forEach((o,i)=>{const d=document.createElement('div');d.className='cddo'+(i===sel.selectedIndex?' on':'')+(o.value==='__new__'?' add':'');d.textContent=o.textContent;d.dataset.cdx=i;list.appendChild(d)});
     const r=btn.getBoundingClientRect();list.style.width=r.width+'px';list.style.left=r.left+'px';list.hidden=false;
     const h=list.offsetHeight;let top=r.bottom+4;if(top+h>innerHeight-8&&r.top>h+12)top=r.top-h-4;list.style.top=top+'px';
     btn.classList.add('open');const on=list.querySelector('.on');if(on)list.scrollTop=Math.max(0,on.offsetTop-list.clientHeight/2+on.offsetHeight/2)};
-  btn.onclick=()=>list.hidden?open():close();
+  btn.onclick=()=>{if(sel.disabled)return;list.hidden?open():close()};
   list.addEventListener('click',e=>{const d=e.target.closest('.cddo');if(!d)return;sel.selectedIndex=+d.dataset.cdx;sync();close();sel.dispatchEvent(new Event('change',{bubbles:true}))});
   document.addEventListener('pointerdown',e=>{if(!list.hidden&&!list.contains(e.target)&&e.target!==btn)close()},true);
   dlg.addEventListener('scroll',e=>{if(!list.contains(e.target))close()},true);
   addEventListener('resize',close);dlg.addEventListener('close',close);
   sel.addEventListener('change',sync);new MutationObserver(sync).observe(sel,{childList:true,subtree:true,attributes:true});sync()}
 cdd($('fMaker'));cdd($('fLoc'));
-function openEdit(id){$('pv').classList.remove('adj');if(!canEdit()){notify('編集するにはログインしてください');return}
+function openEdit(id){$('pv').classList.remove('adj');if(!canEdit()){notify('編集するにはログインしてください');return}if(!id&&!isAdmin()){notify('品目の追加は管理者だけができます');return}
   editId=id;const i=id?S.items.find(x=>x.id===id):{name:'',maker:cur||S.makers[0],stock:0,min:0,unit:'個',loc:curLoc&&curLoc!=='未設定'?curLoc:'',img:''};
   $('dt').textContent=id?'品目を編集':'品目を追加';
   $('fMaker').innerHTML=S.makers.map(m=>`<option ${m===i.maker?'selected':''}>${esc(m)}</option>`).join('')+`<option value="__new__" ${S.makers.length?'':'selected'}>＋ メーカーを追加…</option>`;$('fMakerNew').value='';mkNewSync();
   $('fName').value=i.name;$('fStock').value=i.stock;locFill(i.loc||'');
   tmpImg=i.img;phz=i.z||1;phx=i.x||0;phy=i.y||0;$('file').value='';showPv();
-  {const B=document.body,tmpHide=!mob()&&!B.classList.contains('hist')&&!B.classList.contains('hhide');/* 履歴パネルを出しているとカードが狭くなり写真枠の比率が変わるので、一瞬だけ隠して「履歴なし」のときの比率で測る */if(tmpHide){B.classList.add('hhide');fit()}const ph=document.querySelector('#grid .ph'),r=ph&&ph.getBoundingClientRect();if(tmpHide){B.classList.remove('hhide');fit()}$('pv').style.aspectRatio=r&&r.width>0&&r.height>0?(r.width/r.height).toFixed(3):''} /* カードの写真枠と同じ比率にする */
+  {const ph=document.querySelector('#grid .ph'),r=ph&&ph.getBoundingClientRect();$('pv').style.aspectRatio=r&&r.width>0&&r.height>0?(r.width/r.height).toFixed(3):''} /* カードの写真枠と同じ比率にする */
+  {/* 作業者は既存品目の「在庫数」と「置き場所」だけ編集できる（管理者・新規追加はこれまでどおり全項目） */const lim=!!id&&!isAdmin();$('dlg').classList.toggle('lim',lim);
+    ['pZoom','pReset','pAuto','pickImg','rotImg','rmImg','fName','fMaker','fMakerNew'].forEach(k=>{$(k).disabled=lim||((k==='pAuto'||k==='rotImg')&&!tmpImg)});$('edHint').hidden=!lim}
   $('dlg').showModal();$('dlg').scrollTop=0;
 }
 /* ---- 写真の向き補正 ---- */
@@ -2595,11 +2728,13 @@ $('rmImg').onclick=()=>{
 $('fCancel').onclick=()=>$('dlg').close();
 $('fSave').onclick=()=>{
   const name=$('fName').value.replace(/[ \t\u3000]*\r?\n[ \t\u3000]*/g,'\n').replace(/\n+/g,'\n').trim();if(!name){notify('品名を入力してください');return}
-  let mk=$('fMaker').value;
+  const lim=!!editId&&!isAdmin(),orig=lim?S.items.find(x=>x.id===editId):null;if(lim&&!orig)return;
+  let mk=lim?orig.maker:$('fMaker').value;
   if(mk==='__new__'){mk=$('fMakerNew').value.trim();if(!mk){notify('メーカー名を入力してください');$('fMakerNew').focus();return}if(!S.makers.includes(mk))S.makers.push(mk)}
   let lc=$('fLoc').value;
   if(lc==='__new__'){lc=$('fLocNew').value.trim();if(!lc){notify('置き場所を入力してください');$('fLocNew').focus();return}}
   const v={name,maker:mk,stock:Math.max(0,+$('fStock').value||0),unit:'個',loc:lc,img:tmpImg,z:phz,x:phx,y:phy};
+  if(lim){v.name=orig.name;v.maker=orig.maker;v.img=orig.img;v.z=orig.z;v.x=orig.x;v.y=orig.y}/* 作業者は在庫数・置き場所以外を変えられない */
   if(editId){const it=S.items.find(x=>x.id===editId),d=v.stock-it.stock;
     if(d){/* 編集画面で在庫数を直したときも履歴に残す（e:1＝編集による修正） */const n=new Date();S.log.unshift({id:it.id,name:v.name,d,e:1,u:curUser,t:`${n.getMonth()+1}/${n.getDate()} ${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`});S.log=S.log.slice(0,300)}
     Object.assign(it,v)}else S.items.push({id:S.nid++,...v});
