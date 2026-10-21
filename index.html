@@ -838,6 +838,7 @@ html:has(body.dton),body.dton{overflow:hidden!important}
 .dtback svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 .dtb{flex:1 1 auto;display:flex;flex-direction:column;padding:40px 20px 8px} /* 上は、写真から下にはみ出す履歴ボタン（30px）と品名が重ならないよう空ける */
 /* 写真は4:3で固定。下に余った高さは、メーカー・品番・保管場所の行と在庫数の帯が分け合う（上限あり） */
+.dtpn{font-size:14px;color:#8b9099;line-height:1.3;word-break:break-all;margin-top:4px} /* 品番：品名の上に小さなグレー文字で表示 */
 .dtb .dtn{flex:1 1 0;max-height:96px;display:flex;align-items:center;margin-top:0} /* 品名の行も余りを分け合い、文字は縦の真ん中 */
 .dtb .dtr{flex:1 1 0;max-height:80px}
 .dtb .dts2{flex:1 1 auto;max-height:150px}
@@ -855,6 +856,16 @@ html:has(body.dton),body.dton{overflow:hidden!important}
 .dtr b{min-width:0;word-break:break-all;overflow-wrap:anywhere}
 .dtr+.dtr{margin-top:0;border-top:none}
 .dtr b.em{color:#b3bac5;font-weight:500}
+.dtb .dtg{flex:none;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px;padding-bottom:6px}
+.dtg .pc{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:0;padding:6px 0 8px;border:1px solid #e3e6eb;border-radius:10px;background:#fff;color:#222;font:inherit;font-size:12px;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.dtg .pc .ic{display:block;width:40px;height:40px;background:currentColor;-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center}
+.dtg .pc span{white-space:nowrap}
+.dtg .pc{position:relative}
+.dtg .pc .cn{position:static;order:-1;align-self:flex-end;margin:0 6px -2px 0;white-space:nowrap;max-width:calc(100% - 8px);overflow:hidden;text-overflow:ellipsis;min-width:20px;padding:1px 6px;border-radius:10px;background:#eef1f5;color:#222;font-style:normal;font-size:12px;font-weight:800;line-height:1.4;text-align:center}
+.dtg .pc .cn.z{background:transparent;color:#b3bac5;font-weight:600}
+.dtg .pc.on .cn{background:#fff;color:#1d4f91}
+.dtg .pc:active{background:#f1f3f6}
+.dtg .pc.on{border-color:#1d4f91;background:#eaf2fb;color:#1d4f91}
 .dtbar{position:absolute;left:0;right:0;bottom:0;z-index:5;display:flex;gap:10px;padding:8px 14px calc(8px + env(safe-area-inset-bottom,0px));background:#fff;border-top:1px solid #e3e6eb}
 .dtbar button{flex:1;height:50px;border-radius:10px;font-size:18px;font-weight:800;cursor:pointer}
 .dtbar button{display:flex;align-items:center;justify-content:center;gap:8px}
@@ -1186,6 +1197,15 @@ html:has(body.dton),body.dton{overflow:hidden!important}
 #zd #zAddDoor[hidden],#zd #zAddDr[hidden]{display:none}
 #zd .bar{margin-top:0}
 #zd #zRs{flex:0 0 auto;padding:11px 8px;border:none;background:none;color:#6b7488;text-decoration:underline}
+/* マップのタブ（最大5つ）と「＋」 */
+.ztabs{display:flex;gap:6px;margin:0 0 8px;overflow-x:auto;scrollbar-width:none}
+.ztabs::-webkit-scrollbar{display:none}
+.ztabs[hidden]{display:none}
+.ztabs .zt{flex:0 0 auto;max-width:9em;height:28px;padding:0 12px;border:1px solid #4a5058;border-radius:8px;background:transparent;color:#c8ced6;font:inherit;font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.ztabs .zt.on{background:#1f6fc5;border-color:#1f6fc5;color:#fff}
+.ztabs .zt.add{padding:0 12px;border-style:dashed;color:#8fb8e8;font-size:14px}
+#zd #zDelMap{flex:0 0 auto;padding:11px 8px;border:none;background:none;color:#d8232a;text-decoration:underline}
+#zd #zDelMap[hidden]{display:none}
 #zd .zhint{margin-top:8px;font-size:12px;color:var(--sub);line-height:1.5}
 #zd .zhint b{color:#222}
 #zd #zDe{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}
@@ -1244,15 +1264,12 @@ html:has(body.dton),body.dton{overflow:hidden!important}
 .mb.acb .acn{max-width:5em;overflow:hidden;text-overflow:ellipsis}
 @media(min-width:601px){.mhead .acb{display:none}}
 @media(max-width:600px){#acBtn{display:none}}
-#acBtn:focus,#acBtn:focus-visible,#acBtn2:focus,#acBtn2:focus-visible{outline:none;box-shadow:none;-webkit-tap-highlight-color:transparent} /* ログイン後にアカウントのアイコンへ黒い枠が出ないようにする */
 /* 管理者だけ：パスワード・履歴クリア・削除・マップ配置の編集 */
 body:not(.adm) #acPw,body:not(.adm) #clrLog,body:not(.adm) #rDel,body:not(.adm) #delBar,body:not(.adm) #delMaker,body:not(.adm) #dlMk,body:not(.adm) #mDelMk,body:not(.adm) #mkDel,body:not(.adm) #zDdel,body:not(.adm) #zEdit{display:none!important}
 /* 管理者・作業者の両方：品目・メーカーの追加と編集（ログイン中なら使える） */
 body:not(.edt) #edMode,body:not(.edt) #hEdit,body:not(.edt) #mEdit,body:not(.edt) #edFab,body:not(.edt) #edBar,body:not(.edt) #rAdd,body:not(.edt) #addItem,body:not(.edt) #hAdd,body:not(.edt) #hAdd2,body:not(.edt) #nMaker,body:not(.edt) #barMaker,body:not(.edt) #addPop,body:not(.edt) #addMaker{display:none!important}
 /* スマホ：編集は「カードの長押し」で行うので、編集ボタン（ヘッダー・メニュー・右下・編集モード帯）は管理者にも出さない */
 @media(max-width:600px){#hEdit,#mEdit,#edFab,#edBar{display:none!important}}
-/* 作業者は品目を追加できない（管理者だけ）：追加ボタンを出さない */
-body:not(.adm) #rAdd,body:not(.adm) #addItem,body:not(.adm) #hAdd,body:not(.adm) #hAdd2,body:not(.adm) #apItem{display:none!important}
 /* メーカー選択欄：「＋ 新しいメーカーを追加…」が2段にならないよう、文字を少し小さくして折り返さない */
 #fMaker,#fLoc{font-size:15px;white-space:nowrap;text-overflow:ellipsis}
 #fMaker option,#fLoc option{font-size:15px;white-space:nowrap}
@@ -1479,13 +1496,13 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
 @media(min-width:601px){
   .app{padding-left:max(10px,env(safe-area-inset-left,0px))}
   /* 履歴カードと同じ幅（右の列と同じ clamp）・同じ右端にして、ボタンを均等に並べる */
-  .lrow .ibs{left:auto;right:max(10px,env(safe-area-inset-right,0px));top:0;bottom:auto;width:clamp(300px,32vw,480px);height:auto;margin:0;flex-direction:row;align-items:center;justify-content:space-between;gap:8px;
+  .lrow .ibs{left:auto;right:max(10px,env(safe-area-inset-right,0px));top:0;bottom:auto;width:clamp(300px,32vw,480px);height:auto;margin:0;flex-direction:row;align-items:center;justify-content:space-between;gap:2px;
     padding:calc(4px + env(safe-area-inset-top,0px)) 0 4px;
     background:transparent;border:none;overflow:visible}
-  .lrow .ibs .ib,.lrow .ibs #lvOpen.ib{flex:1 1 0;width:auto;min-width:0;height:42px;gap:2px;border-radius:10px;padding:0}
-  .lrow .ibs .ib svg{width:18px;height:18px}
+  .lrow .ibs .ib,.lrow .ibs #lvOpen.ib{flex:1 1 0;width:auto;min-width:0;height:46px;gap:2px;border-radius:10px;padding:0}
+  .lrow .ibs .ib svg{width:20px;height:20px}
   .lrow .ibs .il{font-size:10px}
-  .lrow .ibs .rsep{flex:none;width:1px;height:28px;margin:0 4px}
+  .lrow .ibs .rsep{flex:none;width:1px;height:30px;margin:0 2px}
 }
 @media(min-width:601px) and (max-width:820px){
   .app{padding-top:calc(60px + env(safe-area-inset-top,0px))} /* 1列表示の幅では、右上のボタンとタブが重ならないよう上に余白をとる */
@@ -1566,9 +1583,9 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
 #zmap .zc b{text-align:left;padding:0;font-size:12px;letter-spacing:0;word-break:break-all;overflow-wrap:anywhere;white-space:normal;line-height:1.2;max-width:100%}
 #zmap .zc .zsub{display:block;font-style:normal;font-size:min(9px,19cqw);word-break:normal;font-weight:500;line-height:1.3;color:#b9c0c8;letter-spacing:.04em}
 #zmap .zc small{font-size:10px;margin-top:2px;color:#8f98a3}
-/* マップ：横に4文字まで入る幅に自動調整（最大13px）。5文字以上は折り返す */
+/* マップ：横に3文字まで入る幅に自動調整（最大13px）。4文字以上は折り返す */
 #zmap .zc{container-type:inline-size;padding:6px 3px;align-items:center;text-align:center}
-#zmap .zc b{font-size:min(13px,24cqw);text-align:center}
+#zmap .zc b{font-size:min(13px,calc(88cqw / var(--n,3)));text-align:center}
 #zmap .zc .zsub,#zmap .zc small{text-align:center}
 /* 作業者の編集画面：変更できない項目はグレー表示 */
 #dlg.lim .pv{pointer-events:none;opacity:.75}
@@ -1624,47 +1641,15 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
 /* PC：「目印を追加」と「扉を追加」を横に1列で並べる（スマホは縦のまま） */
 @media(min-width:700px){#zd #zAddRow{display:flex;gap:8px;margin-top:8px}#zd #zAddRow #zAddDoor,#zd #zAddRow #zAddDr{flex:1 1 0;width:auto;margin-top:0}}
 /* 区画名に「／」があるとき、上下に分けて、それぞれを小さな囲み（タグ）で見せる */
-#zmap .zc b .zpt{display:block;margin:2px auto;padding:1px 4px;border-radius:4px;background:rgba(255,255,255,.14);font-size:.92em;line-height:1.25;width:fit-content;max-width:100%}
+#zmap .zc b .zpt{display:block;margin:2px auto;padding:1px 4px;border-radius:4px;background:rgba(255,255,255,.14);font-size:min(12px,calc((100cqw - 10px) / var(--n,3)));line-height:1.25;width:fit-content;max-width:100%}
 #zmap .zc.on b .zpt{background:rgba(255,255,255,.22)}
-#zmap .zc b .zpt{padding:1px 2px}
-#zDm,#zDp{display:none!important} /* 目印・扉の「少しずらす」矢印ボタンは出さない（移動はドラッグ） */
-#zmap .zc.hc{padding-left:2px;padding-right:2px}
 /* 補足があるとき：メーカー名などを中央に、棚の名前（区画名）を右下の三角に入れる */
-#zmap .zc.hc::after{width:24px;height:24px}
-#zmap .zc .zcn{position:absolute;right:3px;bottom:2px;z-index:1;font-style:normal;font-size:9px;font-weight:800;line-height:1;color:#fff;max-width:calc(100% - 4px);overflow:hidden;white-space:nowrap;text-shadow:0 0 2px #000}
-#zmap .zc .zmn{font-size:min(12px,22cqw)} /* 列が増えて区画が細くなっても、補足（メーカー名など）が横4文字で収まるよう文字を縮める */
+#zmap .zc.hc::after{width:30px;height:30px} /* 右下の三角：英字1文字・数字2文字が三角の内側に収まる大きさ */
+#zmap .zc .zcn{position:absolute;right:3px;bottom:2px;z-index:1;font-style:normal;font-size:10px;font-weight:800;line-height:1;letter-spacing:0;color:#fff;max-width:calc(100% - 4px);overflow:hidden;white-space:nowrap;text-shadow:0 0 2px #000}
+#zmap .zc .zmn{font-size:inherit}
 #zmap .zc.hc{padding-bottom:12px}
-/* L字・T字・十字の通路：内側の角を丸くつなぎ、Lの外側の角も丸める（半径6px・線の太さ1.5px） */
-#zmap .zaisle.zrc::after{content:"";position:absolute;inset:0;pointer-events:none;background-repeat:no-repeat;background-size:8px 8px;background-position:var(--qp,0 0);background-image:var(--qb,none)}
-#zmap .zaisle.n.zw::before{border-radius:var(--rd,0)}
-/* 置き場マップの見出し（マップ切り替え） */
-.zsw{display:inline-flex;align-items:center;gap:6px;max-width:100%;background:transparent;border:1px solid rgba(255,255,255,.4);color:#fff;font:inherit;font-size:16px;font-weight:700;letter-spacing:.04em;padding:4px 10px;border-radius:8px;cursor:pointer}
-.zsw span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.zsw i{font-style:normal;font-size:11px;opacity:.8}
-#zSwM{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}#zSwM[hidden]{display:none}
-.zsc{background:#3a3e44;border:1px solid #5a6068;color:#e8ebef;font:inherit;font-size:13px;font-weight:600;padding:5px 12px;border-radius:999px;cursor:pointer}
-.zsc.on{background:#2f7fe8;border-color:#2f7fe8;color:#fff}.zsc.zadd{border-style:dashed;background:transparent;color:#cfd4da}
-#zNm{width:100%;box-sizing:border-box;font-size:16px;padding:8px 10px;margin-top:6px}
-#zDelMap[hidden]{display:none}
-/* マップの切り替え：メーカー選択と同じプルダウン式（白い入力欄＋下に開く一覧） */
-.zmap{position:relative}
-.zsw{flex:1 1 auto;min-width:0;max-width:240px;justify-content:flex-start;box-sizing:border-box;height:40px;padding:0 34px 0 12px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 12px center;border:1.5px solid #b8c0cc;border-radius:8px;color:#1b2330;font-size:15px;font-weight:600;letter-spacing:0;text-align:left}
-.zsw i{display:none}
-.zsw[aria-expanded="true"]{border-color:#1f6fc5}
-.zsw.nosw{background-image:none;padding-right:12px;cursor:default}
-#zSwM{position:absolute;z-index:6;left:0;top:0;display:block;margin:0;max-height:180px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:#fff;border:1.5px solid #b8c0cc;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.35)}
-#zSwM[hidden]{display:none}
-.zso{display:flex;align-items:center;width:100%;box-sizing:border-box;height:44px;padding:0 12px;margin:0;border:0;border-bottom:1px solid #eef0f3;border-radius:0;background:#fff;color:#1b2330;font:inherit;font-size:15px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
-.zso:last-child{border-bottom:none}
-.zso.on{background:#e8f1fb}
-.zso.zadd{color:#1f6fc5;font-weight:700}
-.zso.zmax{color:#8a93a0;font-size:13px;cursor:default}
-/* 区画をタップしたときの選択肢：小さな1行にして、出たり消えたりしてもマップの大きさ・位置が変わらないよう、場所を常に確保する */
-#zPick{display:flex;flex-wrap:nowrap;align-items:center;gap:6px;box-sizing:border-box;height:34px;margin-top:6px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-#zPick::-webkit-scrollbar{display:none}
-#zPick[hidden]{display:flex;visibility:hidden}
-#zPick .zpl{flex:0 0 auto;font-size:11px;font-weight:700;white-space:nowrap}
-#zPick button{flex:0 0 auto;min-height:28px;padding:2px 10px;font-size:12px;white-space:nowrap}
-.zso:active{background:#dbe8f7}
+/* 十字の通路の四隅：線の角を丸くつなぐ（半径6px・線の太さ1.5px） */
+#zmap .zaisle.zrc::after{content:"";position:absolute;inset:0;pointer-events:none;background-repeat:no-repeat;background-size:8px 8px;background-position:0 0,100% 0,0 100%,100% 100%;background-image:radial-gradient(circle at .75px .75px,transparent 5.25px,#cfd4da 5.25px 6.75px,transparent 6.75px),radial-gradient(circle at 7.25px .75px,transparent 5.25px,#cfd4da 5.25px 6.75px,transparent 6.75px),radial-gradient(circle at .75px 7.25px,transparent 5.25px,#cfd4da 5.25px 6.75px,transparent 6.75px),radial-gradient(circle at 7.25px 7.25px,transparent 5.25px,#cfd4da 5.25px 6.75px,transparent 6.75px)}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1727,7 +1712,7 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
     <button class="sclose" id="hClose" type="button" aria-label="閉じる" title="閉じる"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
     <div class="sh"><h3>入出庫の履歴</h3><div id="logF"></div></div>
         <div class="log" id="log"></div>
-    <div class="zmap" role="dialog" aria-label="置き場マップ"><span class="zgrab" aria-hidden="true"></span><div class="zh"><button class="zsw" id="zSw" type="button" aria-haspopup="true" aria-expanded="false" aria-label="置き場マップを切り替える"><span id="zSwT">置き場マップ</span><i aria-hidden="true">▾</i></button><span class="zbtns"><button class="lnk" id="zEdit" type="button" aria-label="配置を編集">編集</button><button class="lnk zx" id="zX" type="button">✕ 閉じる</button></span></div><div id="zSwM" hidden></div><div id="zmap"></div><div id="zPick" hidden></div></div>
+    <div class="zmap" role="dialog" aria-label="置き場マップ"><span class="zgrab" aria-hidden="true"></span><div class="zh"><h3>置き場マップ</h3><span class="zbtns"><button class="lnk" id="zEdit" type="button" aria-label="配置を編集">編集</button><button class="lnk zx" id="zX" type="button">✕ 閉じる</button></span></div><div id="zTabs" class="ztabs" hidden></div><div id="zmap"></div><div id="zPick" hidden></div></div>
     <button class="btn d" id="clrLog">履歴をクリア</button>
   </aside>
 </div>
@@ -1753,7 +1738,10 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
 
 <dialog id="zd">
   <h3 style="margin:0">置き場マップを編集</h3>
-  <section class="zs"><div class="zst">マップの名前<small>上のマップ切り替えに表示されます</small></div><input id="zNm" maxlength="10" placeholder="例：1階倉庫" autocomplete="off"></section>
+  <section class="zs">
+    <div class="zst">マップの名前<small>タブに表示されます（8文字まで）</small></div>
+    <input id="zNm" maxlength="8" placeholder="例：1階・倉庫B" autocomplete="off" style="width:100%">
+  </section>
   <section class="zs">
     <div class="zst">区画の数<span class="zsn" id="zTot"></span></div>
     <div class="zrow zsz"><label>列</label><select id="zC"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select><span class="zxm">×</span><label>行</label><select id="zR"><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
@@ -1770,7 +1758,7 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
     </div>
   </section>
   <div class="bar" style="justify-content:space-between">
-    <span style="display:flex;gap:8px"><button class="btn g" id="zRs" type="button">初期に戻す</button><button class="btn g dg" id="zDelMap" type="button">このマップを削除</button></span>
+    <span style="display:flex;gap:4px;flex-wrap:wrap"><button class="btn g" id="zRs" type="button">初期に戻す</button><button class="btn g" id="zDelMap" type="button" hidden>このマップを削除</button></span>
     <span style="display:flex;gap:8px"><button class="btn g" id="zCn" type="button">キャンセル</button><button class="btn" id="zOk" type="button">保存</button></span>
   </div>
 </dialog>
@@ -1838,7 +1826,8 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
 
 <dialog id="mv">
   <h3 id="mvT" style="margin:0"></h3>
-  <div id="mvS" style="color:var(--sub);font-size:14px;margin-top:4px"></div>
+  <label for="mvP" id="mvPL" style="margin-top:8px">工程</label><select id="mvP"></select>
+  <div id="mvS" style="color:var(--sub);font-size:14px;margin-top:6px"></div>
   <div class="qwrap"><input id="mvQ" type="number" inputmode="numeric" pattern="[0-9]*" min="1" step="1" enterkeyhint="done" style="font-size:30px;text-align:center;font-weight:700;padding-left:48px;padding-right:48px"><span>個</span></div>
   <div class="bar" style="justify-content:flex-end"><button class="btn g" id="mvC" type="button">キャンセル</button><button class="btn" id="mvOk" type="button">決定</button></div>
 </dialog>
@@ -1946,21 +1935,17 @@ async function srvReload(msg){
   render();if(msg)notify('他の人が先に更新していたため、最新の内容に更新しました。もう一度操作してください。')}
 async function srvPoll(){try{if(srvBusy||document.hidden||document.querySelector('dialog[open]'))return;const r=await fetch('api/version?'+Date.now(),{cache:'no-store'});const j=await r.json();if(j.version>apiVer)await srvReload(false)}catch(e){}}
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-let zi=0;try{zi=+localStorage.getItem('zmapIdx')||0}catch(e){}
-const ZMAX=5;
 const ZDEF=()=>({c:4,r:2,labels:['A-01','A-02','A-03','A-04','EV','B-01','B-02','B-03'],doors:[{s:'t',p:1,q:23,t:'扉',k:'door'},{s:'b',p:1,q:23,t:'扉',k:'door'}],ae:['2,1','2,3','1,2','3,2','5,2','7,2']});
-function zm(){if(!Array.isArray(S.zmaps)){S.zmaps=[S.zmap&&S.zmap.labels?S.zmap:ZDEF()];delete S.zmap}if(!S.zmaps.length)S.zmaps=[ZDEF()];if(!(zi>=0&&zi<S.zmaps.length))zi=0;const m=S.zmaps[zi];if(!m.labels)Object.assign(m,ZDEF());if(!m.name)m.name='マップ'+(zi+1);if(!m.doors){m.doors=m.door?[{s:m.door.s,p:m.door.p,t:'入口'}]:[];delete m.door}if(!Array.isArray(m.ae)){m.ae=[];(m.ac||[]).forEach(j=>{for(let i=0;i<m.r;i++)m.ae.push((2*j+2)+','+(2*i+1))});(m.ar||[]).forEach(j=>{for(let i=0;i<m.c;i++)m.ae.push((2*i+1)+','+(2*j+2))});delete m.ac;delete m.ar}return m} /* 旧データ（列・行ごとの通路）は、辺ごとの通路に変換 */
+let zi=0,zLastLoc=null;/* いま見ているマップ（端末ごと。サーバーには保存しない） */
+function zmaps(){if(!Array.isArray(S.zmaps)||!S.zmaps.length){S.zmaps=[S.zmap&&S.zmap.labels?S.zmap:ZDEF()];delete S.zmap}return S.zmaps} /* マップは最大5つ。旧データ（マップ1つ）は1つ目に引き継ぐ */
+function zm(){const a=zmaps();if(zi<0||zi>=a.length)zi=0;if(!a[zi]||!a[zi].labels)a[zi]=ZDEF();const m=a[zi];if(!m.doors){m.doors=m.door?[{s:m.door.s,p:m.door.p,t:'入口'}]:[];delete m.door}if(!Array.isArray(m.ae)){m.ae=[];(m.ac||[]).forEach(j=>{for(let i=0;i<m.r;i++)m.ae.push((2*j+2)+','+(2*i+1))});(m.ar||[]).forEach(j=>{for(let i=0;i<m.c;i++)m.ae.push((2*i+1)+','+(2*j+2))});delete m.ac;delete m.ar}return m} /* 旧データ（列・行ごとの通路）は、辺ごとの通路に変換 */
 const zn=s=>String(s||'').normalize('NFKC').trim().toUpperCase();
 let scExact='';/* QR読み取り直後は、品名が完全に一致する品目だけを出す */
 const kq=s=>kn(s).replace(/\s+/g,'');
 const kn=s=>String(s||'').normalize('NFKC').toLowerCase().replace(/[\u30a1-\u30f6]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60));
-/* 置き場所のタブを選んだとき、今のマップにその場所がなければ、その場所がのっている別のマップへ自動で切り替える（マップを手で切り替えたときは、そのまま） */
-let zAutoLoc='';
-function zAutoSel(){if(!curLoc||curLoc==='未設定'||!Array.isArray(S.zmaps))return;
-  const has=i=>{const m=S.zmaps[i],keep=zi;if(!m||!m.labels)return false;zi=i;try{return !!zcell(curLoc,m.labels.slice(0,m.c*m.r))}finally{zi=keep}};
-  if(has(zi))return;const j=S.zmaps.findIndex((_,i)=>has(i));
-  if(j>=0){zi=j;try{localStorage.setItem('zmapIdx',String(zi))}catch(e){}}}
-function zcell(loc,labels){const n=zn(loc),sbs=(zm().subs)||[];let b=null,bl=0;labels.forEach((L,i)=>{/* 区画名・「／」で分けた各部分・補足の各部分（例：パナ／リン）のどれかで、置き場所の先頭と合えば紐づく（長く合うほうを優先） */const ps=[zn(L),...String(L).split(/[\/／]/).map(zn),...String(sbs[i]||'').split(/[\/／]/).map(zn)];for(const l of ps){if(l&&n.startsWith(l)&&l.length>bl){b=L;bl=l.length}}});return b}
+function zcell(loc,labels,mp){const n=zn(loc),sbs=((mp||zm()).subs)||[];let b=null,bl=0;labels.forEach((L,i)=>{/* 区画名・「／」で分けた各部分・補足の各部分（例：パナ／リン）のどれかで、置き場所の先頭と合えば紐づく（長く合うほうを優先） */const ps=[zn(L),...String(L).split(/[\/／]/).map(zn),...String(sbs[i]||'').split(/[\/／]/).map(zn)];for(const l of ps){if(l&&n.startsWith(l)&&l.length>bl){b=L;bl=l.length}}});return b}
+/* 区画の文字：1行でいちばん長い部分の文字数（「／」で分けた各部分のうち最大） */
+function znl(t){return Math.max(1,...String(t).split(/[\/／]/).map(x=>[...x.trim()].length))}
 function zhtml(m,o){o=o||{};const n=m.c*m.r,ed=!!o.edit,W=m.c*2+1,H=m.r*2+1,
   /* 通路は「区画の一辺」ごとに持つ。格子の座標(x,y)：両方が奇数＝区画、x偶数・y奇数＝縦の辺、x奇数・y偶数＝横の辺、両方偶数＝角（つなぎ目）。
      名前が空白の区画（両方奇数）も、通路にできる */
@@ -1970,7 +1955,6 @@ function zhtml(m,o){o=o||{};const n=m.c*m.r,ed=!!o.edit,W=m.c*2+1,H=m.r*2+1,
   br=(x,y)=>x%2===0&&y%2===1?(ca(x-1,y)&&ca(x+1,y)):(x%2===1&&y%2===0?(ca(x,y-1)&&ca(x,y+1)):false), /* 通路の区画どうしの間（自動でつながる） */
   oa=(x,y)=>ca(x,y)&&[[1,1],[1,-1],[-1,1],[-1,-1]].some(q=>ca(x+2*q[0],y)&&ca(x,y+2*q[1])&&ca(x+2*q[0],y+2*q[1])), /* 2×2以上に広がった通路（広場）の区画：中に線を引かない */
   sg=(x,y)=>on(x,y)||br(x,y),cr=(x,y)=>x>0&&y>0&&x<W-1&&y<H-1&&[[0,-1],[0,1],[-1,0],[1,0]].every(q=>on(x+q[0],y+q[1])&&!br(x+q[0],y+q[1])), /* 十字に交わる場所：四隅の線を丸くつなぐ */
-  jn=(x,y)=>x>0&&y>0&&x<W-1&&y<H-1&&((on(x,y-1)&&!br(x,y-1))||(on(x,y+1)&&!br(x,y+1)))&&((on(x-1,y)&&!br(x-1,y))||(on(x+1,y)&&!br(x+1,y))), /* L字・T字・十字に交わる場所：内側の角の線を丸くつなぐ */
   cols=[],rows=[],wx=[],wy=[];
   for(let x=0;x<W;x++){if(x%2){cols.push('minmax(0,1fr)');continue}
     let w=false;for(let i=0;i<m.r;i++)if(sg(x,2*i+1)){w=true;break}
@@ -1978,15 +1962,11 @@ function zhtml(m,o){o=o||{};const n=m.c*m.r,ed=!!o.edit,W=m.c*2+1,H=m.r*2+1,
   for(let y=0;y<H;y++){if(y%2){rows.push('auto');continue}
     let w=false;for(let i=0;i<m.c;i++)if(sg(2*i+1,y)){w=true;break}
     wy[y]=w;const out=y===0||y===H-1;rows.push((w?(ed?22:32):(ed?14:(out?0:4)))+'px')}
-  /* 区画が「すき間」に広がるときの判定。斜めに広がると、通路の角（つなぎ目）の上に区画が乗って通路の線と重なるので、その場合は縦方向の広がりをやめる */
-  const cj=(x,y)=>{if(x<0||y<0||x>=W||y>=H)return false;return [[0,-1],[0,1],[-1,0],[1,0]].some(q=>on(x+q[0],y+q[1])&&!br(x+q[0],y+q[1]))||[br(x,y-1),br(x,y+1),br(x-1,y),br(x+1,y)].filter(Boolean).length>=2},
-  ex=(cx,cy)=>{let L=!ed&&cx-1>=0&&!!wx[cx-1]&&!sg(cx-1,cy),R=!ed&&cx+1<W&&!!wx[cx+1]&&!sg(cx+1,cy),U=!ed&&cy-1>=0&&!!wy[cy-1]&&!sg(cx,cy-1),D=!ed&&cy+1<H&&!!wy[cy+1]&&!sg(cx,cy+1);
-    if(R&&D&&cj(cx+1,cy+1))D=false;if(R&&U&&cj(cx+1,cy-1))U=false;if(L&&D&&cj(cx-1,cy+1))D=false;if(L&&U&&cj(cx-1,cy-1))U=false;return{L,R,U,D}};
   const cells=m.labels.slice(0,n).map((L,i)=>{if(ca((i%m.c)*2+1,Math.floor(i/m.c)*2+1))return '';const sb=String((m.subs&&m.subs[i])||'').trim(),emp=!String(L).trim(),cx=(i%m.c)*2+1,cy=Math.floor(i/m.c)*2+1;const cs=cx, /* 通常の表示では、通路でない側のすき間（幅の広いすき間）は、となりの区画が広がって埋める */
-    {L:eL,R:eR,U:eU,D:eD}=ex(cx,cy),
-    hf=(nx,ny,k)=>(nx>=1&&ny>=1&&nx<W&&ny<H&&!ca(nx,ny))?(ex(nx,ny)[k]?16:2):0, /* となりの区画も同じすき間に広がるので、すき間を半分ずつに分ける（重ならないように） */
-    mg=(eL||eR||eU||eD)?`;margin:${eU&&cy-1>0?2+hf(cx,cy-2,'D'):0}px ${eR&&cx+1<W-1?2+hf(cx+2,cy,'L'):0}px ${eD&&cy+1<H-1?2+hf(cx,cy+2,'U'):0}px ${eL&&cx-1>0?2+hf(cx-2,cy,'R'):0}px`:'';
-  return `<span class="zc${emp?' emp':''}${sb&&!emp&&!o.edit?' hc':''}${o.on===L&&!emp?' on':''}${o.sel===i?' sel':''}" data-z="${i}"${o.edit?` data-ck="${cx},${cy}"`:''} style="grid-column:${cs+1-(eL?1:0)}/${cs+2+(eR?1:0)};grid-row:${cy+1-(eU?1:0)}/${cy+2+(eD?1:0)}${mg}">${o.edit?`<input type="text" maxlength="6" data-n="${i}" value="${esc(L)}" aria-label="区画${i+1}の名前" autocomplete="off" placeholder="空白"><input class="zsi" type="text" maxlength="24" data-s="${i}" value="${esc(sb)}" aria-label="区画${i+1}の補足（／で改行）" autocomplete="off" placeholder="補足 例：パナ／リンナイ">`:(emp?'':(sb?`<b class="zmn">${sb.split(/[\/／]/).map(x=>x.trim()).filter(Boolean).map(x=>`<span class="zpt">${esc(x)}</span>`).join('')}</b><em class="zcn">${esc(L)}</em>`:`<b>${(()=>{const p=String(L).split(/[\/／]/).map(x=>x.trim()).filter(Boolean);return p.length>1?p.map(x=>`<span class="zpt">${esc(x)}</span>`).join(''):esc(L)})()}</b>`))}</span>`}).join('');
+    eL=!ed&&cx-1>=0&&wx[cx-1]&&!sg(cx-1,cy),eR=!ed&&cx+1<W&&wx[cx+1]&&!sg(cx+1,cy),eU=!ed&&cy-1>=0&&wy[cy-1]&&!sg(cx,cy-1),eD=!ed&&cy+1<H&&wy[cy+1]&&!sg(cx,cy+1),
+    hf=(nx,ny)=>(nx>=1&&ny>=1&&nx<W&&ny<H&&!ca(nx,ny))?16:0, /* となりの区画も同じすき間に広がるので、すき間を半分ずつに分ける（重ならないように） */
+    mg=(eL||eR||eU||eD)?`;margin:${eU&&cy-1>0?2+hf(cx,cy-2):0}px ${eR&&cx+1<W-1?2+hf(cx+2,cy):0}px ${eD&&cy+1<H-1?2+hf(cx,cy+2):0}px ${eL&&cx-1>0?2+hf(cx-2,cy):0}px`:'';
+  return `<span class="zc${emp?' emp':''}${sb&&!emp&&!o.edit?' hc':''}${o.on===L&&!emp?' on':''}${o.sel===i?' sel':''}" data-z="${i}"${o.edit?` data-ck="${cx},${cy}"`:''} style="grid-column:${cs+1-(eL?1:0)}/${cs+2+(eR?1:0)};grid-row:${cy+1-(eU?1:0)}/${cy+2+(eD?1:0)}${mg}">${o.edit?`<input type="text" maxlength="6" data-n="${i}" value="${esc(L)}" aria-label="区画${i+1}の名前" autocomplete="off" placeholder="空白"><input class="zsi" type="text" maxlength="24" data-s="${i}" value="${esc(sb)}" aria-label="区画${i+1}の補足（／で改行）" autocomplete="off" placeholder="補足 例：パナ／リンナイ">`:(emp?'':(sb?`<b class="zmn" style="--n:${znl(sb)}">${sb.split(/[\/／]/).map(x=>x.trim()).filter(Boolean).map(x=>`<span class="zpt">${esc(x)}</span>`).join('')}</b><em class="zcn">${esc(L)}</em>`:`<b style="--n:${znl(L)}">${(()=>{const p=String(L).split(/[\/／]/).map(x=>x.trim()).filter(Boolean);return p.length>1?p.map(x=>`<span class="zpt">${esc(x)}</span>`).join(''):esc(L)})()}</b>`))}</span>`}).join('');
   const dv='repeating-linear-gradient(to bottom,var(--zd,#fff) 0 5px,transparent 5px 10px)',dh='repeating-linear-gradient(to right,var(--zd,#fff) 0 5px,transparent 5px 10px)',
     P={u:[dv,'2px 50%','50% 0'],d:[dv,'2px 50%','50% 100%'],l:[dh,'50% 2px','0 50%'],r:[dh,'50% 2px','100% 50%']},
     bg=ks=>ks.length?`background-image:${ks.map(k=>P[k][0]).join(',')};background-size:${ks.map(k=>P[k][1]).join(',')};background-position:${ks.map(k=>P[k][2]).join(',')};`:'';
@@ -1998,30 +1978,27 @@ function zhtml(m,o){o=o||{};const n=m.c*m.r,ed=!!o.edit,W=m.c*2+1,H=m.r*2+1,
     else if(((x+y)&1)===1){const v=x%2===0;
       if(br(x,y)){const a=v?[x-1,y]:[x,y-1],b=v?[x+1,y]:[x,y+1];ai+=`<i class="zaisle ${v?'h':'v'}" style="grid-column:${x+1};grid-row:${y+1}${oa(a[0],a[1])&&oa(b[0],b[1])?';background-image:none':''}"></i>`;continue}
       if(!ed&&!on(x,y))continue;
-      const E=(cx,cy)=>(v?(cy<=0||cy>=H-1):(cx<=0||cx>=W-1))?10:(!ed&&jn(cx,cy))?.75:((v?(sg(cx-1,cy)||sg(cx+1,cy)):(sg(cx,cy-1)||sg(cx,cy+1)))?6:3),
+      const E=(cx,cy)=>(v?(cy<=0||cy>=H-1):(cx<=0||cx>=W-1))?10:(!ed&&cr(cx,cy))?.75:((v?(sg(cx-1,cy)||sg(cx+1,cy)):(sg(cx,cy-1)||sg(cx,cy+1)))?6:3),
         e1=v?E(x,y-1):E(x-1,y),e2=v?E(x,y+1):E(x+1,y);
       ai+=`<i class="zaisle ${v?'v':'h'}${on(x,y)?'':' off'}" style="grid-column:${x+1};grid-row:${y+1};--e1:${e1}px;--e2:${e2}px"${ed?` data-ak="${x},${y}" role="button" aria-label="通路"`:''}></i>`}
     else { /* 角：まわりの通路がつながっている向きに合わせて、まっすぐ・曲がり角・T字・十字に描く */
       const d={u:on(x,y-1)&&!br(x,y-1),d:on(x,y+1)&&!br(x,y+1),l:on(x-1,y)&&!br(x-1,y),r:on(x+1,y)&&!br(x+1,y)},ks=Object.keys(d).filter(k=>d[k]),nb=[br(x,y-1),br(x,y+1),br(x-1,y),br(x+1,y)].filter(Boolean).length;
       if(!ks.length&&nb<2)continue;
       let rad='';if(ks.length===2&&d.u!==d.d&&d.l!==d.r){const ou=!d.u,ol=!d.l;rad=`border-radius:${ou&&ol?'8px 0 0 0':ou?'0 8px 0 0':ol?'0 0 0 8px':'0 0 8px 0'};`}
-      ai+=`<i class="zaisle n${ed?'':' zw'}${!ed&&jn(x,y)?' zrc':''}" style="grid-column:${x+1};grid-row:${y+1};${bg(ks)}${rad}${ed?'':(()=>{const o={u:d.u||y===0,d:d.d||y===H-1,l:d.l||x===0,r:d.r||x===W-1};const q=[[d.u&&d.l,.75,.75,'0 0'],[d.u&&d.r,7.25,.75,'100% 0'],[d.d&&d.l,.75,7.25,'0 100%'],[d.d&&d.r,7.25,7.25,'100% 100%']].filter(a=>a[0]),
-          qb=q.map(a=>`radial-gradient(circle at ${a[1]}px ${a[2]}px,transparent 5.25px,#cfd4da 5.25px 6.75px,transparent 6.75px)`).join(','),
-          rd=(ks.length===2&&d.u!==d.d&&d.l!==d.r)?((!d.u&&!d.l)?'6px 0 0 0':!d.u?'0 6px 0 0':!d.l?'0 0 0 6px':'0 0 6px 0'):'0';
-        return `--in:${o.u?0:6}px ${o.r?0:6}px ${o.d?0:6}px ${o.l?0:6}px;--bw:${o.u?0:1.5}px ${o.r?0:1.5}px ${o.d?0:1.5}px ${o.l?0:1.5}px;--rd:${rd};--qb:${qb||'none'};--qp:${q.map(a=>a[3]).join(',')||'0 0'}`})()}"></i>`}}
+      ai+=`<i class="zaisle n${ed?'':' zw'}${!ed&&cr(x,y)?' zrc':''}" style="grid-column:${x+1};grid-row:${y+1};${bg(ks)}${rad}${ed?'':(()=>{const o={u:d.u||y===0,d:d.d||y===H-1,l:d.l||x===0,r:d.r||x===W-1};return `--in:${o.u?0:6}px ${o.r?0:6}px ${o.d?0:6}px ${o.l?0:6}px;--bw:${o.u?0:1.5}px ${o.r?0:1.5}px ${o.d?0:1.5}px ${o.l?0:1.5}px`})()}"></i>`}}
   let al='',vm=-1;if(!ed){
     for(let x=2;x<W-1;x+=2){let k=0,a=99,z=0;for(let i=0;i<m.r;i++)if(sg(x,2*i+1)){k++;a=Math.min(a,2*i+1);z=Math.max(z,2*i+1)}if(k>=Math.min(2,m.r)&&k>0){vm=Math.max(vm,x);al+=`<i class="zal v" style="grid-column:${x+1};grid-row:${a+1}/${z+2}"><s>↑</s><u>通路</u><s>↓</s></i>`}}
     for(let y=2;y<H-1;y+=2){let k=0,a=99,z=0;for(let i=0;i<m.c;i++)if(2*i+1>vm&&sg(2*i+1,y)){k++;a=Math.min(a,2*i+1);z=Math.max(z,2*i+1)}if(k>=Math.min(2,m.c)&&k>0)al+=`<i class="zal h" style="grid-row:${y+1};grid-column:${a+1}/${z+2}"><s>←</s><u>通路</u><s>→</s></i>`}}
   return `<div class="zframe" style="grid-template-columns:${cols.join(' ')};grid-template-rows:${rows.join(' ')};gap:0">${cells}${ai}${al}${m.doors.map((d,i)=>`<i class="zdoor ${d.s}${d.k==='door'?' gp':''}${zAn(d,W,H)?' ax':''}${d.o&&d.k!=='door'?' out':''}${o.dsel===i?' dsel':''}" style="${zAn(d,W,H)?((d.s==='t'||d.s==='b')?`grid-column:${d.an+1}/${d.an+2};`:`grid-row:${d.an+1}/${d.an+2};`):''}--o:${d.of||0}px;--p:${typeof d.q==='number'?d.q:[17,50,83][d.p]}%"${o.edit?` data-dk="${i}" role="button" aria-label="目印 ${esc(d.t)}"`:` title="${esc(d.t)}"`}>${d.k==='door'?'':esc(d.t)}</i>`).join('')}</div>`}
 
 const zAn=(d,W,H)=>d.an!=null&&d.an>=0&&d.an<((d.s==='t'||d.s==='b')?W:H);
-/* マップを切り替えても枠の高さが変わらないよう、いちばん高いマップに合わせる（区画が縦に広がる。枠の幅は今までどおり） */
-function zEq(){const el=$('zmap'),f0=el.querySelector('.zframe');if(!f0||!f0.offsetHeight||!Array.isArray(S.zmaps)||S.zmaps.length<2)return;
-  const tot=f=>{const c=getComputedStyle(f);return f.offsetHeight+(parseFloat(c.marginTop)||0)+(parseFloat(c.marginBottom)||0)}; /* 枠＋外の目印の余白をあわせた高さ */
-  const keep=el.innerHTML,cur=zm();let hmax=0;
-  S.zmaps.forEach(mm=>{if(mm===cur||!mm.labels)return;el.innerHTML=zhtml(mm,{});const f=el.querySelector('.zframe');if(f)hmax=Math.max(hmax,tot(f))});
-  el.innerHTML=keep;const f=el.querySelector('.zframe');if(f&&hmax>tot(f)){const c=getComputedStyle(f);f.style.minHeight=(hmax-(parseFloat(c.marginTop)||0)-(parseFloat(c.marginBottom)||0))+'px'}}
-function updZ(){if(curLoc!==zAutoLoc){zAutoLoc=curLoc;zAutoSel()}const m=zm(),ls=m.labels.slice(0,m.c*m.r);zSwRender();$('zmap').innerHTML=zhtml(m,{on:zcell(curLoc,ls)});zEq()/* 品目数（「3品」など）は表示しない */}
+function updZ(){let m=zm();
+  /* 置き場所を選び直したとき、いま見ているマップに無くて別のマップにあれば、そのマップに切り替える */
+  if(curLoc!==zLastLoc){zLastLoc=curLoc;if(curLoc&&!zcell(curLoc,m.labels.slice(0,m.c*m.r),m)){const a=zmaps();for(let j=0;j<a.length;j++){const mm=a[j];if(j!==zi&&mm&&mm.labels&&mm.c&&zcell(curLoc,mm.labels.slice(0,mm.c*mm.r),mm)){zi=j;m=zm();break}}}}
+  const ls=m.labels.slice(0,m.c*m.r);$('zmap').innerHTML=zhtml(m,{on:zcell(curLoc,ls)})/* 品目数（「3品」など）は表示しない */;zTabs()}
+function zTabs(){const a=zmaps(),el=$('zTabs');if(!el)return;let ad=false;try{ad=isAdmin()}catch(e){}
+  el.hidden=a.length<2&&!ad;
+  el.innerHTML=a.map((m,j)=>`<button type="button" class="zt${j===zi?' on':''}" data-zt="${j}">${esc((m&&m.name)||('マップ'+(j+1)))}</button>`).join('')+(ad&&a.length<5?'<button type="button" class="zt add" id="zAddMap" aria-label="マップを追加" title="マップを追加">＋</button>':'')}
 let zt=null;
 function zFit(){const n=zt.c*zt.r,u=new Set(zt.labels);let c=65;while(zt.labels.length<n){while(u.has(String.fromCharCode(c)))c++;const L=String.fromCharCode(c);zt.labels.push(L);u.add(L)}}
 const ZT=['入口','出口','出入口','非常口'],ZS=[['t','上'],['b','下'],['l','左'],['r','右']];
@@ -2080,7 +2057,7 @@ function render(){
     const head='';
     const dl=(mo!==pm||dt!==pd)?dt:'';
     pm=mo;pd=dt;
-    return head+`<div class="lg"><div class="ld">${dl}</div><div class="li${up?'':' mn'}"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12h8${up?'M12 8v8':''}"/></svg></div><div class="lcx"><div class="lt2"><div class="ln">${esc(l.name)}${l.e?'<em class="lfx">修正</em>':''}</div><small>${esc(it.maker||'')}${it.maker?'・':''}${esc(tm||'')}${l.u?'・'+esc(l.u):''}</small></div><div class="d ${up?'p':'m'}">${up?'＋':'−'}${Math.abs(l.d)}<span class="du">個</span></div></div></div>`}).join(''):'<div class="lgempty">まだ履歴はありません</div>'}
+    return head+`<div class="lg"><div class="ld">${dl}</div><div class="li${up?'':' mn'}"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12h8${up?'M12 8v8':''}"/></svg></div><div class="lcx"><div class="lt2"><div class="ln">${esc(l.name)}${l.e?'<em class="lfx">修正</em>':''}${l.pr?'<em class="lfx">'+esc(l.pr)+'</em>':''}</div><small>${esc(it.maker||'')}${it.maker?'・':''}${esc(tm||'')}${l.u?'・'+esc(l.u):''}</small></div><div class="d ${up?'p':'m'}">${up?'＋':'−'}${Math.abs(l.d)}<span class="du">個</span></div></div></div>`}).join(''):'<div class="lgempty">まだ履歴はありません</div>'}
   {const k=cur+'|'+q+'|'+curLoc;if(k!==pgKey){pgKey=k;page=0}}
   fit();
 }
@@ -2326,11 +2303,14 @@ $('acNAdd').onclick=()=>{
   $('acNId').value=$('acNNm').value=$('acNPw').value='';acDraw()};
 
 let mvId=null,mvSign=1;
+function mvShow(){const i=S.items.find(x=>x.id===mvId);if(!i)return;const k=$('mvP').value;const p=PROC.find(x=>x.k===k);let h='';if(mvSign>0){const idx=PROC.findIndex(x=>x.k===k);if(idx>0){let src=null;for(let j=idx-1;j>=0;j--){if(i.st[PROC[j].k]>0){src=PROC[j];break}}h='　／　前の工程から引きます'+(src?'（'+src.t+' '+i.st[src.k]+'個）':'（前の工程に在庫なし）')}}
+  $('mvS').textContent='現在の在庫（'+p.t+'）：'+i.st[k]+'個　／　合計 '+i.stock+'個'+h}
+$('mvP').onchange=mvShow;
 function move(id,sign){
   const i=S.items.find(x=>x.id===id);if(!i)return;
   mvId=id;mvSign=sign;
   $('mvT').textContent=i.name+(sign<0?'　出庫':'　入庫');
-  $('mvS').textContent='現在の在庫：'+i.stock+'個';
+  stFix(i);$('mvP').innerHTML=PROC.map(p=>`<option value="${p.k}">${p.t}</option>`).join('');$('mvP').value=i.proc||(sign<0?'done':'p1');const ps=!i.proc;/* 詳細画面で工程を選んであるときは、選び直しの欄を出さない */$('mvP').style.display=$('mvPL').style.display=ps?'':'none';mvShow();
   $('mvQ').value='';
   $('mvOk').style.background=sign<0?'#1d4f91':'#1b7f4b';
   $('mvOk').textContent=sign<0?'出庫する':'入庫する';
@@ -2341,10 +2321,15 @@ function commit(){
   if(!curUser){notify('ログインしてください');return}
   const q=Math.floor(+$('mvQ').value);
   if(!(q>=1)){notify('数量を入力してください');$('mvQ').focus();return}
-  let d=mvSign*q;if(i.stock+d<0)d=-i.stock;/* 在庫より多く出庫したときは、メッセージは出さず在庫0までで止める（マイナスにはしない） */
+  stFix(i);const k=$('mvP').value,pn=PROC.find(x=>x.k===k).t;let d=mvSign*q;if(i.st[k]+d<0)d=-i.st[k];/* 在庫より多く出庫したときは、メッセージは出さず在庫0までで止める（マイナスにはしない） */
   if(d===0){$('mv').close();return}
-  i.stock+=d;const n=new Date();
-  S.log.unshift({id:i.id,name:i.name,d,u:curUser,t:`${n.getMonth()+1}/${n.getDate()} ${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`});
+  /* 入庫：工程1以外は、直前の工程から引く。直前が足りなければ、さらに前の工程（…→工程1）から順に引く。工程1への入庫や、前の工程の合計が足りない分は、新しく入った在庫として足す */
+  let need=d,prTxt=pn;
+  if(d>0){const idx=PROC.findIndex(x=>x.k===k),parts=[];
+    for(let j=idx-1;j>=0&&need>0;j--){const pk=PROC[j].k,t=Math.min(i.st[pk],need);if(t>0){i.st[pk]-=t;need-=t;parts.push({n:PROC[j].t,t})}}
+    if(parts.length)prTxt=(parts.length>1?parts.map(x=>x.n+' '+x.t).join('・'):parts[0].n)+'→'+pn}
+  i.st[k]+=d;i.stock+=need;i.proc=k;const n=new Date();
+  S.log.unshift({id:i.id,name:i.name,d,pr:prTxt,u:curUser,t:`${n.getMonth()+1}/${n.getDate()} ${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`});
   S.log=S.log.slice(0,300);save();$('mv').close();render();if(dtId!==null)dtDraw();
 }
 document.addEventListener('click',e=>{
@@ -2372,7 +2357,14 @@ $('hOpen').onclick=()=>{dtBack=null;document.body.classList.add('hist')};
 $('hClose').onclick=()=>{const bk=dtBack;dtBack=null;document.body.classList.remove('hist');logF='';render();if(bk!==null&&mob()&&S.items.some(x=>x.id===bk))dtOpen(bk)};/* 詳細から開いた履歴は、閉じると詳細に戻る *//* 履歴を閉じたら、カードの選択も外す */
 $('mMenuBtn').onclick=e=>{e.stopPropagation();const m=$('mMenu');$('mEdit').textContent=document.body.classList.contains('edon')?'編集を終了':'編集';$('mMap').textContent=mob()?'置き場マップ':($('zBtn').getAttribute('aria-pressed')==='true'?'置き場マップを隠す':'置き場マップを表示');$('mDelMk').textContent=cur?`「${cur}」を削除`:'メーカーを削除';m.hidden=!m.hidden;$('mMenuBtn').setAttribute('aria-expanded',String(!m.hidden))};
 document.addEventListener('click',()=>{$('mMenu').hidden=true;$('mMenuBtn').setAttribute('aria-expanded','false')});
-$('zEdit').onclick=()=>{if(!isAdmin()){notify('マップの編集は管理者だけができます');return}zt=JSON.parse(JSON.stringify(zm()));$('zNm').value=zt.name||'';$('zDelMap').hidden=S.zmaps.length<2;zSync();$('zd').showModal();if(document.activeElement&&document.activeElement.blur)document.activeElement.blur()};
+function zOpenEdit(){zt=JSON.parse(JSON.stringify(zm()));zSync();$('zNm').value=zt.name||('マップ'+(zi+1));$('zDelMap').hidden=zmaps().length<2;$('zd').showModal();if(document.activeElement&&document.activeElement.blur)document.activeElement.blur()}
+$('zEdit').onclick=()=>{if(!isAdmin()){notify('マップの編集は管理者だけができます');return}zOpenEdit()};
+$('zTabs').onclick=e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.id==='zAddMap'){if(!isAdmin()){notify('マップの追加は管理者だけができます');return}const a=zmaps();if(a.length>=5){notify('マップは5つまで追加できます');return}
+    a.push({name:'マップ'+(a.length+1),c:3,r:2,labels:['','','','','',''],doors:[],ae:[]});zi=a.length-1;zLastLoc=curLoc;save();updZ();zOpenEdit();return} /* 追加したらそのまま編集画面を開く（区画名は空白から） */
+  if(b.dataset.zt!==undefined){zi=+b.dataset.zt;zLastLoc=curLoc;updZ()}};
+$('zDelMap').onclick=()=>{if(!isAdmin())return;const a=zmaps();if(a.length<2)return;const nm=(a[zi]&&a[zi].name)||('マップ'+(zi+1));
+  ask(`「${nm}」を削除しますか？（品目の置き場所は変わりません）`,()=>{a.splice(zi,1);zi=Math.max(0,zi-1);zLastLoc=null;save();$('zd').close();render();updZ()})};
 $('zC').onchange=$('zR').onchange=()=>{zt.c=+$('zC').value;zt.r=+$('zR').value;zFit();zTot();zPv()};
 /* 目印：1回タップ＝時計回りに1か所移動、すばやく2回タップ＝名前変更・削除の欄を出す */
 let zdTm=null,zdLast=-1;
@@ -2466,43 +2458,31 @@ $('zFab').onclick=()=>zSheet(true);
 $('zBack').onclick=$('zX').onclick=()=>zSheet(false);
 addEventListener('keydown',e=>{if(e.key==='Escape'&&document.body.classList.contains('zsheet')&&!document.querySelector('dialog[open]'))zSheet(false)});
 addEventListener('resize',()=>{if(!mob())zSheet(false)});
-$('zmap').onclick=e=>{const c=e.target.closest('[data-z]');if(!c||c.classList.contains('emp'))return;
-  const m=zm(),ls=m.labels.slice(0,m.c*m.r),L=ls[+c.dataset.z],sb=String((m.subs&&m.subs[+c.dataset.z])||'').trim(),nm=sb?sb+'（'+L+'）':L,pick=$('zPick');
+$('zmap').onclick=e=>{if(!mob())return;const c=e.target.closest('[data-z]');if(!c||c.classList.contains('emp'))return;
+  const m=zm(),ls=m.labels.slice(0,m.c*m.r),L=ls[+c.dataset.z],pick=$('zPick');
   const cand=[...new Set(S.items.map(i=>i.loc||'未設定'))].filter(s=>s!=='未設定'&&zcell(s,ls)===L).sort((a,b)=>a.localeCompare(b,'ja',{numeric:true}));
-  if(!cand.length){pick.hidden=false;pick.innerHTML='<span class="zpl">「'+esc(nm)+'」に置いている品目はありません</span>';return}
-  if(cand.length===1){curLoc=curLoc===cand[0]?'':cand[0];pick.hidden=true;render();if(mob()){zSheet(false);if(!document.body.classList.contains('hist'))topScroll()}return}
-  pick.hidden=false;pick.innerHTML='<span class="zpl">'+esc(nm)+'の置き場所：</span>'+cand.map(s=>`<button type="button" data-sh="${esc(s)}">${esc(s)}</button>`).join('')};
-$('zPick').onclick=e=>{const b=e.target.closest('button[data-sh]');if(!b)return;curLoc=b.dataset.sh;$('zPick').hidden=true;render();if(mob()){zSheet(false);if(!document.body.classList.contains('hist'))topScroll()}};
+  if(!cand.length){pick.hidden=false;pick.innerHTML='<span class="zpl">「'+esc(L)+'」に置いている品目はありません</span>';return}
+  if(cand.length===1){curLoc=curLoc===cand[0]?'':cand[0];render();zSheet(false);if(!document.body.classList.contains('hist'))topScroll();return}
+  pick.hidden=false;pick.innerHTML='<span class="zpl">「'+esc(L)+'」の置き場所を選んでください</span>'+cand.map(s=>`<button type="button" data-sh="${esc(s)}">${esc(s)}</button>`).join('')};
+$('zPick').onclick=e=>{const b=e.target.closest('button[data-sh]');if(!b)return;curLoc=b.dataset.sh;render();zSheet(false);if(!document.body.classList.contains('hist'))topScroll()};
 {const z=document.querySelector('.zmap');let y0=null;
   z.addEventListener('touchstart',e=>{y0=(e.target.closest('.zgrab,.zh')&&!e.target.closest('button'))?e.touches[0].clientY:null},{passive:true});
   z.addEventListener('touchmove',e=>{if(y0===null)return;const dy=e.touches[0].clientY-y0;z.style.transition='none';if(dy>0)z.style.transform='translateY('+dy+'px)'},{passive:true});
   const end=close=>e=>{if(y0===null)return;const dy=e.changedTouches[0].clientY-y0;y0=null;z.style.transition='';z.style.transform='';if(close&&dy>70)zSheet(false)};
   z.addEventListener('touchend',end(true));z.addEventListener('touchcancel',end(false))}
-
-/* ===== 置き場マップの切り替え（最大5個）：見出しをタップして選ぶ。どれを表示しているかは端末ごとに覚える ===== */
-function zSwRender(){const m=zm(),n=S.zmaps.length;$('zSwT').textContent=m.name;
-  $('zSw').classList.toggle('nosw',n<2&&!(isAdmin()&&n<ZMAX));
-  const box=$('zSwM');box.innerHTML=S.zmaps.map((x,i)=>`<button type="button" class="zso${i===zi?' on':''}" data-zi="${i}">${esc(x.name||('マップ'+(i+1)))}</button>`).join('')+(isAdmin()?(n<ZMAX?'<button type="button" class="zso zadd" data-zadd="1">＋ マップを追加…</button>':`<div class="zso zmax">マップは${ZMAX}つまで作成できます</div>`):'')}
-function zSwOpen(on){const b=$('zSwM'),t=$('zSw');b.hidden=!on;t.setAttribute('aria-expanded',String(on));if(on){b.style.left=t.offsetLeft+'px';b.style.top=(t.offsetTop+t.offsetHeight+4)+'px';b.style.width=t.offsetWidth+'px';const c=b.querySelector('.on');if(c)b.scrollTop=Math.max(0,c.offsetTop-b.clientHeight/2+c.offsetHeight/2)}}
-function zGo(i){zi=i;zAutoLoc=curLoc;try{localStorage.setItem('zmapIdx',String(zi))}catch(e){}curLoc=curLoc;$('zPick').hidden=true;zSwOpen(false);render()}
-$('zSw').onclick=()=>{zSwRender(); /* 開くたびに一覧を作り直す（ログイン状態・マップ数を最新にする） */
-  if(S.zmaps.length<2&&!(isAdmin()&&S.zmaps.length<ZMAX))return;zSwOpen($('zSwM').hidden)};
-document.addEventListener('pointerdown',e=>{if(!$('zSwM').hidden&&!$('zSwM').contains(e.target)&&!$('zSw').contains(e.target))zSwOpen(false)},true);
-$('zSwM').onclick=e=>{const b=e.target.closest('button');if(!b)return;
-  if(b.dataset.zadd){if(!isAdmin()||S.zmaps.length>=ZMAX)return;const m=ZDEF();m.name='マップ'+(S.zmaps.length+1);S.zmaps.push(m);save();zGo(S.zmaps.length-1);$('zEdit').click();return}
-  if(b.dataset.zi!==undefined)zGo(+b.dataset.zi)};
-$('zDelMap').onclick=()=>{if(!isAdmin()||S.zmaps.length<2)return;if(!confirm('「'+(zm().name)+'」を削除しますか？（品目や置き場所のデータは消えません）'))return;S.zmaps.splice(zi,1);zi=Math.max(0,zi-1);try{localStorage.setItem('zmapIdx',String(zi))}catch(e){}save();$('zd').close();render()};
 $('zOk').onclick=()=>{
   const n=zt.c*zt.r,L=zt.labels.slice(0,n).map(x=>String(x).trim());
   const aeS=new Set(zt.ae||[]),Lf=L.filter((x,i)=>x&&!aeS.has(((i%zt.c)*2+1)+','+(Math.floor(i/zt.c)*2+1))); /* 空白の区画は「何もない場所」として許可。通路にした区画（名前だけ残してある）は重複チェックに入れない */
   if(new Set(Lf.map(zn)).size!==Lf.length){notify('同じ区画名が重複しています');return}
+  {const used=new Set();zmaps().forEach((mm,j)=>{if(j!==zi&&mm&&mm.labels){const ae2=new Set(mm.ae||[]);mm.labels.slice(0,mm.c*mm.r).forEach((x,k)=>{if(x&&!ae2.has(((k%mm.c)*2+1)+','+(Math.floor(k/mm.c)*2+1)))used.add(zn(x))})}});
+  if(Lf.some(x=>used.has(zn(x)))){notify('ほかのマップと同じ区画名があります');return}} /* 区画名は、マップをまたいでも重ならないようにする（置き場所と区画を結びつけるため） */
   const old=zm().labels.slice(0,zm().c*zm().r),nw=new Set(L.map(zn)),ren={};
   old.forEach((o,i)=>{if(i<n&&o&&L[i]&&zn(o)!==zn(L[i])&&!nw.has(zn(o)))ren[o]=L[i]});
   const mv=loc=>{const b=zcell(loc,old);if(b===null||!(b in ren))return loc;for(let k=1;k<=loc.length;k++){if(zn(loc.slice(0,k))===zn(b))return ren[b]+loc.slice(k)}return loc};
   if(Object.keys(ren).length){S.items.forEach(i=>{i.loc=mv(i.loc)});curLoc=mv(curLoc)}
   zt.labels=L.concat(zt.labels.slice(n));zt.subs=Array.from({length:zt.labels.length},(_,i)=>String((zt.subs&&zt.subs[i])||'').trim());
   zt.ae=(zt.ae||[]).filter(k=>{const q=String(k).split(',').map(Number);if(!(q[0]<=zt.c*2&&q[1]<=zt.r*2))return false;return true});delete zt.ac;delete zt.ar;
-  zt.name=($('zNm').value||'').trim()||('マップ'+(zi+1));S.zmaps[zi]=zt;save();$('zd').close();render()};
+  zt.name=$('zNm').value.trim()||('マップ'+(zi+1));zmaps()[zi]=zt;save();$('zd').close();render()};
 $('pZoom').oninput=()=>{phz=+$('pZoom').value/100;showPv()};
 $('pReset').onclick=()=>{phz=1;phx=0;phy=0;showPv()};
 $('pAuto').onclick=()=>autoFit();
@@ -2703,7 +2683,7 @@ function cdd(sel){
   addEventListener('resize',close);dlg.addEventListener('close',close);
   sel.addEventListener('change',sync);new MutationObserver(sync).observe(sel,{childList:true,subtree:true,attributes:true});sync()}
 cdd($('fMaker'));cdd($('fLoc'));
-function openEdit(id){$('pv').classList.remove('adj');if(!canEdit()){notify('編集するにはログインしてください');return}if(!id&&!isAdmin()){notify('品目の追加は管理者だけができます');return}
+function openEdit(id){$('pv').classList.remove('adj');if(!canEdit()){notify('編集するにはログインしてください');return}
   editId=id;const i=id?S.items.find(x=>x.id===id):{name:'',maker:cur||S.makers[0],stock:0,min:0,unit:'個',loc:curLoc&&curLoc!=='未設定'?curLoc:'',img:''};
   $('dt').textContent=id?'品目を編集':'品目を追加';
   $('fMaker').innerHTML=S.makers.map(m=>`<option ${m===i.maker?'selected':''}>${esc(m)}</option>`).join('')+`<option value="__new__" ${S.makers.length?'':'selected'}>＋ メーカーを追加…</option>`;$('fMakerNew').value='';mkNewSync();
@@ -2777,7 +2757,7 @@ $('fSave').onclick=()=>{
   if(lim){v.name=orig.name;v.maker=orig.maker;v.img=orig.img;v.z=orig.z;v.x=orig.x;v.y=orig.y}/* 作業者は在庫数・置き場所以外を変えられない */
   if(editId){const it=S.items.find(x=>x.id===editId),d=v.stock-it.stock;
     if(d){/* 編集画面で在庫数を直したときも履歴に残す（e:1＝編集による修正） */const n=new Date();S.log.unshift({id:it.id,name:v.name,d,e:1,u:curUser,t:`${n.getMonth()+1}/${n.getDate()} ${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`});S.log=S.log.slice(0,300)}
-    Object.assign(it,v)}else S.items.push({id:S.nid++,...v});
+    Object.assign(it,v);stFix(it)}else{const ni={id:S.nid++,...v};stFix(ni);S.items.push(ni)}
   if(cur&&cur!==v.maker)cur=v.maker;if(curLoc&&(v.loc||'未設定')!==curLoc)curLoc='';save();$('dlg').close();render();
 };
 
@@ -2929,16 +2909,24 @@ $('scF').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;c
   im.onerror=()=>{URL.revokeObjectURL(u);$('scH').textContent='画像を開けませんでした'};im.src=u};
 
 /* ===== スマホ：詳細画面（カードをタップ → 写真・品名・在庫・置き場所、下に入庫／出庫ボタン） ===== */
+const IC_DRILL="data:image/png;base64,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",IC_GEAR="data:image/png;base64,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",IC_BARI="data:image/png;base64,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";/* アイコン画像（透明PNG。色は文字色に合わせて塗る） */
+const PROC=[1,2,3,4,5,6].map(n=>({k:'p'+n,t:'工程'+n,m:IC_DRILL})).concat([{k:'bari',t:'バリ取り',m:IC_BARI},{k:'done',t:'完成品',m:IC_GEAR}]);
+/* 工程ごとの在庫：i.st={p1..p6,bari,done}。i.stock（一覧に出す合計）と食い違っていたら、差を「完成品」から調整する */
+function stFix(i){if(!i.st||typeof i.st!=='object')i.st={};let sum=0;for(const p of PROC){i.st[p.k]=Math.max(0,Math.floor(+i.st[p.k]||0));sum+=i.st[p.k]}
+  let diff=(+i.stock||0)-sum;if(diff>0)i.st.done+=diff;else if(diff<0){for(const p of PROC.slice().reverse()){const t=Math.min(i.st[p.k],-diff);i.st[p.k]-=t;diff+=t;if(!diff)break}}}
 let dtId=null;let dtBack=null;/* 詳細から履歴を開いたときの、戻り先の品目ID */
-function dtDraw(){const i=S.items.find(x=>x.id===dtId);if(!i){dtClose(true);return}
+function dtDraw(){const i=S.items.find(x=>x.id===dtId);if(!i){dtClose(true);return}stFix(i);
   const a=String(i.name).split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
   $('dvPh').innerHTML=(i.img?`<span class="pi">${imgTag(i)}</span>`:'<span>写真なし</span>')+`<button class="dth" data-h="${i.id}" type="button" aria-label="この品目の履歴"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg><span>履歴</span></button>`;
-  $('dvB').innerHTML=`<div class="dtn">${esc(a[0]||'')}</div><div class="dtr"><span>メーカー</span>${i.maker?`<b>${esc(i.maker)}</b>`:'<b class="em">ー</b>'}</div><div class="dtr"><span>品番</span>${a.slice(1).join(' ').trim()?`<b>${esc(a.slice(1).join(' ').trim())}</b>`:'<b class="em">ー</b>'}</div><div class="dtr"><span>保管場所</span>${i.loc?`<b>${esc(i.loc)}</b>`:'<b class="em">未設定</b>'}</div><div class="dts2"><span>在庫数</span><span class="dsv"><b>${i.stock}</b><span>個</span></span></div>`;
+  $('dvB').innerHTML=`${a.slice(1).join(' ').trim()?`<div class="dtpn">${esc(a.slice(1).join(' ').trim())}</div>`:''}<div class="dtn">${esc(a[0]||'')}</div><div class="dtr"><span>メーカー</span>${i.maker?`<b>${esc(i.maker)}</b>`:'<b class="em">ー</b>'}</div><div class="dtr"><span>保管場所</span>${i.loc?`<b>${esc(i.loc)}</b>`:'<b class="em">未設定</b>'}</div><div class="dtg" id="dvPg">${PROC.map(p=>`<button type="button" class="pc${i.proc===p.k?' on':''}" data-pc="${p.k}"><i class="ic" aria-hidden="true" style="-webkit-mask-image:url(${p.m});mask-image:url(${p.m})"></i><span>${p.t}</span><em class="cn${i.st[p.k]?'':' z'}">${i.st[p.k]}</em></button>`).join('')}</div>`;
   $('dvBar').innerHTML=`<button class="o" data-o="${i.id}" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 14l2-6h4M21 14l-2-6h-4M3 14v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4M3 14h5l1.5 2.5h5L16 14h5"/><path d="M12 12V3m0 0l-3 3m3-3l3 3"/></svg>出庫</button><button class="n" data-i="${i.id}" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 14l2-6h4M21 14l-2-6h-4M3 14v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4M3 14h5l1.5 2.5h5L16 14h5"/><path d="M12 3v9m0 0l-3-3m3 3l3-3"/></svg>入庫</button>`;phBg()}
 function dtOpen(id){dtId=id;dtDraw();$('dv').hidden=false;$('dvS').scrollTop=0;try{history.pushState({dt:1},'')}catch(e){}}
 function dtClose(fromPop){if(dtId===null)return;dtId=null;$('dv').hidden=true;if(!fromPop){try{if(history.state&&history.state.dt)history.back()}catch(e){}}}
 addEventListener('popstate',()=>{if(dtId!==null)dtClose(true)});
 $('dvBack').onclick=()=>dtClose();
+$('dv').addEventListener('click',e=>{const b=e.target.closest('[data-pc]');if(!b)return;const i=S.items.find(x=>x.id===dtId);if(!i)return;
+  i.proc=(i.proc===b.dataset.pc)?'':b.dataset.pc;/* 同じ工程をもう一度タップすると解除 */
+  $('dvPg').querySelectorAll('.pc').forEach(x=>x.classList.toggle('on',x.dataset.pc===i.proc));save()});
 $('dv').addEventListener('click',e=>{const h=e.target.closest('[data-h]');if(h){dtBack=+h.dataset.h;dtClose()}});
 $('grid').addEventListener('click',e=>{if(e.target.closest('[data-h]'))dtBack=null},true); /* 履歴ボタンは、詳細を閉じてから履歴を開く */
 $('grid').addEventListener('click',e=>{if(!mob())return;const b=document.body.classList;if(b.contains('deon'))return;
