@@ -1677,6 +1677,7 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
 @media(max-width:600px){
   body .zmap,body .main .zmap{padding-bottom:6px}
   body .zmap #zmap .zframe,body .main .zmap #zmap .zframe{margin-bottom:0}
+  #zmap .zframe:has(.zdoor.b.out){margin-bottom:30px} /* 下の外側の目印（エレベーター等）がちょうど入る分だけ */
 }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2029,7 +2030,7 @@ function zhtml(m,o){o=o||{};const n=m.c*m.r,ed=!!o.edit,W=m.c*2+1,H=m.r*2+1,
 
 const zAn=(d,W,H)=>d.an!=null&&d.an>=0&&d.an<((d.s==='t'||d.s==='b')?W:H);
 /* マップを切り替えても枠の高さが変わらないよう、いちばん高いマップに合わせる（区画が縦に広がる。枠の幅は今までどおり） */
-function zEq(){const el=$('zmap'),f0=el.querySelector('.zframe');if(!f0||!f0.offsetHeight||!Array.isArray(S.zmaps)||S.zmaps.length<2)return;
+function zEq(){const el=$('zmap'),f0=el.querySelector('.zframe');if(!f0||!f0.offsetHeight||!Array.isArray(S.zmaps)||S.zmaps.length<2)return;if(mob())return; /* スマホは下から出るシートなので、他のマップに高さを合わせず、このマップの高さぴったりにする */
   const tot=f=>{const c=getComputedStyle(f);return f.offsetHeight+(parseFloat(c.marginTop)||0)+(parseFloat(c.marginBottom)||0)}; /* 枠＋外の目印の余白をあわせた高さ */
   const keep=el.innerHTML,cur=zm();let hmax=0;
   S.zmaps.forEach(mm=>{if(mm===cur||!mm.labels)return;el.innerHTML=zhtml(mm,{});const f=el.querySelector('.zframe');if(f)hmax=Math.max(hmax,tot(f))});
