@@ -1673,6 +1673,8 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
 .zso.zmax{color:#8a93a0;font-size:13px;cursor:default}
 /* 区画をタップしたときの選択肢：小さな1行にして、出たり消えたりしてもマップの大きさ・位置が変わらないよう、場所を常に確保する */
 .zso:active{background:#dbe8f7}
+/* マップ編集画面：中身が縦に長いときに見出し・各ブロックが押しつぶされて文字が見切れないよう、縮まないようにする（はみ出した分は画面内でスクロール） */
+#zd[open]>*{flex-shrink:0}
 /* スマホ：置き場マップの下の余白をつめる（下タブがすでに安全領域を確保しているので、シート側では二重に取らない） */
 @media(max-width:600px){
   body .zmap,body .main .zmap{padding-bottom:6px}
