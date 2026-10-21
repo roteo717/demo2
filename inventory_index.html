@@ -1625,8 +1625,25 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
 #zmap .zc.hc{padding-left:2px;padding-right:2px}
 /* 補足があるとき：メーカー名などを中央に、棚の名前（区画名）を右下の三角に入れる */
 #zmap .zc.hc::after{width:24px;height:24px}
-#zmap .zc .zcn{position:absolute;right:3px;bottom:2px;z-index:1;font-style:normal;font-size:9px;font-weight:800;line-height:1;color:#fff;max-width:calc(100% - 4px);overflow:hidden;white-space:nowrap;text-shadow:0 0 2px #000}
+#zmap .zc .zcn{position:absolute;right:2px;bottom:0;z-index:1;font-style:normal;font-size:max(6px,calc((var(--zt,24px) - 4px)/2));font-weight:800;line-height:1;color:#fff;max-width:calc(100% - 4px);overflow:hidden;white-space:nowrap;text-shadow:0 0 2px #000}
 #zmap .zc .zmn{font-size:min(12px,22cqw)} /* 列が増えて区画が細くなっても、補足（メーカー名など）が横4文字で収まるよう文字を縮める */
+/* 置き場マップの文字は、どの区画でも同じ大きさ（JSで共通の大きさを --zb / --zfm / --zs に入れる） */
+#zmap .zc b{font-size:var(--zb,min(13px,24cqw))}
+#zmap .zc .zmn{font-size:var(--zfm,min(12px,22cqw))}
+#zmap .zc .zsub{font-size:var(--zs,min(9px,19cqw))}
+#zmap .zc,#zmap .zc.hc{padding-left:1px;padding-right:1px}
+#zmap .zc b .zpt{padding:1px 0}
+#zmap .zc b .zpt,#zmap .zc.on b .zpt{background:none;border-radius:0;font-size:1em}
+/* 編集：上＝枠内の自由な表示、下＝棚名 */
+#zd #zPv .zc input.zsi{order:-1;font-size:13px;font-weight:800;color:#fff;padding:8px 2px 3px}
+#zd #zPv .zc input[data-n]{font-size:11px;font-weight:500;color:#b9c3cf;padding:3px 2px 8px}
+/* 棚名のない区画（事務所・階段など）：右下の三角なし・タップしても何も起きない */
+#zmap .zc.ns::after{display:none}
+/* 右下の三角は、区画の形・補足の有無にかかわらず、どの区画でも同じ大きさ */
+#zmap .zc:not(.emp)::after,#zmap .zc.hc:not(.emp)::after{width:var(--zt,24px);height:var(--zt,24px)}
+/* 文字は三角の上に重ねて、三角に隠れて見切れないようにする */
+#zmap .zc b{position:relative;z-index:2}
+#zmap .zc.ns{cursor:default}
 #zmap .zc.hc{padding-bottom:12px}
 /* L字・T字・十字の通路：内側の角を丸くつなぎ、Lの外側の角も丸める（半径6px・線の太さ1.5px） */
 #zmap .zaisle.zrc::after{content:"";position:absolute;inset:0;pointer-events:none;background-repeat:no-repeat;background-size:8px 8px;background-position:var(--qp,0 0);background-image:var(--qb,none)}
@@ -1642,6 +1659,8 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
 /* マップの切り替え：メーカー選択と同じプルダウン式（白い入力欄＋下に開く一覧） */
 .zmap{position:relative}
 .zsw{flex:1 1 auto;min-width:0;max-width:240px;justify-content:flex-start;box-sizing:border-box;height:40px;padding:0 34px 0 12px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 12px center;border:1.5px solid #b8c0cc;border-radius:8px;color:#1b2330;font-size:15px;font-weight:600;letter-spacing:0;text-align:left}
+/* 置き場マップの切り替えボタンを小さく */
+.zsw{height:30px;padding:0 26px 0 9px;font-size:13px;max-width:180px;border-radius:6px;background-size:10px 7px;background-position:right 8px center}
 .zsw i{display:none}
 .zsw[aria-expanded="true"]{border-color:#1f6fc5}
 .zsw.nosw{background-image:none;padding-right:12px;cursor:default}
@@ -1748,7 +1767,7 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
     <div class="zrow zsz"><label>列</label><select id="zC"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select><span class="zxm">×</span><label>行</label><select id="zR"><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
   </section>
   <section class="zs">
-    <div class="zst">マップ<small>区画をタップして名前を入力（空白＝何もない場所）</small><span class="zsn" id="zDc"></span></div>
+    <div class="zst">マップ<small>上の欄＝枠内の自由な表示（事務所・階段・メーカーなど）／下の欄＝棚名（右下の三角に表示）。両方空白＝何もない場所</small><span class="zsn" id="zDc"></span></div>
     <div id="zPv"></div>
     <div class="zhint"><b>通路</b>：区画のふちの点線をタップで追加　／　もう一度タップで削除。区画を<b>ダブルタップ</b>すると、その区画ごと通路にできます（通路にした区画も、もう一度ダブルタップで名前つきの区画に戻ります）。となり合う通路は自動でつながります（曲がり角・T字・十字も）</div>
     <div class="zhint"><b>目印</b>：ドラッグで移動　／　タップで名前変更・削除</div>
@@ -1971,11 +1990,11 @@ function zhtml(m,o){o=o||{};const n=m.c*m.r,ed=!!o.edit,W=m.c*2+1,H=m.r*2+1,
   const cj=(x,y)=>{if(x<0||y<0||x>=W||y>=H)return false;return [[0,-1],[0,1],[-1,0],[1,0]].some(q=>on(x+q[0],y+q[1])&&!br(x+q[0],y+q[1]))||[br(x,y-1),br(x,y+1),br(x-1,y),br(x+1,y)].filter(Boolean).length>=2},
   ex=(cx,cy)=>{let L=!ed&&cx-1>=0&&!!wx[cx-1]&&!sg(cx-1,cy),R=!ed&&cx+1<W&&!!wx[cx+1]&&!sg(cx+1,cy),U=!ed&&cy-1>=0&&!!wy[cy-1]&&!sg(cx,cy-1),D=!ed&&cy+1<H&&!!wy[cy+1]&&!sg(cx,cy+1);
     if(R&&D&&cj(cx+1,cy+1))D=false;if(R&&U&&cj(cx+1,cy-1))U=false;if(L&&D&&cj(cx-1,cy+1))D=false;if(L&&U&&cj(cx-1,cy-1))U=false;return{L,R,U,D}};
-  const cells=m.labels.slice(0,n).map((L,i)=>{if(ca((i%m.c)*2+1,Math.floor(i/m.c)*2+1))return '';const sb=String((m.subs&&m.subs[i])||'').trim(),emp=!String(L).trim(),cx=(i%m.c)*2+1,cy=Math.floor(i/m.c)*2+1;const cs=cx, /* 通常の表示では、通路でない側のすき間（幅の広いすき間）は、となりの区画が広がって埋める */
+  const cells=m.labels.slice(0,n).map((L,i)=>{if(ca((i%m.c)*2+1,Math.floor(i/m.c)*2+1))return '';const sb=String((m.subs&&m.subs[i])||'').trim(),ns=!String(L).trim()&&!!sb,emp=!String(L).trim()&&!sb,cx=(i%m.c)*2+1,cy=Math.floor(i/m.c)*2+1;const cs=cx, /* 通常の表示では、通路でない側のすき間（幅の広いすき間）は、となりの区画が広がって埋める */
     {L:eL,R:eR,U:eU,D:eD}=ex(cx,cy),
     hf=(nx,ny,k)=>(nx>=1&&ny>=1&&nx<W&&ny<H&&!ca(nx,ny))?(ex(nx,ny)[k]?16:2):0, /* となりの区画も同じすき間に広がるので、すき間を半分ずつに分ける（重ならないように） */
     mg=(eL||eR||eU||eD)?`;margin:${eU&&cy-1>0?2+hf(cx,cy-2,'D'):0}px ${eR&&cx+1<W-1?2+hf(cx+2,cy,'L'):0}px ${eD&&cy+1<H-1?2+hf(cx,cy+2,'U'):0}px ${eL&&cx-1>0?2+hf(cx-2,cy,'R'):0}px`:'';
-  return `<span class="zc${emp?' emp':''}${sb&&!emp&&!o.edit?' hc':''}${o.on===L&&!emp?' on':''}${o.sel===i?' sel':''}" data-z="${i}"${o.edit?` data-ck="${cx},${cy}"`:''} style="grid-column:${cs+1-(eL?1:0)}/${cs+2+(eR?1:0)};grid-row:${cy+1-(eU?1:0)}/${cy+2+(eD?1:0)}${mg}">${o.edit?`<input type="text" maxlength="6" data-n="${i}" value="${esc(L)}" aria-label="区画${i+1}の名前" autocomplete="off" placeholder="空白"><input class="zsi" type="text" maxlength="24" data-s="${i}" value="${esc(sb)}" aria-label="区画${i+1}の補足（／で改行）" autocomplete="off" placeholder="補足 例：パナ／リンナイ">`:(emp?'':(sb?`<b class="zmn">${sb.split(/[\/／]/).map(x=>x.trim()).filter(Boolean).map(x=>`<span class="zpt">${esc(x)}</span>`).join('')}</b><em class="zcn">${esc(L)}</em>`:`<b>${(()=>{const p=String(L).split(/[\/／]/).map(x=>x.trim()).filter(Boolean);return p.length>1?p.map(x=>`<span class="zpt">${esc(x)}</span>`).join(''):esc(L)})()}</b>`))}</span>`}).join('');
+  return `<span class="zc${emp?' emp':''}${ns?' ns':''}${sb&&!ns&&!emp&&!o.edit?' hc':''}${o.on===L&&!emp?' on':''}${o.sel===i?' sel':''}" data-z="${i}"${o.edit?` data-ck="${cx},${cy}"`:''} style="grid-column:${cs+1-(eL?1:0)}/${cs+2+(eR?1:0)};grid-row:${cy+1-(eU?1:0)}/${cy+2+(eD?1:0)}${mg}">${o.edit?`<input type="text" maxlength="12" data-n="${i}" value="${esc(L)}" aria-label="区画${i+1}の棚名（置き場所）" autocomplete="off" placeholder="棚名 例：A棚（右下の三角に表示）"><input class="zsi" type="text" maxlength="24" data-s="${i}" value="${esc(sb)}" aria-label="区画${i+1}の枠内の表示（／で改行）" autocomplete="off" placeholder="表示（自由）例：事務所・階段・リンナイ／パナ">`:(emp?'':(sb?`<b class="zmn">${sb.split(/[\/／]/).map(x=>x.trim()).filter(Boolean).map(x=>`<span class="zpt">${esc(x)}</span>`).join('')}</b>${ns?'':`<em class="zcn">${esc([...String(L).trim()][0]||'')}</em>`}`:`<b>${(()=>{const p=String(L).split(/[\/／]/).map(x=>x.trim()).filter(Boolean);return p.length>1?p.map(x=>`<span class="zpt">${esc(x)}</span>`).join(''):esc(L)})()}</b>`))}</span>`}).join('');
   const dv='repeating-linear-gradient(to bottom,var(--zd,#fff) 0 5px,transparent 5px 10px)',dh='repeating-linear-gradient(to right,var(--zd,#fff) 0 5px,transparent 5px 10px)',
     P={u:[dv,'2px 50%','50% 0'],d:[dv,'2px 50%','50% 100%'],l:[dh,'50% 2px','0 50%'],r:[dh,'50% 2px','100% 50%']},
     bg=ks=>ks.length?`background-image:${ks.map(k=>P[k][0]).join(',')};background-size:${ks.map(k=>P[k][1]).join(',')};background-position:${ks.map(k=>P[k][2]).join(',')};`:'';
@@ -2010,7 +2029,24 @@ function zEq(){const el=$('zmap'),f0=el.querySelector('.zframe');if(!f0||!f0.off
   const keep=el.innerHTML,cur=zm();let hmax=0;
   S.zmaps.forEach(mm=>{if(mm===cur||!mm.labels)return;el.innerHTML=zhtml(mm,{});const f=el.querySelector('.zframe');if(f)hmax=Math.max(hmax,tot(f))});
   el.innerHTML=keep;const f=el.querySelector('.zframe');if(f&&hmax>tot(f)){const c=getComputedStyle(f);f.style.minHeight=(hmax-(parseFloat(c.marginTop)||0)-(parseFloat(c.marginBottom)||0))+'px'}}
-function updZ(){if(curLoc!==zAutoLoc){zAutoLoc=curLoc;zAutoSel()}const m=zm(),ls=m.labels.slice(0,m.c*m.r);zSwRender();$('zmap').innerHTML=zhtml(m,{on:zcell(curLoc,ls)});zEq()/* 品目数（「3品」など）は表示しない */}
+function updZ(){if(curLoc!==zAutoLoc){zAutoLoc=curLoc;zAutoSel()}const m=zm(),ls=m.labels.slice(0,m.c*m.r);zSwRender();$('zmap').innerHTML=zhtml(m,{on:zcell(curLoc,ls)});zEq();zUni()/* 品目数（「3品」など）は表示しない */}
+/* 置き場マップの文字の大きさをすべての区画でそろえる：いちばん細い区画に合わせた大きさを共通で使う（区画の幅で大きさが変わらないように） */
+function zUni(){const el=$('zmap');if(!el)return;['--zb','--zfm','--zs','--zt'].forEach(k=>el.style.removeProperty(k));
+  /* 区画の中身の幅（余白をのぞく）のうち、いちばん細いものを基準にして、横に全角4文字が入る大きさから始める */
+  const cs=[...el.querySelectorAll('.zc:not(.emp)')];
+  const ws=cs.map(c=>{const st=getComputedStyle(c);return c.clientWidth-(parseFloat(st.paddingLeft)||0)-(parseFloat(st.paddingRight)||0)}).filter(w=>w>0);if(!ws.length)return;
+  let f=Math.max(6,Math.min(13,((Math.min(...ws)-4)/4)*.85)); /* 4文字がぎりぎりにならないよう、少し小さめにする */
+  const set=()=>{el.style.setProperty('--zb',f.toFixed(2)+'px');el.style.setProperty('--zfm',f.toFixed(2)+'px');el.style.setProperty('--zs',Math.min(11,f*.75).toFixed(2)+'px');el.style.setProperty('--zt',Math.max(14,Math.round(f*1.6))+'px')};
+  /* 実際に4文字以内の表示が折り返していたら、折り返さなくなるまで0.5pxずつ小さくする */
+  const wraps=()=>[...el.querySelectorAll('.zc:not(.emp) .zpt, .zc:not(.emp) > b:not(.zmn)')].some(x=>{
+    if(x.querySelector('.zpt'))return false;if([...x.textContent.trim()].length>4)return false;
+    const st=getComputedStyle(x),lh=parseFloat(st.lineHeight)||f*1.25,pad=(parseFloat(st.paddingTop)||0)+(parseFloat(st.paddingBottom)||0);
+    return x.offsetHeight-pad>lh*1.5});
+  set();for(let n=0;n<24&&f>6&&wraps();n++){f=Math.max(6,f-.5);set()}}
+(()=>{const z=document.getElementById('zmap');if(!z||typeof ResizeObserver==='undefined')return;let t=0;
+  /* 開く動きの途中や画面の幅が変わったときも、落ち着いたところで大きさを計算し直す */
+  new ResizeObserver(()=>{clearTimeout(t);t=setTimeout(()=>{if(z.querySelector('.zc'))zUni()},60)}).observe(z)})();
+addEventListener('resize',()=>{if(document.getElementById('zmap')&&document.getElementById('zmap').querySelector('.zc'))zUni()});
 let zt=null;
 function zFit(){const n=zt.c*zt.r,u=new Set(zt.labels);let c=65;while(zt.labels.length<n){while(u.has(String.fromCharCode(c)))c++;const L=String.fromCharCode(c);zt.labels.push(L);u.add(L)}}
 const ZT=['入口','出口','出入口','非常口'],ZS=[['t','上'],['b','下'],['l','左'],['r','右']];
@@ -2414,7 +2450,7 @@ $('zDok').onclick=()=>{zdSel=-1;zDoorRows();zPv()};
 $('zDdel').onclick=()=>{if(!isAdmin())return;if(zdSel<0)return;zt.doors.splice(zdSel,1);zdSel=-1;zDoorRows();zPv()};
 $('zAddDr').onclick=()=>{if(zt.doors.length>=10)return;zt.doors.push({s:'t',p:1,t:'扉',k:'door'});zdSel=zt.doors.length-1;zDoorRows();zPv();$('zDn').focus();$('zDn').select()};
 $('zAddDoor').onclick=()=>{if(zt.doors.length>=10)return;zt.doors.push({s:'t',p:1,t:'目印'});zdSel=zt.doors.length-1;zDoorRows();zPv();$('zDn').focus();$('zDn').select()};
-$('zPv').oninput=e=>{const t=e.target;if(t.dataset.s!==undefined){if(!zt.subs)zt.subs=[];zt.subs[+t.dataset.s]=t.value;return}if(t.dataset.n===undefined)return;zt.labels[+t.dataset.n]=t.value;const zc=t.closest('.zc');if(zc)zc.classList.toggle('emp',!t.value.trim())}; /* 入力中は描き直さない（キーボードが閉じるため） */
+$('zPv').oninput=e=>{const t=e.target,isS=t.dataset.s!==undefined,k=isS?+t.dataset.s:(t.dataset.n!==undefined?+t.dataset.n:-1);if(k<0)return;if(isS){if(!zt.subs)zt.subs=[];zt.subs[k]=t.value}else zt.labels[k]=t.value;const zc=t.closest('.zc');if(zc){const hl=!!String(zt.labels[k]||'').trim(),hs=!!String((zt.subs&&zt.subs[k])||'').trim();zc.classList.toggle('emp',!hl&&!hs);zc.classList.toggle('ns',!hl&&hs)}}; /* 入力中は描き直さない（キーボードが閉じるため） */
 $('zRs').onclick=()=>{const nm=$('zNm').value;zt=ZDEF();zt.name=nm;zSync()};
 $('zCn').onclick=()=>$('zd').close();
 let dlgLockY=null;
