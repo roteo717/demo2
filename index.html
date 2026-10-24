@@ -104,6 +104,7 @@ dialog input,dialog select,dialog textarea{width:100%;padding:9px;border:1px sol
 .card.sel{border-color:var(--red);box-shadow:0 0 0 2px var(--red)}
 /* ===== レスポンシブ（PC / タブレット / スマホ） ===== */
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html,body,select,.card,.btab,.zmap,.side{touch-action:manipulation}
 button,.tab,.chip,.ph,.nm{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .tools input[type=search]{font-size:16px}
 dialog{max-height:90vh;max-height:90dvh;overflow:auto}
@@ -2166,7 +2167,8 @@ async function srvReload(msg){
   const r=await fetch('api/state?'+Date.now(),{cache:'no-store'});const j=await r.json();apiVer=j.version||0;
   if(j.state){S=j.state;(S.items||[]).forEach(x=>x.unit='個');if(!Array.isArray(S.accounts))S.accounts=[]}
   render();if(msg)notify('他の人が先に更新していたため、最新の内容に更新しました。もう一度操作してください。')}
-async function srvPoll(){try{if(srvBusy||document.hidden||document.querySelector('dialog[open]'))return;const r=await fetch('api/version?'+Date.now(),{cache:'no-store'});const j=await r.json();if(j.version>apiVer)await srvReload(false)}catch(e){}}
+let fingerDown=0;addEventListener('touchstart',()=>{fingerDown=Date.now()},{capture:true,passive:true});addEventListener('touchend',()=>{fingerDown=0},{capture:true,passive:true});addEventListener('touchcancel',()=>{fingerDown=0},{capture:true,passive:true});
+async function srvPoll(){try{if(srvBusy||document.hidden||document.querySelector('dialog[open]'))return;if(fingerDown&&Date.now()-fingerDown<5000)return;/* 指が画面に触れている間は自動更新しない（押している最中に画面が作り直されて、タップが空振りするのを防ぐ） */const r=await fetch('api/version?'+Date.now(),{cache:'no-store'});const j=await r.json();if(j.version>apiVer)await srvReload(false)}catch(e){}}
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const ZDEF=()=>({c:4,r:2,labels:['A-01','A-02','A-03','A-04','EV','B-01','B-02','B-03'],doors:[{s:'t',p:1,q:23,t:'扉',k:'door'},{s:'b',p:1,q:23,t:'扉',k:'door'}],ae:['2,1','2,3','1,2','3,2','5,2','7,2']});
 function zm(){if(!S.zmap||!S.zmap.labels)S.zmap=ZDEF();const m=S.zmap;if(!m.doors){m.doors=m.door?[{s:m.door.s,p:m.door.p,t:'入口'}]:[];delete m.door}if(!Array.isArray(m.ae)){m.ae=[];(m.ac||[]).forEach(j=>{for(let i=0;i<m.r;i++)m.ae.push((2*j+2)+','+(2*i+1))});(m.ar||[]).forEach(j=>{for(let i=0;i<m.c;i++)m.ae.push((2*i+1)+','+(2*j+2))});delete m.ac;delete m.ar}return m} /* 旧データ（列・行ごとの通路）は、辺ごとの通路に変換 */
@@ -2947,7 +2949,7 @@ $('locs').addEventListener('click',chipSel,true);$('tabs').addEventListener('cli
     tm=setTimeout(()=>{fired=true;if(navigator.vibrate)navigator.vibrate(30);cur=t.dataset.m;render();$('delMaker').click()},600)});
   L.addEventListener('pointermove',e=>{if(Math.abs(e.clientX-px)>8||Math.abs(e.clientY-py)>8)stop()});
   L.addEventListener('pointerup',()=>{stop();setTimeout(()=>{fired=false},350)});
-  L.addEventListener('pointercancel',stop);L.addEventListener('scroll',stop);
+  L.addEventListener('pointercancel',()=>{stop();setTimeout(()=>{fired=false},350)});L.addEventListener('scroll',stop);/* 指がスクロールに取られて pointerup が来なくても、長押し済みの印を戻す（次のタップが無視されないように） */
   L.addEventListener('click',e=>{if(fired){fired=false;e.stopPropagation();e.preventDefault()}},true);
   L.addEventListener('contextmenu',e=>{if(mob()&&document.body.classList.contains('edon'))e.preventDefault()});
 })();
