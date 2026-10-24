@@ -1821,6 +1821,16 @@ body #grid .nc{padding-top:clamp(10px,3.6cqw,14px)!important}
 #zmap .zc b.zno{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;box-sizing:border-box;background:#fff;color:#111;font-size:13px;font-weight:800;line-height:1;letter-spacing:0;white-space:nowrap}
 #zmap .zc.on b.zno{background:#fff;color:#111}
 #zmap .zc:not(.emp){cursor:pointer}
+/* マップの見出し：図面のタイトルプレート風。大きな白い太字のタイトル（＝マップ名のプルダウン）の下に、文字より少しだけ長い白い細線。線の右端に小さなV字の切り欠き（開く目印を兼ねる） */
+.zmap .zh{margin-bottom:12px}
+.zmap #zSel{height:42px;max-width:220px;padding:0 28px 9px 0;border:none;border-radius:0;box-shadow:none;field-sizing:content;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 8'%3E%3Cpath d='M0 0H14V1L7 7.4 0 1Z' fill='%232a2d31'/%3E%3Cpath d='M0 1L7 7.2 14 1' fill='none' stroke='%23e8ebef' stroke-width='1.5' stroke-linejoin='miter'/%3E%3C/svg%3E") no-repeat right 4px bottom 0/14px 8px,
+    linear-gradient(#e8ebef,#e8ebef) no-repeat left bottom 6px/100% 1.5px;
+  background-color:transparent;color:#fff;font-size:20px;font-weight:800;letter-spacing:.06em;text-overflow:ellipsis}
+.zmap #zSel:hover{background-color:transparent;color:#fff;opacity:.85}
+.zmap #zSel:focus,.zmap #zSel:focus-visible{outline:none;box-shadow:none;background-color:transparent;border:none}
+.zmap #zSel option{background:#1b1d20;color:#fff;font-size:15px;font-weight:700;letter-spacing:.04em}
 #zd #zMkSel{display:none}
 #zPv .zc.msel{outline:2px solid #ffc933;outline-offset:1px}
 #zd #zMkOrd .zmo{display:flex;align-items:center;gap:6px;padding:4px 6px 4px 12px;margin-bottom:4px;background:#fff;border:1px solid var(--line);border-radius:8px}
