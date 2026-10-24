@@ -2326,7 +2326,7 @@ function zTot(){$('zTot').textContent='全'+zt.c*zt.r+'区画'}
 function zSync(){$('zC').value=zt.c;$('zR').value=zt.r;zdSel=-1;zTot();zDoorRows();zPv()}
 function placeTools(){const tl=document.querySelector('.tools'),lr=document.querySelector('.lrow');if(!tl||!lr)return;if(mob()){if(tl.parentNode===lr)lr.parentNode.insertBefore(tl,lr.nextSibling)}else{const ib=lr.querySelector('.ibs');if(tl.parentNode!==lr)lr.insertBefore(tl,ib)}const fc=document.getElementById('fClr');if(fc&&fc.previousElementSibling!==tl)tl.parentNode.insertBefore(fc,tl.nextSibling)/* 絞り込み解除は、いつも検索バーのすぐ後ろ（PC＝横、スマホ＝下の行） */}
 function syncFClr(){const qv=$('q').value.trim(),p=[curLoc,cur,qv?'検索：'+(qv.length>8?qv.slice(0,8)+'…':qv):''].filter(Boolean),c=$('fClr');/* 絞り込んでいる間だけ、いまの条件を出す。PCは検索バーの横、スマホは検索バーの下の独立した行 */
-  if(c){c.hidden=!p.length;c.textContent=p.join('・')+' ✕';c.setAttribute('aria-label','絞り込みを解除：'+p.join('・'))}}
+  if(c){c.hidden=!(cur||qv);/* 棚だけの絞り込みは、タブの「すべて」で戻せるので出さない。メーカーか検索が効いているときだけ出す */c.textContent=p.join('・')+' ✕';c.setAttribute('aria-label','絞り込みを解除：'+p.join('・'))}}
 function clearFilters(){cur='';curLoc='';$('q').value='';scExact='';try{render()}catch(e){console.error(e)}finally{syncFClr()}/* 途中でエラーが出ても、解除ボタンの表示は必ず戻す */
   try{$('q').blur()}catch(e){}if(!document.body.classList.contains('hist'))topScroll()}
 function render(){
@@ -2676,7 +2676,7 @@ $('logF').onclick=e=>{const t=e.target.closest('[data-lf]');if(!t)return;logF=t.
 $('mvQ').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();commit()}};
 $('mvC').onclick=()=>$('mv').close();
 $('mvOk').onclick=commit;
-$('tabs').onclick=e=>{const t=e.target.closest('[data-sh]');if(!t)return;curLoc=t.dataset.sh;render()};
+$('tabs').onclick=e=>{const t=e.target.closest('[data-sh]');if(!t)return;cur='';/* スマホ・パソコン共通：棚のタブ（「すべて」も含む）を押したら、メーカーの絞り込みは必ず解除する */curLoc=t.dataset.sh;render()};
 $('hOpen').onclick=()=>{dtBack=null;document.body.classList.add('hist');const sd=document.querySelector('.side');if(sd)sd.scrollTop=0};
 $('hClose').onclick=()=>{const bk=dtBack;dtBack=null;document.body.classList.remove('hist');logF='';render();if(bk!==null&&mob()&&S.items.some(x=>x.id===bk))dtOpen(bk)};/* 詳細から開いた履歴は、閉じると詳細に戻る *//* 履歴を閉じたら、カードの選択も外す */
 $('mMenuBtn').onclick=e=>{e.stopPropagation();const m=$('mMenu');$('mEdit').textContent=document.body.classList.contains('edon')?'編集を終了':'編集';$('mMap').textContent=mob()?'置き場マップ':($('zBtn').getAttribute('aria-pressed')==='true'?'置き場マップを隠す':'置き場マップを表示');$('mDelMk').textContent=cur?`「${cur}」を削除`:'メーカーを削除';m.hidden=!m.hidden;$('mMenuBtn').setAttribute('aria-expanded',String(!m.hidden))};
@@ -2874,7 +2874,7 @@ function lvClose(){$('lv').hidden=true;document.body.style.overflow=''}
 $('lvOpen').onclick=lvOpen;$('lvOpen2').onclick=lvOpen;$('lvBack').onclick=lvClose;
 $('lvQ').oninput=lvRender;
 $('lvM').onclick=e=>{const t=e.target.closest('[data-m]');if(!t)return;const m=t.dataset.m;if(!m)lvMks.clear();else if(lvMks.has(m))lvMks.delete(m);else lvMks.add(m);lvRender()};
-$('lvL').onclick=e=>{const t=e.target.closest('[data-l]');if(!t)return;const m=t.dataset.l;if(!m)lvLs.clear();else if(lvLs.has(m))lvLs.delete(m);else lvLs.add(m);lvRender()};
+$('lvL').onclick=e=>{const t=e.target.closest('[data-l]');if(!t)return;const m=t.dataset.l;lvMks.clear();/* 置き場所（棚）を押したら、メーカーの絞り込みは解除（スマホ・パソコン共通） */if(!m)lvLs.clear();else if(lvLs.has(m))lvLs.delete(m);else lvLs.add(m);lvRender()};
 $('lvSort').onclick=e=>{const t=e.target.closest('[data-s]');if(!t)return;const k=t.dataset.s;lvS=!k?{k:'',d:1}:(lvS.k===k?{k,d:-lvS.d}:{k,d:1});lvRender()};
 
 /* スマホ：メーカー／置き場所／並び替えをプルダウン風に（選択肢は押したものだけ開く） */
