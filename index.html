@@ -1821,16 +1821,20 @@ body #grid .nc{padding-top:clamp(10px,3.6cqw,14px)!important}
 #zmap .zc b.zno{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;box-sizing:border-box;background:#fff;color:#111;font-size:13px;font-weight:800;line-height:1;letter-spacing:0;white-space:nowrap}
 #zmap .zc.on b.zno{background:#fff;color:#111}
 #zmap .zc:not(.emp){cursor:pointer}
-/* マップの見出し：図面のタイトルプレート風。大きな白い太字のタイトル（＝マップ名のプルダウン）の下に、文字より少しだけ長い白い細線。線の右端に小さなV字の切り欠き（開く目印を兼ねる） */
-.zmap .zh{margin-bottom:12px}
-.zmap #zSel{height:42px;max-width:220px;padding:0 28px 9px 0;border:none;border-radius:0;box-shadow:none;field-sizing:content;
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 8'%3E%3Cpath d='M0 0H14V1L7 7.4 0 1Z' fill='%232a2d31'/%3E%3Cpath d='M0 1L7 7.2 14 1' fill='none' stroke='%23e8ebef' stroke-width='1.5' stroke-linejoin='miter'/%3E%3C/svg%3E") no-repeat right 4px bottom 0/14px 8px,
-    linear-gradient(#e8ebef,#e8ebef) no-repeat left bottom 6px/100% 1.5px;
-  background-color:transparent;color:#fff;font-size:20px;font-weight:800;letter-spacing:.06em;text-overflow:ellipsis}
-.zmap #zSel:hover{background-color:transparent;color:#fff;opacity:.85}
-.zmap #zSel:focus,.zmap #zSel:focus-visible{outline:none;box-shadow:none;background-color:transparent;border:none}
+/* マップの見出し：図面のタイトルプレート風。左に大きな白い太字のタイトル（プルダウン）、右に小さな文字（マシニング課）。その下に白い細線を通し、小さな文字の真下にV字の切り欠き */
+.zmap .zh{margin-bottom:8px;justify-content:flex-start;gap:12px}
+.zmap .zh .zbtns{margin-left:auto}
+.zmap #zTt{position:relative;flex:0 1 auto;min-width:0;display:flex;align-items:flex-end;gap:22px;height:36px}
+.zmap #zTt::after{content:"";position:absolute;left:0;right:0;bottom:5px;height:1.5px;background:#e8ebef;pointer-events:none}
+.zmap #zTt::before{content:"";position:absolute;right:4px;bottom:-1px;width:14px;height:8px;z-index:1;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 8'%3E%3Cpath d='M0 0H14V1L7 7.4 0 1Z' fill='%232a2d31'/%3E%3Cpath d='M0 1L7 7.2 14 1' fill='none' stroke='%23e8ebef' stroke-width='1.5' stroke-linejoin='miter'/%3E%3C/svg%3E") no-repeat center/100% 100%}
+.zmap #zTt:has(#zSub:not(:empty))::before{display:none}
+.zmap #zSel{flex:0 1 auto;min-width:0;height:36px;max-width:200px;padding:0 0 8px 0;border:none;border-radius:0;box-shadow:none;field-sizing:content;background:transparent;color:#fff;font-size:19px;font-weight:800;letter-spacing:.05em;text-overflow:ellipsis;-webkit-appearance:none;appearance:none}
+.zmap #zSel:hover{background:transparent;color:#fff;opacity:.85}
+.zmap #zSel:focus,.zmap #zSel:focus-visible{outline:none;box-shadow:none;background:transparent;border:none}
 .zmap #zSel option{background:#1b1d20;color:#fff;font-size:15px;font-weight:700;letter-spacing:.04em}
+.zmap #zSub{position:relative;z-index:2;flex:0 1 auto;min-width:0;margin-left:0;padding:0 6px 10px;font-size:12px;font-weight:500;line-height:1.2;letter-spacing:.1em;color:#e8ebef;white-space:nowrap;overflow:visible;text-overflow:clip}
+.zmap #zSub::after{content:"";position:absolute;left:50%;bottom:-1px;width:14px;height:8px;transform:translateX(-50%);pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 8'%3E%3Cpath d='M0 0H14V1L7 7.4 0 1Z' fill='%232a2d31'/%3E%3Cpath d='M0 1L7 7.2 14 1' fill='none' stroke='%23e8ebef' stroke-width='1.5' stroke-linejoin='miter'/%3E%3C/svg%3E") no-repeat center/100% 100%}
+.zmap #zSub:empty{display:none}
 #zd #zMkSel{display:none}
 #zPv .zc.msel{outline:2px solid #ffc933;outline-offset:1px}
 #zd #zMkOrd .zmo{display:flex;align-items:center;gap:6px;padding:4px 6px 4px 12px;margin-bottom:4px;background:#fff;border:1px solid var(--line);border-radius:8px}
@@ -1921,7 +1925,7 @@ body #grid .nc{padding-top:clamp(10px,3.6cqw,14px)!important}
     <button class="sclose" id="hClose" type="button" aria-label="閉じる" title="閉じる"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
     <div class="sh"><h3>入出庫の履歴</h3><div id="logF"></div></div>
         <div class="log" id="log"></div>
-    <div class="zmap" role="dialog" aria-label="置き場マップ"><span class="zgrab" aria-hidden="true"></span><div class="zh"><select id="zSel" aria-label="マップを選ぶ"></select><span class="zbtns"><button class="lnk" id="zEdit" type="button" aria-label="配置を編集">編集</button><button class="lnk zx" id="zX" type="button">✕ 閉じる</button></span></div><div id="zmap"></div><div id="zPick" hidden></div></div>
+    <div class="zmap" role="dialog" aria-label="置き場マップ"><span class="zgrab" aria-hidden="true"></span><div class="zh"><div id="zTt"><select id="zSel" aria-label="マップを選ぶ"></select><span id="zSub"></span></div><span class="zbtns"><button class="lnk" id="zEdit" type="button" aria-label="配置を編集">編集</button><button class="lnk zx" id="zX" type="button">✕ 閉じる</button></span></div><div id="zmap"></div><div id="zPick" hidden></div></div>
     <button class="btn d" id="clrLog">履歴をクリア</button>
   </aside>
 </div>
@@ -1949,7 +1953,10 @@ body #grid .nc{padding-top:clamp(10px,3.6cqw,14px)!important}
   <h3 style="margin:0">置き場マップを編集</h3>
   <section class="zs">
     <div class="zst">マップの名前</div>
-    <input type="text" id="zNm" maxlength="12" autocomplete="off" placeholder="マップ1" style="width:100%;box-sizing:border-box">
+    <div class="zrow" style="gap:8px;align-items:flex-start;margin-top:0">
+      <label style="flex:1 1 0;min-width:0;display:block"><small style="display:block;font-size:12px;font-weight:700;color:var(--sub);margin-bottom:4px">タイトル</small><input type="text" id="zNm" maxlength="12" autocomplete="off" placeholder="マップ" style="width:100%;box-sizing:border-box"></label>
+      <label style="flex:1 1 0;min-width:0;display:block"><small style="display:block;font-size:12px;font-weight:700;color:var(--sub);margin-bottom:4px">右の小さな文字（なくてもOK）</small><input type="text" id="zNm2" maxlength="16" autocomplete="off" placeholder="マシニング課" style="width:100%;box-sizing:border-box"></label>
+    </div>
   </section>
   <section class="zs">
     <div class="zst">区画の数<span class="zsn" id="zTot"></span></div>
@@ -2265,7 +2272,9 @@ function zFitText(){
   new ResizeObserver(()=>{const w=el.clientWidth;if(w!==lw){lw=w;if(w>0)zLayout()}}).observe(el)})();
 function zNames(){const a=Array.isArray(S.zmn)?S.zmn:[];return Array.from({length:ZMAX},(_,i)=>String(a[i]||'').trim()||('マップ'+(i+1)))}
 const zCnt=()=>Math.min(ZMAX,Math.max(1,+S.zcnt||1,(+S.zi||0)+1));/* 今あるマップの枚数 */
-function zSelFill(){const el=$('zSel');if(!el)return;const nm=zNames(),zi=+S.zi||0,n=zCnt();el.innerHTML=nm.slice(0,n).map((t,i)=>`<option value="${i}">${esc(t)}</option>`).join('')+(n<ZMAX?'<option value="add">＋ マップを追加</option>':'');/* 5枚あるときは「追加」を出さない */el.value=String(zi)}
+/* マップ名「マップ／マシニング課」→ タイトル「マップ」＋右に小さく「マシニング課」 */
+const zSplit=t=>{t=String(t||'').trim();const i=t.search(/[／\/]/);if(i<0)return[t,''];return[t.slice(0,i).trim()||t,t.slice(i+1).trim()]};
+function zSelFill(){const el=$('zSel');if(!el)return;const nm=zNames(),zi=+S.zi||0,n=zCnt();el.innerHTML=nm.slice(0,n).map((t,i)=>`<option value="${i}">${esc(zSplit(t)[0])}</option>`).join('')+(n<ZMAX?'<option value="add">＋ マップを追加</option>':'');/* 5枚あるときは「追加」を出さない */el.value=String(zi);const sb=$('zSub');if(sb)sb.textContent=zSplit(nm[zi])[1]}
 function zSwitch(i){i=+i;const cu=+S.zi||0;if(!(i>=0&&i<ZMAX)||i===cu){zSelFill();return}
   zm();if(!Array.isArray(S.zmaps))S.zmaps=[];S.zmaps[cu]=S.zmap;/* 今のマップをしまってから切り替える */
   S.zi=i;S.zmap=S.zmaps[i]||zBlank();S.zmaps[i]=S.zmap;save();render()}
@@ -2640,7 +2649,7 @@ $('hOpen').onclick=()=>{dtBack=null;document.body.classList.add('hist')};
 $('hClose').onclick=()=>{const bk=dtBack;dtBack=null;document.body.classList.remove('hist');logF='';render();if(bk!==null&&mob()&&S.items.some(x=>x.id===bk))dtOpen(bk)};/* 詳細から開いた履歴は、閉じると詳細に戻る *//* 履歴を閉じたら、カードの選択も外す */
 $('mMenuBtn').onclick=e=>{e.stopPropagation();const m=$('mMenu');$('mEdit').textContent=document.body.classList.contains('edon')?'編集を終了':'編集';$('mMap').textContent=mob()?'置き場マップ':($('zBtn').getAttribute('aria-pressed')==='true'?'置き場マップを隠す':'置き場マップを表示');$('mDelMk').textContent=cur?`「${cur}」を削除`:'メーカーを削除';m.hidden=!m.hidden;$('mMenuBtn').setAttribute('aria-expanded',String(!m.hidden))};
 document.addEventListener('click',()=>{$('mMenu').hidden=true;$('mMenuBtn').setAttribute('aria-expanded','false')});
-$('zEdit').onclick=()=>{if(!isAdmin()){notify('マップの編集は管理者だけができます');return}zt=JSON.parse(JSON.stringify(zm()));zmsel=-1;zMkDraw();$('zNm').value=(S.zmn&&S.zmn[+S.zi||0])||'';$('zDel').hidden=zCnt()<=1;/* マップが1枚のときは削除の欄を出さない */zSync();$('zd').showModal();if(document.activeElement&&document.activeElement.blur)document.activeElement.blur()};
+$('zEdit').onclick=()=>{if(!isAdmin()){notify('マップの編集は管理者だけができます');return}zt=JSON.parse(JSON.stringify(zm()));zmsel=-1;zMkDraw();{const nm0=(S.zmn&&S.zmn[+S.zi||0])||'',p=zSplit(nm0);$('zNm').value=p[0];$('zNm2').value=p[1]}$('zDel').hidden=zCnt()<=1;/* マップが1枚のときは削除の欄を出さない */zSync();$('zd').showModal();if(document.activeElement&&document.activeElement.blur)document.activeElement.blur()};
 $('zC').onchange=$('zR').onchange=()=>{zt.c=+$('zC').value;zt.r=+$('zR').value;zFit();zTot();zPv()};
 /* 目印：1回タップ＝時計回りに1か所移動、すばやく2回タップ＝名前変更・削除の欄を出す */
 let zdTm=null,zdLast=-1;
@@ -2789,7 +2798,7 @@ $('zOk').onclick=()=>{
   if(Object.keys(ren).length){S.items.forEach(i=>{i.loc=mv(i.loc)});curLoc=mv(curLoc)}
   zt.labels=L.concat(zt.labels.slice(n));zt.subs=Array.from({length:zt.labels.length},(_,i)=>String((zt.subs&&zt.subs[i])||'').trim());
   zt.ae=(zt.ae||[]).filter(k=>{const q=String(k).split(',').map(Number);if(!(q[0]<=zt.c*2&&q[1]<=zt.r*2))return false;return true});delete zt.ac;delete zt.ar;
-  S.zmap=zt;if(!Array.isArray(S.zmn))S.zmn=[];S.zmn[+S.zi||0]=$('zNm').value.trim();save();$('zd').close();render()};
+  S.zmap=zt;if(!Array.isArray(S.zmn))S.zmn=[];{const t1=$('zNm').value.replace(/[／\/]/g,'').trim(),t2=$('zNm2').value.replace(/[／\/]/g,'').trim();S.zmn[+S.zi||0]=t1?(t2?t1+'／'+t2:t1):''}save();$('zd').close();render()};
 $('pZoom').oninput=()=>{phz=+$('pZoom').value/100;showPv()};
 $('pReset').onclick=()=>{phz=1;phx=0;phy=0;showPv()};
 $('pAuto').onclick=()=>autoFit();
