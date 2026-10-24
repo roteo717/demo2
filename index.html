@@ -1298,7 +1298,7 @@ html:has(body.dton),body.dton{overflow:hidden!important}
 @media(min-width:601px){.mhead .acb{display:none}}
 @media(max-width:600px){#acBtn{display:none}}
 /* 管理者だけ：パスワード・履歴クリア・削除・マップ配置の編集 */
-body:not(.adm) #acPw,body:not(.adm) #clrLog,body:not(.adm) #rDel,body:not(.adm) #delBar,body:not(.adm) #delMaker,body:not(.adm) #dlMk,body:not(.adm) #mDelMk,body:not(.adm) #mkDel,body:not(.adm) #zDdel,body:not(.adm) #zEdit{display:none!important}
+body:not(.adm) #acPw,body:not(.adm) #clrLog,body:not(.adm) #rDel,body:not(.adm) #delBar,body:not(.adm) #delMaker,body:not(.adm) #dlMk,body:not(.adm) #mDelMk,body:not(.adm) #mkDel,body:not(.adm) #zDdel,body:not(.adm) #zEdit,body:not(.adm) #rAdd,body:not(.adm) #addItem,body:not(.adm) #hAdd,body:not(.adm) #hAdd2,body:not(.adm) #apItem{display:none!important} /* 作業者は、品目の追加ボタンも出さない */
 /* 管理者・作業者の両方：品目・メーカーの追加と編集（ログイン中なら使える） */
 body:not(.edt) #edMode,body:not(.edt) #hEdit,body:not(.edt) #mEdit,body:not(.edt) #edFab,body:not(.edt) #edBar,body:not(.edt) #rAdd,body:not(.edt) #addItem,body:not(.edt) #hAdd,body:not(.edt) #hAdd2,body:not(.edt) #nMaker,body:not(.edt) #barMaker,body:not(.edt) #addPop,body:not(.edt) #addMaker{display:none!important}
 /* スマホ：編集は「カードの長押し」で行うので、編集ボタン（ヘッダー・メニュー・右下・編集モード帯）は管理者にも出さない */
@@ -2285,7 +2285,7 @@ function zNames(){const a=Array.isArray(S.zmn)?S.zmn:[];return Array.from({lengt
 const zCnt=()=>Math.min(ZMAX,Math.max(1,+S.zcnt||1,(+S.zi||0)+1));/* 今あるマップの枚数 */
 /* マップ名「マップ／マシニング課」→ タイトル「マップ」＋右に小さく「マシニング課」 */
 const zSplit=t=>{t=String(t||'').trim();const i=t.search(/[／\/]/);if(i<0)return[t,''];return[t.slice(0,i).trim()||t,t.slice(i+1).trim()]};
-function zSelFill(){const el=$('zSel');if(!el)return;const nm=zNames(),zi=+S.zi||0,n=zCnt();el.innerHTML=nm.slice(0,n).map((t,i)=>`<option value="${i}">${esc(zSplit(t)[0])}</option>`).join('')+(n<ZMAX?'<option value="add">＋ マップを追加</option>':'');/* 5枚あるときは「追加」を出さない */el.value=String(zi);const sb=$('zSub');if(sb)sb.textContent=zSplit(nm[zi])[1]}
+function zSelFill(){const el=$('zSel');if(!el)return;const nm=zNames(),zi=+S.zi||0,n=zCnt();el.innerHTML=nm.slice(0,n).map((t,i)=>`<option value="${i}">${esc(zSplit(t)[0])}</option>`).join('')+(n<ZMAX&&document.body.classList.contains('adm')?'<option value="add">＋ マップを追加</option>':'')/* マップの追加は管理者だけ */;/* 5枚あるときは「追加」を出さない */el.value=String(zi);const sb=$('zSub');if(sb)sb.textContent=zSplit(nm[zi])[1]}
 function zSwitch(i){i=+i;const cu=+S.zi||0;if(!(i>=0&&i<ZMAX)||i===cu){zSelFill();return}
   zm();if(!Array.isArray(S.zmaps))S.zmaps=[];S.zmaps[cu]=S.zmap;/* 今のマップをしまってから切り替える */
   S.zi=i;S.zmap=S.zmaps[i]||zBlank();S.zmaps[i]=S.zmap;save();render()}
@@ -2296,7 +2296,7 @@ $('zDel').onclick=()=>{const n=zCnt();if(n<=1){notify('マップが1枚のとき
   mp.splice(cu,1);nms.splice(cu,1);/* 後ろのマップを1つずつ前に詰める */
   S.zmaps=mp;S.zmn=nms;S.zcnt=n-1;S.zi=Math.max(0,cu-1);S.zmap=mp[S.zi]||zBlank();mp[S.zi]=S.zmap;
   save();$('zd').close();render()};
-$('zSel').onchange=e=>{const v=e.target.value;if(v==='add'){const n=zCnt();if(n>=ZMAX){zSelFill();return}S.zcnt=n+1;zSwitch(n)}else zSwitch(v)};
+$('zSel').onchange=e=>{const v=e.target.value;if(v==='add'){const n=zCnt();if(n>=ZMAX||!isAdmin()){zSelFill();return}S.zcnt=n+1;zSwitch(n)}else zSwitch(v)};
 let zt=null;
 function zFit(){const n=zt.c*zt.r,u=new Set(zt.labels);let c=65;while(zt.labels.length<n){while(u.has(String.fromCharCode(c)))c++;const L=String.fromCharCode(c);zt.labels.push(L);u.add(L)}}
 const ZT=['入口','出口','出入口','非常口'],ZS=[['t','上'],['b','下'],['l','左'],['r','右']];
@@ -2537,7 +2537,7 @@ function acSync(){
     if(b){/* スマホの右上は、名前の頭文字を丸に入れるだけ。フルネームはタップで開くアカウント画面に出す */
       el.textContent=curAcc?(Array.from(curAcc.name)[0]||''):'';b.classList.toggle('has',!!curAcc);b.setAttribute('aria-label',curAcc?curAcc.name+'さんのアカウント':'アカウント')}
     else el.textContent=curAcc?curAcc.name:'ユーザー'});
-  document.body.classList.toggle('adm',isAdmin());document.body.classList.toggle('edt',canEdit());if(!isAdmin()&&document.body.classList.contains('deon'))delSet(false);if(!canEdit()&&document.body.classList.contains('edon'))edSet(false)}
+  document.body.classList.toggle('adm',isAdmin());document.body.classList.toggle('edt',canEdit());if(!isAdmin()&&document.body.classList.contains('deon'))delSet(false);if(!canEdit()&&document.body.classList.contains('edon'))edSet(false);try{zSelFill()}catch(e){}/* 権限が変わったら、マップのプルダウン（「＋ マップを追加」）も更新 */}
 function setAcc(a){curAcc=a;curUser=a?a.name:'';try{a?localStorage.setItem(SESS,a.id):localStorage.removeItem(SESS)}catch(e){}acSync()}
 let lgFail=0,lgWait=0;
 function lgOpen(){
@@ -3022,7 +3022,7 @@ function cdd(sel){
   addEventListener('resize',close);dlg.addEventListener('close',close);
   sel.addEventListener('change',sync);new MutationObserver(sync).observe(sel,{childList:true,subtree:true,attributes:true});sync()}
 cdd($('fMaker'));cdd($('fLoc'));
-function openEdit(id){$('pv').classList.remove('adj');if(!canEdit()){notify('編集するにはログインしてください');return}
+function openEdit(id){$('pv').classList.remove('adj');if(!canEdit()){notify('編集するにはログインしてください');return}if(!id&&!isAdmin()){notify('品目の追加は管理者だけができます');return}
   editId=id;const i=id?S.items.find(x=>x.id===id):{name:'',maker:cur||S.makers[0],stock:0,min:0,unit:'個',loc:curLoc&&curLoc!=='未設定'?curLoc:'',img:''};
   $('dt').textContent=id?'品目を編集':'品目を追加';
   $('fMaker').innerHTML=S.makers.map(m=>`<option ${m===i.maker?'selected':''}>${esc(m)}</option>`).join('')+`<option value="__new__" ${S.makers.length?'':'selected'}>＋ メーカーを追加…</option>`;$('fMakerNew').value='';mkNewSync();
