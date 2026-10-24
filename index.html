@@ -2325,6 +2325,10 @@ function zPv(){$('zPv').innerHTML=zhtml(zt,{edit:true,dsel:zdSel});if(typeof zMk
 function zTot(){$('zTot').textContent='全'+zt.c*zt.r+'区画'}
 function zSync(){$('zC').value=zt.c;$('zR').value=zt.r;zdSel=-1;zTot();zDoorRows();zPv()}
 function placeTools(){const tl=document.querySelector('.tools'),lr=document.querySelector('.lrow');if(!tl||!lr)return;if(mob()){if(tl.parentNode===lr)lr.parentNode.insertBefore(tl,lr.nextSibling)}else{const ib=lr.querySelector('.ibs');if(tl.parentNode!==lr)lr.insertBefore(tl,ib)}const fc=document.getElementById('fClr');if(fc&&fc.previousElementSibling!==tl)tl.parentNode.insertBefore(fc,tl.nextSibling)/* 絞り込み解除は、いつも検索バーのすぐ後ろ（PC＝横、スマホ＝下の行） */}
+function syncFClr(){const qv=$('q').value.trim(),p=[curLoc,cur,qv?'検索：'+(qv.length>8?qv.slice(0,8)+'…':qv):''].filter(Boolean),c=$('fClr');/* 絞り込んでいる間だけ、いまの条件を出す。PCは検索バーの横、スマホは検索バーの下の独立した行 */
+  if(c){c.hidden=!p.length;c.textContent=p.join('・')+' ✕';c.setAttribute('aria-label','絞り込みを解除：'+p.join('・'))}}
+function clearFilters(){cur='';curLoc='';$('q').value='';scExact='';try{render()}catch(e){console.error(e)}finally{syncFClr()}/* 途中でエラーが出ても、解除ボタンの表示は必ず戻す */
+  try{$('q').blur()}catch(e){}if(!document.body.classList.contains('hist'))topScroll()}
 function render(){
   placeTools();
   if(cur&&!S.makers.includes(cur))cur='';
@@ -2335,8 +2339,7 @@ function render(){
   const shelves=[...new Set(S.items.map(i=>i.loc||'未設定'))].filter(l=>l!=='未設定'||hasUn).sort((a,b)=>a.localeCompare(b,'ja',{numeric:true}));
   if(curLoc&&!shelves.includes(curLoc))curLoc='';
   $('tabs').innerHTML=['すべて',...shelves].map(l=>`<div class="tab ${(l==='すべて'?'':l)===curLoc?'on':''}" data-sh="${l==='すべて'?'':esc(l)}">${esc(l)}</div>`).join('');
-  {const qv=$('q').value.trim(),p=[curLoc,cur,qv?'検索：'+(qv.length>8?qv.slice(0,8)+'…':qv):''].filter(Boolean),c=$('fClr');/* 絞り込んでいる間だけ、いまの条件を出す。押すと全部解除。PCは検索バーの横、スマホは検索バーの下の独立した行 */
-  if(c){c.hidden=!p.length;c.textContent=p.join('・')+' ✕';c.setAttribute('aria-label','絞り込みを解除：'+p.join('・'))}}
+  syncFClr();
   /* 棚を選んでいる間は、その棚に品目があるメーカーだけ出す（品目がまだ1件もない新規メーカーは、見失わないよう常に出す） */
   const vMk=curLoc?S.makers.filter(m=>S.items.some(i=>i.maker===m&&(i.loc||'未設定')===curLoc)||!S.items.some(i=>i.maker===m)):S.makers;
   $('locs').innerHTML=S.makers.length?['すべて',...vMk].map(m=>`<span class="${(m==='すべて'?'':m)===cur?'on':''}" data-m="${m==='すべて'?'':esc(m)}">${esc(m)}</span>`).join(''):'';
@@ -2662,7 +2665,10 @@ document.addEventListener('click',e=>{
 });
 $('barMaker').onclick=()=>$('nMaker').click();
 $('q').oninput=render;
-$('fClr').onclick=()=>{cur='';curLoc='';$('q').value='';render();if(!document.body.classList.contains('hist'))topScroll()};/* 絞り込み解除：メーカー・棚・検索をまとめて戻す */
+/* 絞り込み解除：メーカー・棚・検索をまとめて戻す。document で受けるので、ボタンが作り直されても効く。
+   押した瞬間に検索欄のキーボードが閉じて画面がずれ、タップが空振りしないよう、押下時はフォーカスを動かさない */
+document.addEventListener('pointerdown',e=>{if(e.target.closest('#fClr'))e.preventDefault()},true);
+document.addEventListener('click',e=>{if(e.target.closest('#fClr')){e.preventDefault();clearFilters()}},true);
 function qToggle(open){const t=document.querySelector('.tools');t.classList.toggle('so',open);if($('hSearch'))$('hSearch').setAttribute('aria-pressed',open?'true':'false');$('qOpen').setAttribute('aria-pressed',open?'true':'false');if(open){if(!mob())$('q').focus()}else if($('q').value){$('q').value='';render()}window.dispatchEvent(new Event('resize'))}
 $('qOpen').onclick=()=>qToggle(!document.querySelector('.tools').classList.contains('so'));
 $('q').addEventListener('keydown',e=>{if(e.key==='Escape')qToggle(false)});
