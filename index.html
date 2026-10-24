@@ -3263,11 +3263,11 @@ function dtDraw(){const i=S.items.find(x=>x.id===dtId);if(!i){dtClose(true);retu
   $('dvPh').innerHTML=(i.img?`<span class="pi">${imgTag(i)}</span>`:'<span>写真なし</span>')+`<button class="dth" data-h="${i.id}" type="button" aria-label="この品目の履歴"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg><span>履歴</span></button>`;
   $('dvB').innerHTML=`<div class="dtt">${a.slice(1).join(' ').trim()?`<div class="dtm">${esc(a.slice(1).join(' ').trim())}</div>`:''}<div class="dtn">${esc(a[0]||'')}</div></div><div class="dtg" id="dvPg">${PROC.map(p=>`<button type="button" class="pc${i.proc===p.k?' on':''}" data-pc="${p.k}"><i class="ic" aria-hidden="true" style="-webkit-mask-image:url(${p.m});mask-image:url(${p.m})"></i><span>${p.t}</span><em class="cn${i.st[p.k]?'':' z'}">${i.st[p.k]}</em></button>`).join('')}</div>`;
   $('dvBar').innerHTML=`<button class="o${i.proc?'':' off'}" data-o="${i.id}" type="button" aria-disabled="${i.proc?'false':'true'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 14l2-6h4M21 14l-2-6h-4M3 14v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4M3 14h5l1.5 2.5h5L16 14h5"/><path d="M12 12V3m0 0l-3 3m3-3l3 3"/></svg>出庫</button><button class="n${i.proc?'':' off'}" data-i="${i.id}" type="button" aria-disabled="${i.proc?'false':'true'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 14l2-6h4M21 14l-2-6h-4M3 14v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4M3 14h5l1.5 2.5h5L16 14h5"/><path d="M12 3v9m0 0l-3-3m3 3l3-3"/></svg>入庫</button>`;phBg()}
-function dtOpen(id){dtId=id;{const it=S.items.find(x=>x.id===id);if(it)it.proc=''}/* 開くたびに工程の選択を外す：工程を押さないと入庫・出庫できない */dtDraw();$('dv').hidden=false;$('dvS').scrollTop=0;try{history.pushState({dt:1},'')}catch(e){}}
-/* 自分で history.back() したときに遅れて届く popstate は無視する（詳細→履歴→詳細を素早く繰り返すと、遅れて届いた popstate が新しく開いた詳細を閉じてしまい、履歴の戻るボタンなどが効かなくなるのを防ぐ） */
-const dtPend=[];
-function dtClose(fromPop){if(dtId===null)return;dtId=null;$('dv').hidden=true;if(!fromPop){try{if(history.state&&history.state.dt){const t={};dtPend.push(t);setTimeout(()=>{const k=dtPend.indexOf(t);if(k>=0)dtPend.splice(k,1)},1500);history.back()}}catch(e){}}}
-addEventListener('popstate',()=>{if(dtPend.length){dtPend.shift();return}if(dtId!==null)dtClose(true)});
+function dtOpen(id){dtId=id;{const it=S.items.find(x=>x.id===id);if(it)it.proc=''}/* 開くたびに工程の選択を外す：工程を押さないと入庫・出庫できない */dtDraw();$('dv').hidden=false;$('dvS').scrollTop=0;try{if(!(history.state&&history.state.dt))history.pushState({dt:1},'')}catch(e){}}
+/* 詳細画面の開閉：画面を閉じるときに history.back() は呼ばない（遅れて完了して、素早い切り替えで順番が崩れるのを防ぐ）。
+   履歴の入口（詳細を開いた印）は、まだ残っていれば使い回し、なければ1つだけ足す */
+function dtClose(fromPop){if(dtId===null)return;dtId=null;$('dv').hidden=true}
+addEventListener('popstate',()=>{if(dtId!==null)dtClose(true);else if(document.body.classList.contains('hist'))$('hClose').click()}); /* スマホの戻る操作：詳細→閉じる、履歴→閉じる */
 $('dvBack').onclick=()=>dtClose();
 $('dv').addEventListener('click',e=>{const b=e.target.closest('[data-pc]');if(!b)return;const i=S.items.find(x=>x.id===dtId);if(!i)return;
   i.proc=(i.proc===b.dataset.pc)?'':b.dataset.pc;/* 同じ工程をもう一度タップすると解除 */
