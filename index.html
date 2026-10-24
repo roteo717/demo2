@@ -297,6 +297,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   body.hist{overflow:hidden}
   body.hist .side{display:flex;flex-direction:column;align-items:stretch;position:fixed;top:0;left:0;right:0;bottom:0;width:auto;height:auto;align-self:auto;z-index:40;max-height:none;margin:0;border:none;border-radius:0;background:#fff;overflow:auto;padding:calc(12px + env(safe-area-inset-top,0px)) 14px calc(12px + env(safe-area-inset-bottom,0px))}
   body.hist .side .sclose{display:flex;flex:none;align-items:center;justify-content:center;order:0;align-self:flex-start;margin:0 0 0 -2px;width:42px;height:42px;min-width:42px;min-height:42px;padding:0;border:none;border-radius:50%;background:#f1f3f6;color:#222;box-shadow:0 1px 4px rgba(0,0,0,.15)} /* 詳細画面の戻るボタンと同じ丸い「＜」 */
+  body.hist .side .sclose{position:sticky;top:calc(8px + env(safe-area-inset-top,0px));z-index:5} /* 履歴を下までスクロールしても、戻る「＜」は画面の上に残す */
   body.hist .side .sclose svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
   body.hist .side .sh{order:1;flex:none} /* 履歴が増えて縦に収まらなくなっても、戻るボタン・見出しはつぶさない */
   body.hist .side .sum{order:2}
@@ -2644,7 +2645,7 @@ document.addEventListener('click',e=>{
   else if(t.dataset.m!==undefined){cur=t.dataset.m;render()}
   else if(t.dataset.o)move(+t.dataset.o,-1);
   else if(t.dataset.i)move(+t.dataset.i,1);
-  else if(t.dataset.h){if(!S.hshow&&!mob()){S.hshow=true;save();hApply()}logF=logF==='i:'+t.dataset.h&&!mob()?'':'i:'+t.dataset.h;render();if(mob())document.body.classList.add('hist')}
+  else if(t.dataset.h){if(!S.hshow&&!mob()){S.hshow=true;save();hApply()}logF=logF==='i:'+t.dataset.h&&!mob()?'':'i:'+t.dataset.h;render();if(mob()){document.body.classList.add('hist');const sd=document.querySelector('.side');if(sd)sd.scrollTop=0}}
   else if(t.dataset.e){if(document.body.classList.contains('edon'))openEdit(+t.dataset.e)}
   else if(t.id==='addMaker'){if(!canEdit()){notify('編集するにはログインしてください');return}$('mkN').value='';$('mk').showModal()}
 });
@@ -2658,7 +2659,7 @@ $('mvQ').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();commit()}};
 $('mvC').onclick=()=>$('mv').close();
 $('mvOk').onclick=commit;
 $('tabs').onclick=e=>{const t=e.target.closest('[data-sh]');if(!t)return;curLoc=t.dataset.sh;render()};
-$('hOpen').onclick=()=>{dtBack=null;document.body.classList.add('hist')};
+$('hOpen').onclick=()=>{dtBack=null;document.body.classList.add('hist');const sd=document.querySelector('.side');if(sd)sd.scrollTop=0};
 $('hClose').onclick=()=>{const bk=dtBack;dtBack=null;document.body.classList.remove('hist');logF='';render();if(bk!==null&&mob()&&S.items.some(x=>x.id===bk))dtOpen(bk)};/* 詳細から開いた履歴は、閉じると詳細に戻る *//* 履歴を閉じたら、カードの選択も外す */
 $('mMenuBtn').onclick=e=>{e.stopPropagation();const m=$('mMenu');$('mEdit').textContent=document.body.classList.contains('edon')?'編集を終了':'編集';$('mMap').textContent=mob()?'置き場マップ':($('zBtn').getAttribute('aria-pressed')==='true'?'置き場マップを隠す':'置き場マップを表示');$('mDelMk').textContent=cur?`「${cur}」を削除`:'メーカーを削除';m.hidden=!m.hidden;$('mMenuBtn').setAttribute('aria-expanded',String(!m.hidden))};
 document.addEventListener('click',()=>{$('mMenu').hidden=true;$('mMenuBtn').setAttribute('aria-expanded','false')});
@@ -3263,8 +3264,10 @@ function dtDraw(){const i=S.items.find(x=>x.id===dtId);if(!i){dtClose(true);retu
   $('dvB').innerHTML=`<div class="dtt">${a.slice(1).join(' ').trim()?`<div class="dtm">${esc(a.slice(1).join(' ').trim())}</div>`:''}<div class="dtn">${esc(a[0]||'')}</div></div><div class="dtg" id="dvPg">${PROC.map(p=>`<button type="button" class="pc${i.proc===p.k?' on':''}" data-pc="${p.k}"><i class="ic" aria-hidden="true" style="-webkit-mask-image:url(${p.m});mask-image:url(${p.m})"></i><span>${p.t}</span><em class="cn${i.st[p.k]?'':' z'}">${i.st[p.k]}</em></button>`).join('')}</div>`;
   $('dvBar').innerHTML=`<button class="o${i.proc?'':' off'}" data-o="${i.id}" type="button" aria-disabled="${i.proc?'false':'true'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 14l2-6h4M21 14l-2-6h-4M3 14v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4M3 14h5l1.5 2.5h5L16 14h5"/><path d="M12 12V3m0 0l-3 3m3-3l3 3"/></svg>出庫</button><button class="n${i.proc?'':' off'}" data-i="${i.id}" type="button" aria-disabled="${i.proc?'false':'true'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 14l2-6h4M21 14l-2-6h-4M3 14v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4M3 14h5l1.5 2.5h5L16 14h5"/><path d="M12 3v9m0 0l-3-3m3 3l3-3"/></svg>入庫</button>`;phBg()}
 function dtOpen(id){dtId=id;{const it=S.items.find(x=>x.id===id);if(it)it.proc=''}/* 開くたびに工程の選択を外す：工程を押さないと入庫・出庫できない */dtDraw();$('dv').hidden=false;$('dvS').scrollTop=0;try{history.pushState({dt:1},'')}catch(e){}}
-function dtClose(fromPop){if(dtId===null)return;dtId=null;$('dv').hidden=true;if(!fromPop){try{if(history.state&&history.state.dt)history.back()}catch(e){}}}
-addEventListener('popstate',()=>{if(dtId!==null)dtClose(true)});
+/* 自分で history.back() したときに遅れて届く popstate は無視する（詳細→履歴→詳細を素早く繰り返すと、遅れて届いた popstate が新しく開いた詳細を閉じてしまい、履歴の戻るボタンなどが効かなくなるのを防ぐ） */
+const dtPend=[];
+function dtClose(fromPop){if(dtId===null)return;dtId=null;$('dv').hidden=true;if(!fromPop){try{if(history.state&&history.state.dt){const t={};dtPend.push(t);setTimeout(()=>{const k=dtPend.indexOf(t);if(k>=0)dtPend.splice(k,1)},1500);history.back()}}catch(e){}}}
+addEventListener('popstate',()=>{if(dtPend.length){dtPend.shift();return}if(dtId!==null)dtClose(true)});
 $('dvBack').onclick=()=>dtClose();
 $('dv').addEventListener('click',e=>{const b=e.target.closest('[data-pc]');if(!b)return;const i=S.items.find(x=>x.id===dtId);if(!i)return;
   i.proc=(i.proc===b.dataset.pc)?'':b.dataset.pc;/* 同じ工程をもう一度タップすると解除 */
