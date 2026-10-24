@@ -1820,6 +1820,19 @@ body #grid .nc{padding-top:clamp(10px,3.6cqw,14px)!important}
 /* マップの番号と、下の一覧 */
 #zmap .zc b.zno{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;box-sizing:border-box;background:#fff;color:#111;font-size:13px;font-weight:800;line-height:1;letter-spacing:0;white-space:nowrap}
 #zmap .zc.on b.zno{background:#fff;color:#111}
+#zmap .zc:not(.emp){cursor:pointer}
+#zd #zMkSel{display:none}
+#zPv .zc.msel{outline:2px solid #ffc933;outline-offset:1px}
+#zd #zMkOrd .zmo{display:flex;align-items:center;gap:6px;padding:4px 6px 4px 12px;margin-bottom:4px;background:#fff;border:1px solid var(--line);border-radius:8px}
+#zd #zMkOrd .zmo span{flex:1;min-width:0;font-size:14px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#zd #zMkOrd .zmo button{flex:none;width:40px;height:34px;border:1px solid var(--line);border-radius:6px;background:#f4f6f9;color:#222;font-size:13px;cursor:pointer}
+#zd #zMkOrd .zmo button:disabled{opacity:.3;cursor:default}
+#zMenu{position:fixed;z-index:9999;min-width:140px;max-width:min(260px,calc(100vw - 16px));max-height:158px;overflow-y:auto;overscroll-behavior:contain;background:#2a2d31;border:1px solid #8b939c;border-radius:10px;padding:6px;box-shadow:0 8px 24px rgba(0,0,0,.45);color:#fff}
+#zMenu .zml{position:sticky;top:-6px;z-index:1;background:#2a2d31;font-size:11px;line-height:14px;color:#aab2bb;padding:4px 8px}
+#zMenu button{display:block;width:100%;text-align:left;min-height:40px;padding:8px 12px;border:0;border-radius:6px;background:transparent;color:#fff;font-size:15px;font-weight:700;line-height:1.3;font-family:inherit;cursor:pointer}
+#zMenu button:hover{background:rgba(255,255,255,.12)}
+#zMenu button.on{background:#fff;color:#111}
+#zMenu .zme{padding:8px 12px;font-size:13px;color:#aab2bb}
 #zmap .zleg{margin-top:10px;display:flex;flex-direction:column;gap:4px}
 #zmap .zlr{display:flex;gap:10px;align-items:center;padding:6px 10px;border-radius:6px;background:transparent;border:1px solid transparent;cursor:pointer}
 #zmap .zlr.on{background:#fff;border-color:#fff}
@@ -1942,6 +1955,11 @@ body #grid .nc{padding-top:clamp(10px,3.6cqw,14px)!important}
     <button class="btn g" id="zAddDoor" type="button">＋ 目印を追加</button>
     <button class="btn g" id="zAddDr" type="button">＋ 扉を追加（外枠の切れ目）</button>
     </div>
+  </section>
+  <section class="zs">
+    <div class="zst">メーカーの順番<small>上のマップの区画をタップして選び、▲▼で並び替え（マップのプルダウンの表示順）</small></div>
+    <select id="zMkSel" aria-label="置き場を選ぶ"></select>
+    <div id="zMkOrd"></div>
   </section>
   <div class="bar" style="justify-content:space-between">
     <button class="btn g" id="zRs" type="button">初期に戻す</button>
@@ -2159,7 +2177,7 @@ function zhtml(m,o){o=o||{};const n=m.c*m.r,ed=!!o.edit,W=m.c*2+1,H=m.r*2+1,
     f0=fl(cx,cy),eL=f0.L,eR=f0.R,eU=f0.U,eD=f0.D,
     hf=(nx,ny,k)=>(nx>=1&&ny>=1&&nx<W&&ny<H&&!ca(nx,ny)&&fl(nx,ny)[k])?16:0, /* となりの区画も同じすき間に広がるので、すき間を半分ずつに分ける（重ならないように） */
     mg=(eL||eR||eU||eD)?`;margin:${eU&&cy-1>0?2+hf(cx,cy-2,'D'):0}px ${eR&&cx+1<W-1?2+hf(cx+2,cy,'L'):0}px ${eD&&cy+1<H-1?2+hf(cx,cy+2,'U'):0}px ${eL&&cx-1>0?2+hf(cx-2,cy,'R'):0}px`:'';
-  return `<span class="zc${emp?' emp':''}${sb&&!emp&&!o.edit?' hc':''}${o.on===L&&!emp?' on':''}${o.sel===i?' sel':''}" data-z="${i}"${o.edit?` data-ck="${cx},${cy}"`:''} style="grid-column:${cs+1-(eL?1:0)}/${cs+2+(eR?1:0)};grid-row:${cy+1-(eU?1:0)}/${cy+2+(eD?1:0)}${mg}">${o.edit?`<input type="text" maxlength="6" data-n="${i}" value="${esc(L)}" aria-label="区画${i+1}の名前" autocomplete="off" placeholder="空白"><input class="zsi" type="text" maxlength="24" data-s="${i}" value="${esc(sb)}" aria-label="区画${i+1}の補足（／で改行）" autocomplete="off" placeholder="補足 例：パナ／リンナイ">`:(emp?'':(sb?`<b class="zmn" style="--n:${znl(sb)}">${sb.split(/[\/／]/).map(x=>x.trim()).filter(Boolean).map(x=>`<span class="zpt">${esc(x)}</span>`).join('')}</b><em class="zcn" style="--zw:${zcw(L)}">${esc(L)}</em>`:`<b style="--n:${znl(L)}">${(()=>{const p=String(L).split(/[\/／]/).map(x=>x.trim()).filter(Boolean);return p.length>1?p.map(x=>`<span class="zpt">${esc(x)}</span>`).join(''):esc(L)})()}</b>`))}</span>`}).join('');
+  return `<span class="zc${emp?' emp':''}${sb&&!emp&&!o.edit?' hc':''}${o.on===L&&!emp?' on':''}${o.sel===i?' sel':''}" data-z="${i}"${o.edit?` data-ck="${cx},${cy}"`:''} style="grid-column:${cs+1-(eL?1:0)}/${cs+2+(eR?1:0)};grid-row:${cy+1-(eU?1:0)}/${cy+2+(eD?1:0)}${mg}">${o.edit?`<input type="text" maxlength="6" data-n="${i}" value="${esc(L)}" aria-label="区画${i+1}の名前" autocomplete="off" placeholder="空白">`:(emp?'':(sb?`<b class="zmn" style="--n:${znl(sb)}">${sb.split(/[\/／]/).map(x=>x.trim()).filter(Boolean).map(x=>`<span class="zpt">${esc(x)}</span>`).join('')}</b><em class="zcn" style="--zw:${zcw(L)}">${esc(L)}</em>`:`<b style="--n:${znl(L)}">${(()=>{const p=String(L).split(/[\/／]/).map(x=>x.trim()).filter(Boolean);return p.length>1?p.map(x=>`<span class="zpt">${esc(x)}</span>`).join(''):esc(L)})()}</b>`))}</span>`}).join('');
   const dv='repeating-linear-gradient(to bottom,var(--zd,#fff) 0 5px,transparent 5px 10px)',dh='repeating-linear-gradient(to right,var(--zd,#fff) 0 5px,transparent 5px 10px)',
     P={u:[dv,'2px 50%','50% 0'],d:[dv,'2px 50%','50% 100%'],l:[dh,'50% 2px','0 50%'],r:[dh,'50% 2px','100% 50%']},
     bg=ks=>ks.length?`background-image:${ks.map(k=>P[k][0]).join(',')};background-size:${ks.map(k=>P[k][1]).join(',')};background-position:${ks.map(k=>P[k][2]).join(',')};`:'';
@@ -2188,14 +2206,9 @@ const zAn=(d,W,H)=>d.an!=null&&d.an>=0&&d.an<((d.s==='t'||d.s==='b')?W:H);
 function updZ(){zSelFill();const m=zm(),ls=m.labels.slice(0,m.c*m.r);$('zmap').innerHTML=zhtml(m,{on:zcell(curLoc,ls)});zNum(m,ls);zLayout()/* 品目数（「3品」など）は表示しない */}
 /* 通常表示のマップ：区画には番号だけを置き、番号ごとの詳細（区画名・補足・品目・メーカー・完成品の数）を下の一覧に出す。
    一覧の行をタップしたときは、区画をタップしたときと同じ動き（行にも data-z を付けてある）。編集画面は対象外 */
-function zNum(m,ls){const root=$('zmap');if(!root)return;const cur=zcell(curLoc,ls);let k=0,rows='';
-  const nm=i=>String(i.name||'').split(/\r?\n/)[0].trim(),ct=i=>{try{return cdw(i).d}catch(e){return i.stock}};
+function zNum(m,ls){const root=$('zmap');if(!root)return;zMenuClose();let k=0;
   root.querySelectorAll('.zc:not(.emp)').forEach(c=>{const idx=+c.dataset.z,L=ls[idx];k++;
-    c.classList.remove('hc');c.innerHTML='<b class="zno">'+k+'</b>';c.setAttribute('aria-label',k+'番 '+L);
-    const its=S.items.filter(i=>zcell(i.loc,ls)===L),mk=[...new Set(its.map(i=>i.maker).filter(Boolean))].sort((x,y)=>{const a=(S.makers||[]).indexOf(x),b=(S.makers||[]).indexOf(y);return (a<0?999:a)-(b<0?999:b)}),sb=String((m.subs&&m.subs[idx])||'').split(/[\/／]/).map(x=>x.trim()).filter(Boolean).join('・');
-    rows+='<div class="zlr'+(L===cur?' on':'')+'" data-z="'+idx+'"><i class="zlk">'+k+'</i><div class="zlb"><div class="zlh"><b>'+esc(L)+'</b>'+(sb?'<span>'+esc(sb)+'</span>':'')+'</div>'
-      +(mk.length?'<span class="zld"></span><p class="zmk">'+mk.map(x=>'<em>'+esc(x)+'</em>').join('')+'</p>':'')+'</div></div>'});
-  if(rows)root.insertAdjacentHTML('beforeend','<div class="zleg">'+rows+'</div>')}
+    c.classList.remove('hc');c.innerHTML='<b class="zno">'+k+'</b>';c.setAttribute('aria-label',k+'番 '+L)})}
 /* ===== マップを最大5枚まで：S.zmap が今表示中のマップ。S.zmaps[番号]に各マップを、S.zmn[番号]に名前を持つ ===== */
 const ZMAX=5;
 const zBlank=()=>({c:2,r:2,labels:['','','',''],doors:[],ae:[]});
@@ -2266,7 +2279,7 @@ function zDoorRows(){
   $('zDc').textContent='目印 '+zt.doors.length+'/10';
   $('zAddDoor').hidden=$('zAddDr').hidden=zt.doors.length>=10;
   const e=zdSel>=0&&zt.doors[zdSel];$('zDe').hidden=!e;if(e){const tb=e.s==='t'||e.s==='b';$('zDm').textContent=tb?'←':'↑';$('zDp').textContent=tb?'→':'↓';const b=$('zDout');b.hidden=true;b.setAttribute('aria-pressed',e.o?'true':'false');b.textContent=e.o?'枠の外 ✓':'枠の外へ'}if(e&&$('zDn').value!==e.t)$('zDn').value=e.t;}
-function zPv(){$('zPv').innerHTML=zhtml(zt,{edit:true,dsel:zdSel})}
+function zPv(){$('zPv').innerHTML=zhtml(zt,{edit:true,dsel:zdSel});if(typeof zMkDraw==='function')zMkDraw()}
 function zTot(){$('zTot').textContent='全'+zt.c*zt.r+'区画'}
 function zSync(){$('zC').value=zt.c;$('zR').value=zt.r;zdSel=-1;zTot();zDoorRows();zPv()}
 function placeTools(){const tl=document.querySelector('.tools'),lr=document.querySelector('.lrow');if(!tl||!lr)return;if(mob()){if(tl.parentNode===lr)lr.parentNode.insertBefore(tl,lr.nextSibling)}else{const ib=lr.querySelector('.ibs');if(tl.parentNode!==lr)lr.insertBefore(tl,ib)}}
@@ -2617,7 +2630,7 @@ $('hOpen').onclick=()=>{dtBack=null;document.body.classList.add('hist')};
 $('hClose').onclick=()=>{const bk=dtBack;dtBack=null;document.body.classList.remove('hist');logF='';render();if(bk!==null&&mob()&&S.items.some(x=>x.id===bk))dtOpen(bk)};/* 詳細から開いた履歴は、閉じると詳細に戻る *//* 履歴を閉じたら、カードの選択も外す */
 $('mMenuBtn').onclick=e=>{e.stopPropagation();const m=$('mMenu');$('mEdit').textContent=document.body.classList.contains('edon')?'編集を終了':'編集';$('mMap').textContent=mob()?'置き場マップ':($('zBtn').getAttribute('aria-pressed')==='true'?'置き場マップを隠す':'置き場マップを表示');$('mDelMk').textContent=cur?`「${cur}」を削除`:'メーカーを削除';m.hidden=!m.hidden;$('mMenuBtn').setAttribute('aria-expanded',String(!m.hidden))};
 document.addEventListener('click',()=>{$('mMenu').hidden=true;$('mMenuBtn').setAttribute('aria-expanded','false')});
-$('zEdit').onclick=()=>{if(!isAdmin()){notify('マップの編集は管理者だけができます');return}zt=JSON.parse(JSON.stringify(zm()));$('zNm').value=(S.zmn&&S.zmn[+S.zi||0])||'';$('zDel').hidden=zCnt()<=1;/* マップが1枚のときは削除の欄を出さない */zSync();$('zd').showModal();if(document.activeElement&&document.activeElement.blur)document.activeElement.blur()};
+$('zEdit').onclick=()=>{if(!isAdmin()){notify('マップの編集は管理者だけができます');return}zt=JSON.parse(JSON.stringify(zm()));zmsel=-1;zMkDraw();$('zNm').value=(S.zmn&&S.zmn[+S.zi||0])||'';$('zDel').hidden=zCnt()<=1;/* マップが1枚のときは削除の欄を出さない */zSync();$('zd').showModal();if(document.activeElement&&document.activeElement.blur)document.activeElement.blur()};
 $('zC').onchange=$('zR').onchange=()=>{zt.c=+$('zC').value;zt.r=+$('zR').value;zFit();zTot();zPv()};
 /* 目印：1回タップ＝時計回りに1か所移動、すばやく2回タップ＝名前変更・削除の欄を出す */
 let zdTm=null,zdLast=-1;
@@ -2670,7 +2683,7 @@ $('zDok').onclick=()=>{zdSel=-1;zDoorRows();zPv()};
 $('zDdel').onclick=()=>{if(!isAdmin())return;if(zdSel<0)return;zt.doors.splice(zdSel,1);zdSel=-1;zDoorRows();zPv()};
 $('zAddDr').onclick=()=>{if(zt.doors.length>=10)return;zt.doors.push({s:'t',p:1,t:'扉',k:'door'});zdSel=zt.doors.length-1;zDoorRows();zPv();$('zDn').focus();$('zDn').select()};
 $('zAddDoor').onclick=()=>{if(zt.doors.length>=10)return;zt.doors.push({s:'t',p:1,t:'倉庫'});zdSel=zt.doors.length-1;zDoorRows();zPv();$('zDn').focus();$('zDn').select()};
-$('zPv').oninput=e=>{const t=e.target;if(t.dataset.s!==undefined){if(!zt.subs)zt.subs=[];zt.subs[+t.dataset.s]=t.value;return}if(t.dataset.n===undefined)return;zt.labels[+t.dataset.n]=t.value;const zc=t.closest('.zc');if(zc)zc.classList.toggle('emp',!t.value.trim())}; /* 入力中は描き直さない（キーボードが閉じるため） */
+$('zPv').oninput=e=>{const t=e.target;if(t.dataset.s!==undefined){if(!zt.subs)zt.subs=[];zt.subs[+t.dataset.s]=t.value;return}if(t.dataset.n===undefined)return;zt.labels[+t.dataset.n]=t.value;zMkDraw();const zc=t.closest('.zc');if(zc)zc.classList.toggle('emp',!t.value.trim())}; /* 入力中は描き直さない（キーボードが閉じるため） */
 $('zRs').onclick=()=>{zt=ZDEF();zSync()};
 $('zCn').onclick=()=>$('zd').close();
 let dlgLockY=null;
@@ -2706,18 +2719,51 @@ $('zTog2').onclick=()=>{$('mMenu').hidden=true;$('mMenuBtn').setAttribute('aria-
 placeMap();zApply();hApply();addEventListener('resize',placeMap);addEventListener('orientationchange',placeMap);
 
 /* 置き場マップ（スマホ）：右下ボタンで開く下シート。棚をタップするとその置き場所に絞り込む */
-function zSheet(on){document.body.classList.toggle('zsheet',on);$('zFab').setAttribute('aria-expanded',String(on));if(on){$('zPick').hidden=true;updZ()}}
+function zSheet(on){document.body.classList.toggle('zsheet',on);$('zFab').setAttribute('aria-expanded',String(on));zMenuClose();if(on){$('zPick').hidden=true;updZ()}}
 $('zFab').onclick=()=>zSheet(true);
 $('zBack').onclick=$('zX').onclick=()=>zSheet(false);
 addEventListener('keydown',e=>{if(e.key==='Escape'&&document.body.classList.contains('zsheet')&&!document.querySelector('dialog[open]'))zSheet(false)});
 addEventListener('resize',()=>{if(!mob())zSheet(false)});
-$('zmap').onclick=e=>{if(!mob())return;const c=e.target.closest('[data-z]');if(!c||c.classList.contains('emp'))return;
-  const m=zm(),ls=m.labels.slice(0,m.c*m.r),L=ls[+c.dataset.z],pick=$('zPick');
-  const cand=[...new Set(S.items.map(i=>i.loc||'未設定'))].filter(s=>s!=='未設定'&&zcell(s,ls)===L).sort((a,b)=>a.localeCompare(b,'ja',{numeric:true}));
-  if(!cand.length){pick.hidden=false;pick.innerHTML='<span class="zpl">「'+esc(L)+'」に置いている品目はありません</span>';return}
-  if(cand.length===1){curLoc=curLoc===cand[0]?'':cand[0];render();zSheet(false);if(!document.body.classList.contains('hist'))topScroll();return}
-  pick.hidden=false;pick.innerHTML='<span class="zpl">「'+esc(L)+'」の置き場所を選んでください</span>'+cand.map(s=>`<button type="button" data-sh="${esc(s)}">${esc(s)}</button>`).join('')};
-$('zPick').onclick=e=>{const b=e.target.closest('button[data-sh]');if(!b)return;curLoc=b.dataset.sh;render();zSheet(false);if(!document.body.classList.contains('hist'))topScroll()};
+/* マップ編集：メーカーの並び順を、置き場（区画）ごとに決める（▲▼）。zt.mo[区画の番号]＝その区画のメーカー順 */
+let zmsel=-1;
+const zMkOf=(ls,idx)=>{const L=ls[idx],its=S.items.filter(i=>zcell(i.loc,ls)===L),mk=[...new Set(its.map(i=>i.maker).filter(Boolean))],ord=(zt.mo&&zt.mo[idx])||[],gm=S.makers||[],rk=x=>{const o=ord.indexOf(x);return o>=0?o:1000+Math.max(0,gm.indexOf(x))};return mk.sort((x,y)=>rk(x)-rk(y))};
+function zMkDraw(){const sel=$('zMkSel'),el=$('zMkOrd');if(!sel||!el||!zt)return;
+  const n=zt.c*zt.r,ls=zt.labels.slice(0,n).map(x=>String(x||'').trim()),ae=new Set(zt.ae||[]),opts=[];let k=0;
+  ls.forEach((L,i)=>{if(!L||ae.has(((i%zt.c)*2+1)+','+(Math.floor(i/zt.c)*2+1)))return;k++;opts.push([i,k+'番　'+L])});
+  if(!opts.length){sel.innerHTML='';el.innerHTML='<div class="zhint">区画に名前を入れると、ここで選べます</div>';return}
+  if(!opts.some(o=>o[0]===zmsel))zmsel=opts[0][0];
+  sel.innerHTML=opts.map(o=>'<option value="'+o[0]+'">'+esc(o[1])+'</option>').join('');sel.value=String(zmsel);document.querySelectorAll('#zPv .zc').forEach(c=>c.classList.toggle('msel',+c.dataset.z===zmsel));
+  const mk=zMkOf(ls,zmsel);
+  el.innerHTML=mk.length?mk.map((x,i)=>'<div class="zmo"><span>'+esc(x)+'</span><button type="button" data-mi="'+i+'" data-md="-1" aria-label="上へ"'+(i===0?' disabled':'')+'>▲</button><button type="button" data-mi="'+i+'" data-md="1" aria-label="下へ"'+(i===mk.length-1?' disabled':'')+'>▼</button></div>').join(''):'<div class="zhint">この置き場に置いている品目はまだありません</div>'}
+/* 上のマップの区画をタップ（名前の欄に入る）と、その置き場のメーカー順に切り替わる */
+$('zPv').addEventListener('focusin',e=>{const t=e.target;if(!t||!t.dataset||t.dataset.n===undefined)return;const i=+t.dataset.n;if(i!==zmsel&&String((zt.labels||[])[i]||'').trim()){zmsel=i;zMkDraw()}});
+$('zMkSel').onchange=()=>{zmsel=+$('zMkSel').value;zMkDraw()};
+/* ▲▼で1つずつ入れ替え。属性名は data-mi／data-md（data-i や data-d は在庫の入出庫の処理と同じ名前なので使わない） */
+$('zMkOrd').onclick=e=>{const b=e.target.closest('button[data-mi]');if(!b||b.disabled)return;
+  const ls=zt.labels.slice(0,zt.c*zt.r).map(x=>String(x||'').trim()),mk=zMkOf(ls,zmsel),i=+b.dataset.mi,j=i+(+b.dataset.md);if(j<0||j>=mk.length)return;
+  [mk[i],mk[j]]=[mk[j],mk[i]];if(!Array.isArray(zt.mo))zt.mo=[];zt.mo[zmsel]=mk;zMkDraw()};
+/* マップの番号をタップすると、その区画に置いているメーカーがプルダウンで出る。選ぶとそのメーカー（と置き場所）で絞り込む */
+function zMenuClose(){const m=document.getElementById('zMenu');if(m)m.remove()}
+$('zmap').onclick=e=>{const c=e.target.closest('[data-z]');if(!c||c.classList.contains('emp'))return;
+  const old=document.getElementById('zMenu');if(old){const same=old.dataset.z===c.dataset.z;old.remove();if(same)return}
+  const m=zm(),ls=m.labels.slice(0,m.c*m.r),L=ls[+c.dataset.z];
+  const its=S.items.filter(i=>zcell(i.loc,ls)===L);
+  const ord=(m.mo&&m.mo[+c.dataset.z])||[],rk=x=>{const o=ord.indexOf(x);return o>=0?o:1000+Math.max(0,(S.makers||[]).indexOf(x))},mk=[...new Set(its.map(i=>i.maker).filter(Boolean))].sort((x,y)=>rk(x)-rk(y));
+  const menu=document.createElement('div');menu.id='zMenu';menu.dataset.z=c.dataset.z;
+  menu.innerHTML='<div class="zml">'+esc(L)+'</div>'+(mk.length?mk.map((x,n)=>'<button type="button" data-n="'+n+'"'+(x===cur?' class="on"':'')+'>'+esc(x)+'</button>').join(''):'<div class="zme">置いている品目はありません</div>');
+  menu.onclick=ev=>{const bt=ev.target.closest('button');if(!bt)return;
+    const x=mk[+bt.dataset.n];
+    if(x===cur){cur='';curLoc=''}/* 選択中のメーカーをもう一度押すと解除 */
+    else{const ll=[...new Set(its.filter(i=>i.maker===x).map(i=>i.loc).filter(Boolean))];cur=x;curLoc=ll.length===1?ll[0]:''}menu.remove();render();
+    if(mob())zSheet(false);if(!document.body.classList.contains('hist'))topScroll()};
+  document.body.appendChild(menu);
+  const r=c.getBoundingClientRect(),mw=menu.offsetWidth,mh=menu.offsetHeight,vw=innerWidth,vh=innerHeight;
+  let x=Math.min(Math.max(8,r.left+r.width/2-mw/2),vw-mw-8),y=r.bottom+6;
+  if(y+mh>vh-8)y=Math.max(8,r.top-mh-6);
+  menu.style.left=x+'px';menu.style.top=y+'px'};
+addEventListener('pointerdown',ev=>{const m=document.getElementById('zMenu');if(m&&!m.contains(ev.target)&&!ev.target.closest('#zmap [data-z]'))m.remove()},true);
+addEventListener('keydown',ev=>{if(ev.key==='Escape')zMenuClose()});
+addEventListener('resize',zMenuClose);
 {const z=document.querySelector('.zmap');let y0=null;
   z.addEventListener('touchstart',e=>{y0=(e.target.closest('.zgrab,.zh')&&!e.target.closest('button'))?e.touches[0].clientY:null},{passive:true});
   z.addEventListener('touchmove',e=>{if(y0===null)return;const dy=e.touches[0].clientY-y0;z.style.transition='none';if(dy>0)z.style.transform='translateY('+dy+'px)'},{passive:true});
@@ -2729,7 +2775,7 @@ $('zOk').onclick=()=>{
   if(new Set(Lf.map(zn)).size!==Lf.length){notify('同じ区画名が重複しています');return}
   const old=zm().labels.slice(0,zm().c*zm().r),nw=new Set(L.map(zn)),ren={};
   old.forEach((o,i)=>{if(i<n&&o&&L[i]&&zn(o)!==zn(L[i])&&!nw.has(zn(o)))ren[o]=L[i]});
-  const mv=loc=>{const b=zcell(loc,old);if(b===null||!(b in ren))return loc;for(let k=1;k<=loc.length;k++){if(zn(loc.slice(0,k))===zn(b))return ren[b]+loc.slice(k)}return loc};
+  const mv=loc=>{const b=zcell(loc,old);if(b===null||!(b in ren))return loc;return ren[b]};/* 区画名を変えたときは、置き場所を新しい区画名そのものにする（「-棚」などの余計な文字は残さない） */
   if(Object.keys(ren).length){S.items.forEach(i=>{i.loc=mv(i.loc)});curLoc=mv(curLoc)}
   zt.labels=L.concat(zt.labels.slice(n));zt.subs=Array.from({length:zt.labels.length},(_,i)=>String((zt.subs&&zt.subs[i])||'').trim());
   zt.ae=(zt.ae||[]).filter(k=>{const q=String(k).split(',').map(Number);if(!(q[0]<=zt.c*2&&q[1]<=zt.r*2))return false;return true});delete zt.ac;delete zt.ar;
@@ -2912,10 +2958,11 @@ function mkNewSync(){const on=$('fMaker').value==='__new__';$('fMakerNew').hidde
 $('fMaker').onchange=mkNewSync;
 /* 置き場所：既に使われている置き場所から選ぶ。「＋ 置き場所を追加…」で新しい名前を入力 */
 function locNewSync(){const on=$('fLoc').value==='__new__';$('fLocNew').hidden=!on;if(on&&$('dlg').open)setTimeout(()=>$('fLocNew').focus(),0)}
-function locFill(cur){const ls=[...new Set(S.items.map(i=>(i.loc||'').trim()).filter(Boolean))];if(cur&&!ls.includes(cur))ls.push(cur);ls.sort((a,b)=>a.localeCompare(b,'ja',{numeric:true}));
-  const none=!ls.length&&!cur;
-  $('fLoc').innerHTML=`<option value="" ${!cur&&!none?'selected':''}>未設定</option>`+ls.map(l=>`<option value="${esc(l)}" ${l===cur?'selected':''}>${esc(l)}</option>`).join('')+`<option value="__new__" ${none?'selected':''}>＋ 置き場所を追加…</option>`;$('fLocNew').value='';locNewSync()}
-$('fLoc').onchange=locNewSync;
+function locFill(cur){/* 置き場所の選択肢は、置き場マップの区画名（マップの編集で入れた名前）と同じ。マップを直せば、ここも変わる */
+  const ls=[],add=m=>{if(!m||!m.labels)return;const ae=new Set(m.ae||[]);m.labels.slice(0,m.c*m.r).forEach((L,i)=>{L=String(L||'').trim();if(L&&!ae.has(((i%m.c)*2+1)+','+(Math.floor(i/m.c)*2+1))&&!ls.includes(L))ls.push(L)})};
+  const zi=+S.zi||0,n=Math.max(1,zCnt());for(let k=0;k<n;k++)add(k===zi?S.zmap:(S.zmaps&&S.zmaps[k]));if(!S.zmaps||!S.zmaps[zi])add(S.zmap);
+  if(cur&&!ls.includes(cur))ls.push(cur);/* いま入っている置き場所は、マップにない名前でも残す */
+  $('fLoc').innerHTML=`<option value="" ${!cur?'selected':''}>未設定</option>`+ls.map(l=>`<option value="${esc(l)}" ${l===cur?'selected':''}>${esc(l)}</option>`).join('');$('fLocNew').value='';locNewSync()} $('fLoc').onchange=locNewSync;
 /* メーカー・置き場所のプルダウン：4行まで表示し、それ以降はスクロール（中身の<select>はそのまま使い、見た目と開き方だけ置き換える） */
 /* 品目が1つもない（＝使っていない）メーカーだけ、管理者はプルダウンの×で削除できる */
 function mkUnused(m){return isAdmin()&&S.makers.includes(m)&&!S.items.some(i=>i.maker===m)} /* 品目が1件もないメーカーだけ×を出す（品目があるメーカーは出さない） */
