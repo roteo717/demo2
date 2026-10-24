@@ -1835,6 +1835,17 @@ body #grid .nc{padding-top:clamp(10px,3.6cqw,14px)!important}
 .zmap #zSub{position:relative;z-index:2;flex:0 1 auto;min-width:0;margin-left:0;padding:0 6px 10px;font-size:12px;font-weight:500;line-height:1.2;letter-spacing:.1em;color:#e8ebef;white-space:nowrap;overflow:visible;text-overflow:clip}
 .zmap #zSub::after{content:"";position:absolute;left:50%;bottom:-1px;width:14px;height:8px;transform:translateX(-50%);pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 8'%3E%3Cpath d='M0 0H14V1L7 7.4 0 1Z' fill='%232a2d31'/%3E%3Cpath d='M0 1L7 7.2 14 1' fill='none' stroke='%23e8ebef' stroke-width='1.5' stroke-linejoin='miter'/%3E%3C/svg%3E") no-repeat center/100% 100%}
 .zmap #zSub:empty{display:none}
+/* マップの見出し（画像2風）：左に地図＋ピンのアイコン、大きな白い太字「マップ」、縦の区切り線、小さな「マシニング課」。下の白い線は見出しの端から端まで通す（V字の切り欠きなし） */
+.zmap .zh{position:relative;height:38px;min-height:38px;align-items:flex-start;margin-bottom:8px}
+.zmap .zh .zbtns{margin-top:3px}
+.zmap #zTt{height:38px;box-sizing:border-box;padding-bottom:4px;align-items:flex-end;gap:12px}
+.zmap #zTt::after{display:block;content:"";position:absolute;left:0;right:0;bottom:0;height:1.5px;background:#e8ebef;pointer-events:none}
+.zmap #zTt::before,.zmap #zTt:has(#zSub:not(:empty))::before{display:block;position:static;flex:none;align-self:center;right:auto;bottom:auto;width:28px;height:28px;z-index:auto;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 6.5L2.5 8.5V20.5L8.5 18.5L15 20.5L21.5 18.5V13'/%3E%3Cpath d='M8.5 9V18.5M15 16V20.5'/%3E%3Cpath d='M17.5 14.5s-4-3.6-4-7a4 4 0 0 1 8 0c0 3.4-4 7-4 7z'/%3E%3Ccircle cx='17.5' cy='7.5' r='1.5'/%3E%3C/svg%3E") no-repeat center/contain}
+.zmap #zSel{height:auto;line-height:1.25;padding:0;font-size:22px;font-weight:800;letter-spacing:.04em}
+.zmap #zSub{align-self:flex-end;padding:9px 0 3px 14px;border-left:1.5px solid #8b939c;font-size:13px;line-height:1.25;letter-spacing:.08em;color:#d5d9de}
+.zmap #zSub::after{display:none}
+/* プルダウンの印（下向きの小さな三角） */
+.zmap #zSel,.zmap #zSel:hover,.zmap #zSel:focus,.zmap #zSel:focus-visible{padding-right:20px;background-color:transparent;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M0 0H10L5 6Z' fill='%23e8ebef'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 3px center;background-size:10px 6px}
 #zd #zMkSel{display:none}
 #zPv .zc.msel{outline:2px solid #ffc933;outline-offset:1px}
 #zd #zMkOrd .zmo{display:flex;align-items:center;gap:6px;padding:4px 6px 4px 12px;margin-bottom:4px;background:#fff;border:1px solid var(--line);border-radius:8px}
@@ -2239,7 +2250,7 @@ function zFitGap(){
   const set=(k,v)=>root.style.setProperty(k,v);
   set('--zgt','0px');set('--zgb','0px');set('--zgl','0px');set('--zgr','0px');set('--zmax','none');
   const above=Math.max(0,root.getBoundingClientRect().top-(zh?zh.getBoundingClientRect().bottom:box.getBoundingClientRect().top));
-  const mt=Math.max(G-above,0); /* 見出しとの間にもともとある余白（above）を引く */
+  const mt=Math.max(G+16-above,0);/* 見出しの下線との間は、他の余白より16px広くとる */ /* 見出しとの間にもともとある余白（above）を引く */
   set('--zgt',mt+'px');set('--zgb',(G-pb)+'px');
   if(box.clientWidth-2*G>560){set('--zgl','auto');set('--zgr','auto');set('--zmax','560px')} /* 広い画面（タブレットなど）では、枠を中央に置いて大きくなりすぎないようにする */
   else{set('--zgl',(G-pl)+'px');set('--zgr',(G-pr)+'px')}
