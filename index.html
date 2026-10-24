@@ -1846,6 +1846,14 @@ body #grid .nc{padding-top:clamp(10px,3.6cqw,14px)!important}
 .zmap #zSel{height:auto;line-height:1.25;padding:0;font-size:22px;font-weight:800;letter-spacing:.04em}
 .zmap #zSub{align-self:flex-end;padding:9px 0 3px 14px;border-left:1.5px solid #8b939c;font-size:13px;line-height:1.25;letter-spacing:.08em;color:#d5d9de}
 .zmap #zSub::after{display:none}
+/* 「絞り込み解除」：PCは検索バーの横、スマホは検索バーの下の独立した行 */
+#fClr{flex:none;display:inline-flex;align-items:center;box-sizing:border-box;max-width:100%;min-height:34px;padding:5px 14px;border:1px solid #b8c0cc;border-radius:999px;background:#eef1f5;color:#3a4553;font-size:13px;font-weight:700;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+#fClr:active{background:#dde3ea}
+#fClr[hidden],body.deon #fClr{display:none!important}
+@media(max-width:600px){
+  #fClr{display:flex;width:fit-content;max-width:calc(100% - 16px);margin:10px 0 0 8px} /* 左端はタブの文字にそろえ、上はタブの下線から10px、下は一覧の上余白（12px）だけにする */
+  #tabs{scrollbar-width:none} #tabs::-webkit-scrollbar{display:none} /* タブの横スクロールバーは出さない（指でスクロールはできる） */
+}
 /* プルダウンの印（下向きの小さな三角） */
 .zmap #zSel,.zmap #zSel:hover,.zmap #zSel:focus,.zmap #zSel:focus-visible{padding-right:20px;background-color:transparent;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M0 0H10L5 6Z' fill='%23e8ebef'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 3px center;background-size:10px 6px}
 #zd #zMkSel{display:none}
@@ -1925,6 +1933,7 @@ body #grid .nc{padding-top:clamp(10px,3.6cqw,14px)!important}
       <div class="tools">
         <input type="search" id="q" placeholder="品名・場所・メーカー"><button class="qsc" id="qScan" type="button" aria-label="QRコードで検索" title="QRコードで検索"><svg viewBox="0 0 24 24"><path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/><rect x="7.8" y="7.8" width="2.4" height="2.4" stroke-width="1.6"/><rect x="13.8" y="7.8" width="2.4" height="2.4" stroke-width="1.6"/><rect x="7.8" y="13.8" width="2.4" height="2.4" stroke-width="1.6"/><path d="M13 13h2v2h-2zM17 13h2v2h-2zM15 15h2v2h-2zM13 17h2v2h-2zM17 17h2v2h-2z" fill="currentColor" stroke="none"/></svg></button>
       </div>
+      <button type="button" id="fClr" hidden title="絞り込みを解除"></button>
       <div class="grid" id="grid"></div>
       <div class="delbar" id="delBar" hidden><div><span id="dlCnt">0件選択</span><button class="btn g" id="dlAll" type="button">全選択</button><button class="btn g" id="dlMk" type="button" hidden>メーカー削除</button></div><div><button class="btn" id="dlGo" type="button" disabled>選択を削除</button><button class="btn g" id="dlEnd" type="button">やめる</button></div></div>
       <div class="pager" id="pager" hidden><button class="btn" id="pgPrev" type="button">◀ 前へ</button><span id="pgInfo">1 / 1</span><button class="btn" id="pgNext" type="button">次へ ▶</button></div>
@@ -2315,7 +2324,7 @@ function zDoorRows(){
 function zPv(){$('zPv').innerHTML=zhtml(zt,{edit:true,dsel:zdSel});if(typeof zMkDraw==='function')zMkDraw()}
 function zTot(){$('zTot').textContent='全'+zt.c*zt.r+'区画'}
 function zSync(){$('zC').value=zt.c;$('zR').value=zt.r;zdSel=-1;zTot();zDoorRows();zPv()}
-function placeTools(){const tl=document.querySelector('.tools'),lr=document.querySelector('.lrow');if(!tl||!lr)return;if(mob()){if(tl.parentNode===lr)lr.parentNode.insertBefore(tl,lr.nextSibling)}else{const ib=lr.querySelector('.ibs');if(tl.parentNode!==lr)lr.insertBefore(tl,ib)}}
+function placeTools(){const tl=document.querySelector('.tools'),lr=document.querySelector('.lrow');if(!tl||!lr)return;if(mob()){if(tl.parentNode===lr)lr.parentNode.insertBefore(tl,lr.nextSibling)}else{const ib=lr.querySelector('.ibs');if(tl.parentNode!==lr)lr.insertBefore(tl,ib)}const fc=document.getElementById('fClr');if(fc&&fc.previousElementSibling!==tl)tl.parentNode.insertBefore(fc,tl.nextSibling)/* 絞り込み解除は、いつも検索バーのすぐ後ろ（PC＝横、スマホ＝下の行） */}
 function render(){
   placeTools();
   if(cur&&!S.makers.includes(cur))cur='';
@@ -2326,6 +2335,8 @@ function render(){
   const shelves=[...new Set(S.items.map(i=>i.loc||'未設定'))].filter(l=>l!=='未設定'||hasUn).sort((a,b)=>a.localeCompare(b,'ja',{numeric:true}));
   if(curLoc&&!shelves.includes(curLoc))curLoc='';
   $('tabs').innerHTML=['すべて',...shelves].map(l=>`<div class="tab ${(l==='すべて'?'':l)===curLoc?'on':''}" data-sh="${l==='すべて'?'':esc(l)}">${esc(l)}</div>`).join('');
+  {const qv=$('q').value.trim(),p=[curLoc,cur,qv?'検索：'+(qv.length>8?qv.slice(0,8)+'…':qv):''].filter(Boolean),c=$('fClr');/* 絞り込んでいる間だけ、いまの条件を出す。押すと全部解除。PCは検索バーの横、スマホは検索バーの下の独立した行 */
+  if(c){c.hidden=!p.length;c.textContent=p.join('・')+' ✕';c.setAttribute('aria-label','絞り込みを解除：'+p.join('・'))}}
   /* 棚を選んでいる間は、その棚に品目があるメーカーだけ出す（品目がまだ1件もない新規メーカーは、見失わないよう常に出す） */
   const vMk=curLoc?S.makers.filter(m=>S.items.some(i=>i.maker===m&&(i.loc||'未設定')===curLoc)||!S.items.some(i=>i.maker===m)):S.makers;
   $('locs').innerHTML=S.makers.length?['すべて',...vMk].map(m=>`<span class="${(m==='すべて'?'':m)===cur?'on':''}" data-m="${m==='すべて'?'':esc(m)}">${esc(m)}</span>`).join(''):'';
@@ -2651,6 +2662,7 @@ document.addEventListener('click',e=>{
 });
 $('barMaker').onclick=()=>$('nMaker').click();
 $('q').oninput=render;
+$('fClr').onclick=()=>{cur='';curLoc='';$('q').value='';render();if(!document.body.classList.contains('hist'))topScroll()};/* 絞り込み解除：メーカー・棚・検索をまとめて戻す */
 function qToggle(open){const t=document.querySelector('.tools');t.classList.toggle('so',open);if($('hSearch'))$('hSearch').setAttribute('aria-pressed',open?'true':'false');$('qOpen').setAttribute('aria-pressed',open?'true':'false');if(open){if(!mob())$('q').focus()}else if($('q').value){$('q').value='';render()}window.dispatchEvent(new Event('resize'))}
 $('qOpen').onclick=()=>qToggle(!document.querySelector('.tools').classList.contains('so'));
 $('q').addEventListener('keydown',e=>{if(e.key==='Escape')qToggle(false)});
