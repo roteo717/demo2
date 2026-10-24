@@ -1786,6 +1786,18 @@ body #grid .hs2 i{font-family:'BIZ UDPGothic',sans-serif}
   body #grid .nck .wp b{background:linear-gradient(180deg,#f5a54a 0%,#d9791a 55%,#b45e0e 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
   body #grid .card.low .nck .st b{background:linear-gradient(180deg,#f0545a 0%,#d8232a 55%,#b01a20 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
 }
+/* ===== メーカー表示：丸バッジをやめて、写真の左上に付くリボンにする（PC・スマホ共通） ===== */
+:root{--rh:calc(var(--mb) * .5);--fo:calc(var(--mb) * .08);--fh:calc(var(--mb) * .06)}
+body #grid .card,body #grid .card.low{overflow:visible!important}
+body #grid .ph{margin-top:calc(var(--rh) + 14px)!important}
+body #grid .ph .mkbg{top:calc(var(--rh) * -1 - 8px);left:calc(-11px - var(--fo));right:auto;bottom:auto;width:auto;max-width:calc(100% + 10px);height:var(--rh);aspect-ratio:auto;border-radius:4px 0 0 0;box-shadow:none;flex-direction:row;justify-content:flex-start;gap:0;overflow:hidden;padding:0 calc(var(--rh) * .6) 0 12px;background:linear-gradient(180deg,#3a8fe6 0%,#1f6fc5 55%,#1556a8 100%);clip-path:polygon(0 0,100% 0,calc(100% - var(--rh) * .3) 50%,100% 100%,0 100%)}
+body #grid .ph .mkbg img{display:none}
+body #grid .ph .mkbg b{width:auto;max-width:100%;font-size:calc(var(--rh) * .5);font-weight:700;letter-spacing:.04em;line-height:1.5;padding:.1em 0;color:#fff;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* リボンの左端の折り返し（暗い三角） */
+body #grid .ph:has(.mkbg)::before{content:"";position:absolute;z-index:2;left:calc(-11px - var(--fo));top:-8px;width:var(--fo);height:var(--fh);background:#0f3f78;clip-path:polygon(0 0,100% 0,100% 100%);pointer-events:none}
+/* 右下の丸バッジがなくなったので、品番の行の右の余白と上の余白は元に戻す */
+body #grid .npr{padding-right:0!important}
+body #grid .nc{padding-top:clamp(10px,3.6cqw,14px)!important}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
