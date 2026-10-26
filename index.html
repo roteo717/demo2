@@ -1899,10 +1899,10 @@ body #grid .nc{padding-top:clamp(10px,3.6cqw,14px)!important}
 @media(prefers-reduced-motion:reduce){#zmap .zc.hl{animation:none!important;box-shadow:0 0 12px 3px rgba(255,69,58,.8)}@media(min-width:601px){#zmap .zc.on{animation:none!important;box-shadow:0 0 12px 3px rgba(255,69,58,.8)}}}
 /* メーカーのリボン（デザインはそのまま）を、写真の上に重ねる。写真の枠が上に広がる */
 body #grid .ph{margin-top:10px!important}
+body #grid .ph{--rh:20px}
+body #grid .ph .mkbg b{font-size:12px!important;line-height:1.5}
 body #grid .ph .mkbg{top:calc(var(--rh) / -2);max-width:calc(75% + var(--pm))}
 body #grid .ph:has(.mkbg)::before{top:calc(var(--rh) / 2)}
-/* 一番上の段のリボンがカードの上にはみ出しても切れないよう、グリッドの上側の余白を広げる（中身の位置は変わらない） */
-@media(min-width:601px){.grid.fit{padding-top:14px;margin-top:-14px}}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
