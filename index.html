@@ -1899,9 +1899,9 @@ body #grid .nc{padding-top:clamp(10px,3.6cqw,14px)!important}
 @media(prefers-reduced-motion:reduce){#zmap .zc.hl{animation:none!important;box-shadow:0 0 12px 3px rgba(255,69,58,.8)}@media(min-width:601px){#zmap .zc.on{animation:none!important;box-shadow:0 0 12px 3px rgba(255,69,58,.8)}}}
 /* メーカーのリボン（デザインはそのまま）を、写真の上に重ねる。写真の枠が上に広がる */
 body #grid .ph{margin-top:10px!important}
-body #grid .ph{--rh:20px}
+body #grid .ph{--rh:22px} /* 上端＝カードの外側の上端（枠線1px＋写真の余白10px）、中心＝写真の上端 */
 body #grid .ph .mkbg{background:linear-gradient(180deg,rgba(255,255,255,.30) 0%,rgba(255,255,255,0) 55%),linear-gradient(180deg,#4aa0f2 0%,#1f6fc5 50%,#0f4a96 100%)!important}
-body #grid .ph .mkbg b{font-size:12px!important;line-height:1.5}
+body #grid .ph .mkbg b{font-size:12.5px!important;line-height:1.5}
 body #grid .ph .mkbg{top:calc(var(--rh) / -2);max-width:calc(75% + var(--pm))}
 body #grid .ph:has(.mkbg)::before{top:calc(var(--rh) / 2)}
 </style>
