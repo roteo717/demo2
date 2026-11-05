@@ -3227,7 +3227,7 @@ function nckHtml(i){const c=lnCfg(i),d=cdw(i);
   if(!L&&!R)return '';
   return `<div class="nck"${L&&R?'':' style="grid-template-columns:minmax(0,1fr)"'}>${L}${R}</div>`}
 /* 下から出るシート（.psh）を開いている間は、後ろの画面をスクロールさせない。シートの中身が長いときだけ、シート内でスクロールできる */
-(function(){const blk=e=>{if(!document.querySelector('.psh'))return;const b=e.target&&e.target.closest?e.target.closest('.psb'):null;if(b&&b.scrollHeight>b.clientHeight+1)return;if(e.cancelable)e.preventDefault()};document.addEventListener('touchmove',blk,{passive:false});document.addEventListener('wheel',blk,{passive:false})})();
+(function(){const can=(el,b)=>{/* タッチした場所から、シートの外枠までの間に、スクロールできる部分（品目リストなど）があるか */for(;el&&el!==b.parentNode;el=el.parentElement){const o=getComputedStyle(el).overflowY;if((o==='auto'||o==='scroll')&&el.scrollHeight>el.clientHeight+1)return true}return false};const blk=e=>{if(!document.querySelector('.psh'))return;const b=e.target&&e.target.closest?e.target.closest('.psb'):null;if(b&&can(e.target,b))return;if(e.cancelable)e.preventDefault()};document.addEventListener('touchmove',blk,{passive:false});document.addEventListener('wheel',blk,{passive:false})})();
 /* 下から出るシートを開いたまま下のタブを押したら、シートを閉じる（タブの動作はそのまま行う） */
 document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('.btab'))document.querySelectorAll('.psh').forEach(x=>x.remove())},true);
 function mkSheet(cls){const el=document.createElement('div');el.className='psh';el.innerHTML='<div class="psb '+(cls||'')+'" role="dialog"></div>';el.addEventListener('click',e=>{if(e.target===el)el.remove()});el.addEventListener('keydown',e=>{if(e.key==='Escape')el.remove()});document.body.appendChild(el);return el}
