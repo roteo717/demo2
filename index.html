@@ -318,6 +318,8 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 #mvQ:focus{outline:none;box-shadow:none;border-color:#b8c0cc}
 dialog input:focus,dialog textarea:focus,dialog select:focus{outline:none!important;box-shadow:none!important;border-color:#b8c0cc!important} /* 編集画面など：選択しても枠を太くしない */
 #lgId:focus,#lgNm:focus,#lgPw:focus{outline:none;box-shadow:none;border-color:#c5ccd6} /* ログイン画面：タップしても枠を太くしない */
+/* すべての入力欄・ボタン：タップ（選択）しても外枠を太くしない／光らせない */
+input:focus,input:focus-visible,textarea:focus,textarea:focus-visible,select:focus,select:focus-visible,button:focus-visible,a:focus-visible,summary:focus-visible{outline:none!important;box-shadow:none!important}
 #mvS{margin-top:8px!important}
 #mv .qwrap{margin-top:16px}
 #mv .bar{margin-top:20px}
@@ -878,7 +880,7 @@ html:has(body.dton),body.dton{overflow:hidden!important}
 .dtbar button.off{opacity:.35;filter:grayscale(.3)}
 /* マップを切り替えるプルダウン */
 #zSel{flex:0 1 auto;min-width:0;max-width:150px;height:30px;padding:0 26px 0 9px;border:1px solid #b9c2d0;border-radius:7px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 6px center/14px;color:#14234b;font:inherit;font-size:13px;font-weight:700;-webkit-appearance:none;appearance:none;cursor:pointer}
-#zSel:focus{outline:none;border-color:#3a8fe6;box-shadow:0 0 0 2px rgba(58,143,230,.25)}
+#zSel:focus{outline:none;box-shadow:none}
 /* 一画面に収める：写真が余った高さに合わせて縮む（下限は100px）。ふつうはスクロールなし */
 .dts{overflow-y:auto}
 .dtph{flex:0 1 auto;min-height:100px;max-height:60vh}
@@ -1001,9 +1003,14 @@ html:has(body.dton),body.dton{overflow:hidden!important}
 #qpSum{margin-top:8px;font-size:14px;color:var(--sub)}
 .qrbox .qb .qn{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--sub)}
 #sc{width:min(520px,94vw)}
-#sc .vw{position:relative;background:#000;border-radius:10px;overflow:hidden;aspect-ratio:1/1;margin-top:10px}
-#sc video{width:100%;height:100%;object-fit:cover;display:block}
-#sc .fr{position:absolute;inset:18%;border:3px solid rgba(255,255,255,.9);border-radius:14px;box-shadow:0 0 0 999px rgba(0,0,0,.35);pointer-events:none}
+#sc .vw{position:relative;background:#e9edf2;border-radius:10px;overflow:hidden;aspect-ratio:1/1;margin-top:10px;isolation:isolate;transform:translateZ(0);-webkit-mask-image:-webkit-radial-gradient(white,black)}
+#sc video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .15s}/* 枠いっぱいに固定して、映像が出るまでは隠す（開いた瞬間に左右へ黒い帯が見えるのを防ぐ） */
+#sc video.on{opacity:1}
+#sc .vw.on{background:#000}/* カメラが映るまでは黒ではなく明るい色にして、映ってから黒い背景にする（開いた瞬間に黒いものが見えないように） */
+#sc .vw:not(.on) .fr,#sc .vw:not(.on)::after{opacity:0}
+#sc .fr{position:absolute;inset:18%;border:3px solid rgba(255,255,255,.9);border-radius:14px;pointer-events:none;z-index:2}
+/* 枠の外を暗くする：巨大な影（box-shadow）は、スマホで枠の外へはみ出して左右に黒い帯が一瞬見えることがあるので、枠の外側だけを切り抜いた重ね板で暗くする */
+#sc .vw::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:rgba(0,0,0,.35);-webkit-clip-path:polygon(evenodd,0 0,100% 0,100% 100%,0 100%,0 0,18% 18%,18% 82%,82% 82%,82% 18%,18% 18%);clip-path:polygon(evenodd,0 0,100% 0,100% 100%,0 100%,0 0,18% 18%,18% 82%,82% 82%,82% 18%,18% 18%)}
 #sc button:focus,#sc button:focus-visible{outline:none;box-shadow:none} /* 開いた直後に「写真から読み取る」が選択されたように光らないようにする */
 #sc .hint{font-size:14px;color:var(--sub);margin-top:8px;line-height:1.5}
 
@@ -1270,7 +1277,7 @@ html:has(body.dton),body.dton{overflow:hidden!important}
 #login,#ac,#pwd{width:min(400px,92vw)}
 @media(max-width:600px){#login{width:min(400px,92vw);margin:auto;border-radius:16px;padding:20px}}
 #login::backdrop{background:#eef1f5}
-#login .lgs{margin:6px 0 10px;font-size:13px;color:var(--sub);line-height:1.5}
+#login .lgsub{margin:6px 0 10px;font-size:13px;color:var(--sub);line-height:1.5}
 #login input{margin-bottom:6px;font-size:17px}
 .lgerr{margin:6px 0;padding:8px 10px;border-radius:8px;background:#fdeceb;color:#c0303a;font-size:13px;font-weight:700}
 #login .lggo{width:100%;margin-top:10px;min-height:48px;font-size:16px}
@@ -1998,6 +2005,26 @@ body:not(.adm) #rImp{display:none!important}
 #ac #acList .acr .acn2 b{font-size:14px;white-space:nowrap}
 #ac #acList .acr .acn2 small{font-size:11px;white-space:nowrap}
 #ac #acList .acr .btn{height:30px;min-height:30px;padding:0 9px;font-size:12px;border-radius:7px}
+/* ユーザー一覧：左に濃い紺の「ID」の札、右に名前と権限 */
+#ac #acList .acr{gap:10px}
+#ac #acList .acr .acid{flex:none;box-sizing:border-box;min-width:46px;max-width:5.5em;height:30px;padding:0 8px;display:flex;align-items:center;justify-content:center;background:#26364d;color:#fff;border-radius:4px;font-style:normal;font-weight:800;font-size:14px;letter-spacing:.04em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#ac #acList .acr .acn2 small{letter-spacing:.12em}
+/* ユーザー一覧：黒い四角のID ＋ 細い線つきの名前 ＋ 鍵(PW)・✕(削除) */
+#ac #acList .acr{gap:0;align-items:flex-end;padding:7px 0;border-top:0}
+#ac #acList .acr .acid{height:32px;min-width:38px;max-width:5.5em;padding:0 9px;border-radius:0;background:#000;color:#fff;font-weight:900;font-size:15px;letter-spacing:.06em}
+#ac #acList .acr .acn2{position:relative;flex:1 1 auto;min-width:0;height:32px;box-sizing:border-box;padding:0 6px 0 28px;display:flex;align-items:center;flex-wrap:nowrap;gap:0 10px;border-bottom:1px solid #000}
+#ac #acList .acr .acn2::before{content:"";position:absolute;left:0;bottom:-1px;width:26px;height:7px;background:#000;clip-path:polygon(0 0,0 100%,100% 100%)}
+#ac #acList .acr .acn2 b{display:block;flex:0 1 auto;min-width:min(5em,60%);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;font-weight:800;letter-spacing:.1em;color:#111}
+#ac #acList .acr .acn2 small{flex:none;font-size:10px;letter-spacing:.16em;color:#6b7280}
+#ac #acList .acr .ab{flex:none;box-sizing:border-box;width:34px;height:34px;margin:0 0 0 6px;padding:0;display:flex;align-items:center;justify-content:center;border:0;border-radius:0;background:transparent;color:#000;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#ac #acList .acr .ab svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#ac #acList .acr .ab:active{opacity:.45}
+#ac #acList .acr .ab:focus,#ac #acList .acr .ab:focus-visible{outline:none;box-shadow:none}
+/* どの画面でも：閉じたあとに青い選択枠が残らないようにする */
+dialog:focus,dialog:focus-visible,button:focus,[role=button]:focus,[tabindex]:focus{outline:none!important;box-shadow:none!important;-webkit-tap-highlight-color:transparent}
+#ac #acList .acr .ab.ax{color:#d8232a;font-size:20px;font-weight:400;line-height:1}
+#ac #acList .acr .ab.ax:active{opacity:.45}
+#ac #acList .acr .ab.ph{border-color:transparent;background:transparent;visibility:hidden}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2009,7 +2036,7 @@ body.prod #grid .nck>div:active{background:#eaf2fb;border-radius:8px}
 .psh{position:fixed;inset:0;z-index:95;background:rgba(0,0,0,.4);display:flex;align-items:flex-end;justify-content:center}
 .psb{width:100%;max-width:480px;background:#fff;border-radius:16px 16px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));box-sizing:border-box}
 @media(min-width:601px){.psh{align-items:center}.psb{border-radius:16px}}
-.pst{font-size:17px;font-weight:700;color:#1a1d24}.pst small{display:block;font-size:12px;font-weight:400;color:#8a909c;margin-top:2px}
+.pst{font-size:17px;font-weight:700;color:#1a1d24}.pst small{display:block;font-size:12px;font-weight:400;color:#8a909c;margin:0 0 5px}
 .ppg{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:14px 0 8px}
 .ppg button{height:52px;border:1.5px solid #cfd6e0;background:#fff;border-radius:10px;font-size:20px;font-weight:700;color:#4a5160}
 .ppg button.on{background:#1f6fc5;border-color:#1f6fc5;color:#fff}
@@ -2026,8 +2053,27 @@ body.prod #grid .nck>div:active{background:#eaf2fb;border-radius:8px}
 .pcr label{grid-column:1/-1;font-size:14px;font-weight:700;color:#4a5160}
 .pcr input{min-width:0;height:52px;font-size:24px;font-weight:700;text-align:right;border:1.5px solid #cfd6e0;border-radius:10px;padding:0 12px;box-sizing:border-box;background:#fff;color:#1a1d24}
 .pcr input::placeholder{font-size:18px;font-weight:400;color:#b3bac5}
+.pcg{display:grid;grid-template-columns:1fr;gap:12px;margin:14px 0}
+.pcc{min-width:0;padding:14px 16px 8px;border:1px solid #e3e6eb;border-radius:12px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.pcc label{display:block;font-size:16px;font-weight:800;color:#1a1d24}
+.pci{display:flex;align-items:center;gap:8px;margin-top:4px}
+.pci input{flex:1;min-width:0;width:100%;height:48px;padding:0;border:0!important;border-radius:0;background:transparent!important;font-size:28px;font-weight:800;text-align:left;color:#1a1d24;outline:none!important;box-shadow:none!important}
+.pci input::placeholder{font-size:22px;font-weight:600;color:#c3c9d3}
+.pci span{flex:none;font-size:16px;font-weight:700;color:#6b7383;white-space:nowrap}
 .pcr input:focus{outline:none!important;border-color:#cfd6e0!important;box-shadow:none!important} /* 選択しても色を変えない */
 .pcr span{font-size:18px;font-weight:700;color:#4a5160;white-space:nowrap} /* 「個」「時間」で欄の幅が変わらないよう、単位の幅を固定 */
+.prs{display:flex;align-items:center;justify-content:center;gap:2px;margin:0 0 10px;font-size:13px;color:#6b7383}
+.prs::before{content:'';flex:none;width:40px}
+.prs button{display:flex;align-items:center;justify-content:center;width:40px;height:40px;padding:0;border:0;background:transparent;color:#c0392b}
+.seg{display:flex;gap:4px;padding:4px;margin:0 0 14px;background:#eef1f5;border-radius:999px}
+.seg button{flex:1;height:40px;border:0;border-radius:999px;background:transparent;font-size:14px;font-weight:700;color:#6b7383}
+.seg button.on{background:#1f6fc5;color:#fff;box-shadow:0 1px 4px rgba(31,111,197,.35)}
+.lmL.tl .lmr{position:relative;padding-left:26px}
+.lmL.tl .lmr::before{content:"";position:absolute;left:4px;top:50%;width:12px;height:12px;margin-top:-6px;border-radius:50%;background:#22a45d;box-shadow:0 0 0 3px #e3f4ea;z-index:1}
+.lmL.tl .lmr::after{content:"";position:absolute;left:9px;top:50%;width:2px;height:calc(100% + 8px);background:#cfe6d8}
+.lmL.tl .lmr:last-child::after{display:none}
+.lsel{width:100%;height:48px;padding:0 40px 0 14px;border:1.5px solid #1f6fc5;border-radius:10px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%231f6fc5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 14px center;-webkit-appearance:none;appearance:none;font-size:16px;font-weight:700;color:#1a1d24}
+.lmr button.lx{flex:none;width:36px;height:44px;padding:0;border:0;background:transparent;color:#d8232a;font-size:20px;font-weight:400;line-height:1}
 .pbt{display:flex;gap:8px}
 .pbt button{flex:1;height:46px;border-radius:10px;border:1px solid #cfd6e0;background:#fff;font-size:15px;font-weight:700;color:#4a5160}
 .pbt .po{flex:1.4;background:#1f6fc5;border-color:#1f6fc5;color:#fff}
@@ -2057,11 +2103,45 @@ body.prod #grid .card.n-hin .npn{display:none}
 }
 
 .plm .pbt{margin-top:14px}
+/* ライン追加／ラインに製品を追加：どちらの画面でもシートの大きさを同じにする */
+.psb.pad{display:flex;flex-direction:column;height:min(680px,calc(100dvh - 110px));overflow:hidden}
+.pad .seg,.pad .pbt{flex:none}
+.pad .pbd{flex:1;min-height:0;display:flex;flex-direction:column;overflow:auto}
+.pad .pfr{flex:none;display:flex;gap:8px;align-items:flex-end}
+.pad .pfr #paC{flex:0 0 36%;min-width:0}
+.pad .pfr .csg{margin-top:0}
+.pad .pfr .lsel{padding:0 26px 0 12px;font-size:15px;text-overflow:ellipsis;background-position:right 9px center}
+.pad .pfr .lsr{flex:1;height:48px;margin:0}
+.pad .lil{flex:1;min-height:0;max-height:none}
+.pad .lmL{max-height:none;flex:0 1 auto;min-height:0}
 .lmL{max-height:42vh;overflow:auto}
 .lmr{display:flex;gap:6px;align-items:center;margin-top:8px}
 .lmn{flex:1;min-width:0;height:44px;border:1.5px solid #cfd6e0;border-radius:10px;padding:0 10px;font-size:16px;box-sizing:border-box}
 .lmr button,.lma button{height:44px;padding:0 10px;border:1px solid #cfd6e0;background:#fff;border-radius:10px;font-weight:700;font-size:13px;color:#4a5160;white-space:nowrap}
 .lmr .dg{color:#d8232a;border-color:#f0c4c6}
+.lmr{flex-wrap:wrap}
+.lmr .lpn{flex:0 0 100%;box-sizing:border-box;margin:0 0 2px;padding:6px 10px;background:#f6f8fb;border:1px solid #e1e6ee;border-radius:10px}
+.lmr .lpi{display:flex;justify-content:space-between;gap:8px;padding:8px 2px;font-size:14px;color:#2b3140;border-bottom:1px solid #e8ecf2}
+.lmr .lpi small{color:#8a93a3;font-size:12px;white-space:nowrap}
+.lmr .lpe{padding:8px 2px;font-size:13px;color:#8a93a3}
+.lmr .lpn .lpa{width:100%;margin-top:8px;height:40px;color:#1f6fc5;border-color:#bcd3ee}
+.lmL.tl .lmr.open::before{top:22px}
+.lmL.tl .lmr.open::after{top:22px}
+/* ライン一覧：表のデザイン（左＝ライン名の淡い青いセル／右＝製品数と削除） */
+.lmL.tl{border-radius:12px;background:#fff;box-shadow:0 2px 10px rgba(30,60,110,.14)}
+.lmL.tl .lmr{padding-left:0;margin-top:0;gap:0;align-items:stretch;border-bottom:2px solid #fff}
+.lmL.tl .lmr:last-child{border-bottom:0}
+.lmL.tl .lmr::before,.lmL.tl .lmr::after{display:none}
+.lmL.tl .lmr .lmn{flex:1;height:50px;border:0;border-radius:0;padding:0 14px;background:#d3deef;color:#1f4f91;font-weight:700}
+.lmL.tl .lmr button{height:50px;border:0;border-radius:0;background:#fbfcff;box-shadow:none}
+.lmL.tl .lmr button[data-a="tog"]{flex:none;min-width:96px;padding:0 12px;color:#3d4a63}
+.lmL.tl .lmr button.lx{width:48px;color:#d8232a}
+.lmL.tl .lmr .lpn{margin:0;border:0;border-top:1px solid #e6ebf3;border-radius:0;background:#f4f7fb}
+.lmL.tl .lmr .lpn .lpa{border:1px solid #bcd3ee;border-radius:10px;background:#fff}
+/* 新しいライン名の追加：左の＋セル＋右の入力欄（ライン一覧の表とそろえる） */
+.lma.lad{gap:0;margin:0 0 12px;flex:none;border-radius:12px;overflow:hidden;background:#fbfcff;box-shadow:0 2px 10px rgba(30,60,110,.14);align-items:stretch}
+.lma.lad button{flex:none;width:54px;height:50px;padding:0;border:0;border-radius:0;background:#d3deef;color:#1f4f91;display:flex;align-items:center;justify-content:center}
+.lma.lad .lmn{flex:1;height:50px;border:0;border-radius:0;background:transparent;padding:0 14px;font-size:16px}
 .lma{display:flex;gap:6px;margin-top:14px}
 .lma .po{background:#1f6fc5;border-color:#1f6fc5;color:#fff}
 .lmz{text-align:center;color:#8a909c;padding:18px 0;font-size:14px}
@@ -2075,6 +2155,23 @@ body.prod #grid .card.n-hin .npn{display:none}
 .lir .lck{flex:none;width:22px;height:22px;border:1.5px solid #cfd6e0;border-radius:6px;font-style:normal;font-size:15px;line-height:19px;text-align:center;color:#fff;background:#fff}
 .lir.on .lck{background:#1f6fc5;border-color:#1f6fc5}
 .lir span{min-width:0}.lir b{display:block;font-size:15px;color:#1a1d24;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lir small{display:block;font-size:12px;color:#8a909c}
+.lil{max-height:50vh}
+.lir{gap:12px;padding:12px;margin-top:8px;border-radius:12px}
+.lir .lck{width:24px;height:24px;border-radius:7px;font-size:16px;line-height:21px}
+.lir.on{background:#e6f0fb;box-shadow:inset 3px 0 0 #1f6fc5}
+.lir span{flex:1}
+.lir b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;white-space:normal;line-height:1.35;word-break:break-all}
+.lir small{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;margin-top:4px;font-size:12.5px;color:#6b7280}
+.lir small .lot{font-style:normal;font-size:11px;padding:1px 8px;border-radius:999px;background:#fff3dc;border:1px solid #f1d9a8;color:#9a5b00}
+.lgs{margin-top:12px;border:1.5px solid #bcd3ee;border-radius:12px;overflow:hidden;background:#fff;padding-bottom:4px}
+.lgt{background:#d3deef;padding:9px 12px;text-align:center;margin-bottom:4px}
+.lgt span{font-size:15px;font-weight:800;color:#1f4f91}
+.lgr .lir{width:calc(100% - 12px);min-height:44px;margin:2px 6px;padding:8px 8px;border:0;border-radius:10px;background:transparent;box-shadow:none}
+.lgr .lir.on{background:#eef4fc;box-shadow:none}
+.lgr .lir .lck{border-color:#8fb2de}
+.lgr .lir.on .lck{border-color:#1f6fc5}
+.lgr .lir b{font-size:15px;font-weight:600}
+.lgr .lir .lot{flex:none;margin-left:auto;font-style:normal;font-size:11px;padding:1px 8px;border-radius:999px;background:#fff3dc;border:1px solid #f1d9a8;color:#9a5b00;white-space:nowrap}
 .pab{margin-top:12px;height:44px;padding:0 20px;border:none;border-radius:10px;background:#1f6fc5;color:#fff;font-weight:700;font-size:15px}
 </style>
 </head>
@@ -2211,7 +2308,7 @@ body.prod #grid .card.n-hin .npn{display:none}
 
 <dialog id="login">
   <h3 id="lgT" style="margin:0">ログイン</h3>
-  <div id="lgS" class="lgs"></div>
+  <div id="lgS" class="lgsub"></div>
   <label>ID</label>
   <input id="lgId" inputmode="numeric" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="next">
   <div id="lgNmW" hidden><label>表示名（履歴に出る名前）</label><input id="lgNm" maxlength="10" autocomplete="name" placeholder="例：山田" enterkeyhint="next"></div>
@@ -2224,7 +2321,7 @@ body.prod #grid .card.n-hin .npn{display:none}
 <dialog id="ac">
   <div class="achd"><h3 style="margin:0">アカウント</h3><button class="acx" id="acX2" type="button" tabindex="-1" aria-label="閉じる" title="閉じる">✕</button></div>
   <div class="acme" id="acMe"></div>
-  <div class="bar acbar"><button class="btn g" id="acPw" type="button">パスワード変更</button><button class="btn g" id="acOut" type="button">ログアウト</button></div>
+  <div class="bar acbar"><button class="btn g" id="acOut" type="button">ログアウト</button></div>
   <section class="zs" id="acAdm" hidden>
     <div class="zst" id="acUmH" role="button" tabindex="0" aria-expanded="true">ユーザー管理<i class="acch" aria-hidden="true"></i></div>
     <div id="acList"></div>
@@ -2335,7 +2432,7 @@ try{
   if(j.state)S=j.state;
   else{const r=localStorage.getItem(KEY);if(r){S=JSON.parse(r);migratePending=true}}/* サーバーが空で、この端末に古いデータがあれば、引き継いで送る */
 }catch(e){useSrv=false;try{const r=localStorage.getItem(KEY);if(r)S=JSON.parse(r)}catch(_){}}
-(S.items||[]).forEach(x=>x.unit='個');
+(S.items||[]).forEach(x=>{x.unit='個';if(!Array.isArray(x.lines))x.lines=x.line?[x.line]:[]});
 if(!Array.isArray(S.accounts))S.accounts=[];/* ログイン用アカウント（ID・表示名・権限・パスワードのハッシュ） */
 let curUser='',curAcc=null;/* curUser＝ログイン中の人の表示名（履歴の記録に使う） */
 const mob=()=>matchMedia('(max-width:600px)').matches;let navLow=false,curLoc='',locMk='';
@@ -2370,7 +2467,7 @@ async function srvFlush(){
   srvBusy=false}
 async function srvReload(msg){
   const r=await fetch('api/state?'+Date.now(),{cache:'no-store'});const j=await r.json();apiVer=j.version||0;
-  if(j.state){S=j.state;(S.items||[]).forEach(x=>x.unit='個');if(!Array.isArray(S.accounts))S.accounts=[]}
+  if(j.state){S=j.state;(S.items||[]).forEach(x=>{x.unit='個';if(!Array.isArray(x.lines))x.lines=x.line?[x.line]:[]});if(!Array.isArray(S.accounts))S.accounts=[]}
   render();if(msg)notify('他の人が先に更新していたため、最新の内容に更新しました。もう一度操作してください。')}
 let fingerDown=0;addEventListener('touchstart',()=>{fingerDown=Date.now()},{capture:true,passive:true});addEventListener('touchend',()=>{fingerDown=0},{capture:true,passive:true});addEventListener('touchcancel',()=>{fingerDown=0},{capture:true,passive:true});
 async function srvPoll(){try{if(srvBusy||document.hidden||document.querySelector('dialog[open]'))return;if(fingerDown&&Date.now()-fingerDown<5000)return;/* 指が画面に触れている間は自動更新しない（押している最中に画面が作り直されて、タップが空振りするのを防ぐ） */const r=await fetch('api/version?'+Date.now(),{cache:'no-store'});const j=await r.json();if(j.version>apiVer)await srvReload(false)}catch(e){}}
@@ -2535,16 +2632,16 @@ function render(){
   const base=S.items;
   const mine=cur?base.filter(i=>i.maker===cur):base;
   /* 上のタブ＝棚（全メーカー共通）、下のチップ＝メーカー */
-  const hasUn=mine.some(i=>shOf(i)==='未設定');/* 「未設定」は、表示中のメーカーに置き場所が未設定の品目があるときだけ出す */
+  const hasUn=mine.some(i=>inSh(i,'未設定'));/* 「未設定」は、表示中のメーカーに置き場所が未設定の品目があるときだけ出す */
   const shelves=scr==='prod'?[...lnList().map(l=>l.name),...(hasUn?['未設定']:[])]:[...new Set(S.items.map(i=>i.loc||'未設定'))].filter(l=>l!=='未設定'||hasUn).sort((a,b)=>a.localeCompare(b,'ja',{numeric:true}));
   if(curLoc&&!shelves.includes(curLoc))curLoc='';
-  $('tabs').innerHTML=['すべて',...shelves].map(l=>`<div class="tab ${(l==='すべて'?'':l)===curLoc?'on':''}" data-sh="${l==='すべて'?'':esc(l)}">${esc(l)}</div>`).join('')+(scr==='prod'?'<div class="tab ptab" data-lm="1">＋ ライン</div>':'');
+  $('tabs').innerHTML=['すべて',...shelves].map(l=>`<div class="tab ${(l==='すべて'?'':l)===curLoc?'on':''}" data-sh="${l==='すべて'?'':esc(l)}">${esc(l)}</div>`).join('');
   syncFClr();
   /* 棚を選んでいる間は、その棚に品目があるメーカーだけ出す（品目がまだ1件もない新規メーカーは、見失わないよう常に出す） */
-  const vMk=curLoc?S.makers.filter(m=>S.items.some(i=>i.maker===m&&shOf(i)===curLoc)||!S.items.some(i=>i.maker===m)):S.makers;
+  const vMk=curLoc?S.makers.filter(m=>S.items.some(i=>i.maker===m&&inSh(i,curLoc))||!S.items.some(i=>i.maker===m)):S.makers;
   $('locs').innerHTML=S.makers.length?['すべて',...vMk].map(m=>`<span class="${(m==='すべて'?'':m)===cur?'on':''}" data-m="${m==='すべて'?'':esc(m)}">${esc(m)}</span>`).join(''):'';
   updZ();
-  const list=mine.filter(i=>(!curLoc||shOf(i)===curLoc)&&(!q||(q===scExact?kq(i.name)===q:kq(i.name+(i.loc||'')+(i.maker||'')).includes(q))));
+  const list=mine.filter(i=>(!curLoc||inSh(i,curLoc))&&(!q||(q===scExact?kq(i.name)===q:kq(i.name+(i.loc||'')+(i.maker||'')).includes(q))));
   if(scr==='prod')list.sort((a,b)=>(b.run?1:0)-(a.run?1:0)); /* 生産画面：生産中のカードを先頭に（同じ状態どうしは元の並びのまま） */
   if(delSel.size){const ok=new Set(list.map(x=>x.id));const byId=new Map(S.items.map(x=>[x.id,x]));[...delSel].forEach(id=>{const it=byId.get(id);if(!ok.has(id)&&!(it&&delSelSh.has(it.loc||'未設定')))delSel.delete(id)})}
   [...delSelMk].forEach(m=>{if(!S.makers.includes(m))delSelMk.delete(m)});[...delSelSh].forEach(l=>{if(!shelves.includes(l))delSelSh.delete(l)});
@@ -2561,7 +2658,7 @@ function render(){
   $('h1').textContent=mine.length;
   if(document.body.classList.contains('deon'))updDel();
   {const fk=cur+'|'+curLoc;if(fk!==lastCur){logF='';lastCur=fk}}
-  const mi=mine.filter(x=>!curLoc||shOf(x)===curLoc);
+  const mi=mine.filter(x=>!curLoc||inSh(x,curLoc));
   const flab=[curLoc,cur].filter(Boolean).join('・')||'すべて';
   if(logF.startsWith('i:')&&!mi.some(x=>'i:'+x.id===logF))logF='';
   {const mi1=mi.find(x=>'i:'+x.id===logF);
@@ -2812,20 +2909,21 @@ function acDraw(){
   $('acAdm').hidden=!isAdmin();$('acImp').hidden=!isAdmin();
   if(!isAdmin())return;
   const admins=S.accounts.filter(a=>a.role==='admin').length;
-  $('acList').innerHTML=S.accounts.map(a=>`<div class="acr" data-id="${esc(a.id)}"><div class="acn2"><b>${esc(a.name)}</b><small>${esc(a.id)}・${a.role==='admin'?'管理者':'作業者'}</small></div><button class="btn g" data-rs="1" type="button">PW再設定</button>${a.id===curAcc.id||(a.role==='admin'&&admins<2)?'':'<button class="btn g dg" data-rm="1" type="button">削除</button>'}</div>`).join('')}
+  $('acList').innerHTML=S.accounts.map(a=>`<div class="acr" data-id="${esc(a.id)}"><i class="acid" title="ID">${esc(a.id)}</i><div class="acn2"><b>${esc(a.name)}</b><small>${a.role==='admin'?'管理者':'作業者'}</small></div><button class="ab" data-rs="1" type="button" aria-label="PW再設定" title="PW再設定"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/></svg></button>${a.id===curAcc.id||(a.role==='admin'&&admins<2)?'<span class="ab ph" aria-hidden="true"></span>':'<button class="ab ax" data-rm="1" type="button" aria-label="削除" title="削除">✕</button>'}</div>`).join('')}
 function acOpen(){acDraw();const d=$('ac');d.showModal();/* 最初のボタンが選ばれた状態にならないよう、選択を外す。開くたびに、いちばん上から表示する */try{if(document.activeElement&&document.activeElement!==document.body)document.activeElement.blur()}catch(e){}d.scrollTop=0}
 $('acBtn').onclick=$('acBtn2').onclick=acOpen;
 $('acX').onclick=$('acX2').onclick=()=>$('ac').close();
 $('acOut').onclick=()=>{$('ac').close();setAcc(null);lgOpen()};
 let pwTarget=null;
 function pwOpen(a){if(!isAdmin()){notify('パスワードの変更は管理者だけができます');return}pwTarget=a;$('pwT').textContent=a.id===curAcc.id?'パスワード変更':a.name+'さんのパスワード再設定';$('pwA').value='';$('pwB').value='';$('pwErr').hidden=true;$('pwd').showModal();setTimeout(()=>$('pwA').focus(),50)}
-$('acPw').onclick=()=>pwOpen(curAcc);
 function pwGo(){
   if(!isAdmin()){$('pwd').close();return}
   const a=$('pwA').value,b=$('pwB').value,e=m=>{$('pwErr').textContent=m;$('pwErr').hidden=false};
   if(a.length<4){e('パスワードは4文字以上にしてください');return}
   if(a!==b){e('2つのパスワードが一致しません');return}
   pwTarget.salt=rnd();pwTarget.hash=pwHash(a,pwTarget.salt);save();$('pwd').close();notify('パスワードを変更しました')}
+document.addEventListener('close',e=>{if(e.target&&e.target.tagName==='DIALOG'){try{const x=document.activeElement;if(x&&x!==document.body)x.blur()}catch(_){}}},true);/* すべての画面（ダイアログ）を閉じたとき、選択状態を外す */
+$('pwd').addEventListener('close',()=>{try{const e=document.activeElement;if(e&&e!==document.body)e.blur()}catch(x){}});/* 閉じたあと、鍵ボタンに青い枠が残らないようにする */
 $('pwOk').onclick=pwGo;$('pwC').onclick=()=>$('pwd').close();
 $('pwB').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();pwGo()}};
 $('acList').onclick=e=>{
@@ -3179,13 +3277,13 @@ function stMove(i,k,q,sign){/* 入庫は、ひとつ前の工程の在庫から�
   S.log.unshift(...ent);S.log=S.log.slice(0,300)}
 function pCalc(id){const it=S.items.find(x=>x.id===id);if(!it)return;
   if(!ppNorm(it.pp).length){pSheet('pp',id,()=>pCalc(id));return}/* 工程を決めていないときは、先に工程を選ぶ（選んだら続けて個数と時間の入力へ） */
-  const nm=String(it.name).split(/\r?\n/)[0].trim();const u='h';/* 加工時間は「時間」固定（1.5時間のように小数で入れる）。保存は分 */
+  const nm=String(it.name).split(/\r?\n/)[0].trim();const pn=String(it.name).split(/\r?\n/).map(x=>x.trim()).filter(Boolean).slice(1).join(' ');/* 2行目以降＝品番 */const u='h';/* 加工時間は「時間」固定（1.5時間のように小数で入れる）。保存は分 */
   const tv=()=>{const t=+it.pt||0;return t>0?String(Math.round((u==='h'?t/60:t)*100)/100):''};
   const el=document.createElement('div');el.className='psh';
-  el.innerHTML=`<div class="psb" role="dialog" aria-label="1時間あたりの加工数"><div class="pst">生産個数と加工時間<small>${esc(nm)}</small></div>`+
-   `<div class="pcr"><label>生産個数</label><input type="number" inputmode="decimal" min="0" step="any" id="pqIn" value="" placeholder="例：500"><span>個</span></div>`+
-   `<div class="pcr"><label>加工時間</label><input type="number" inputmode="decimal" min="0" step="any" id="ptIn" value="" placeholder="例：1.5"><span>時間</span></div>`+
-   `<div class="ppv pcv"></div><div class="pbt"><button type="button" data-a="x">キャンセル</button><button type="button" class="po" data-a="ok">決定</button></div></div>`;
+  el.innerHTML=`<div class="psb" role="dialog" aria-label="1時間あたりの加工数"><div class="pst">${pn?`<small>${esc(pn)}</small>`:''}${esc(nm)}</div>`+
+   `<div class="pcg"><div class="pcc"><label for="pqIn">生産個数</label><div class="pci"><input type="number" inputmode="decimal" min="0" step="any" id="pqIn" value="" placeholder="例：500"><span>個</span></div></div>`+
+   `<div class="pcc"><label for="ptIn">加工時間</label><div class="pci"><input type="number" inputmode="decimal" min="0" step="any" id="ptIn" value="" placeholder="例：1.5"><span>時間</span></div></div></div>`+
+   `<div class="ppv pcv"></div>${(+it.pq>0||+it.pt>0||+it.pr>0)?`<div class="prs"><span>累計 ${Math.round((+it.pq||0)*100)/100}個 / ${Math.round((+it.pt||0)/60*100)/100}時間</span><button type="button" data-a="rs" aria-label="リセット" title="リセット"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button></div>`:''}<div class="pbt"><button type="button" data-a="x">キャンセル</button><button type="button" class="po" data-a="ok">決定</button></div></div>`;
   const q=()=>el.querySelector('#pqIn'),t=()=>el.querySelector('#ptIn');
   const calc=()=>{const n=+q().value||0,m=(+t().value||0)*(u==='h'?60:1);return n>0&&m>0?Math.round(n/(m/60)):0};
   const tot=(n,tt)=>{const Q=(+it.pq||0)+n,H=((+it.pt||0)+tt*60)/60;return Q>0&&H>0?Math.round(Q/H):0};
@@ -3202,7 +3300,10 @@ function pCalc(id){const it=S.items.find(x=>x.id===id);if(!it)return;
   el.addEventListener('input',paint);
   el.addEventListener('click',e=>{if(e.target===el){el.remove();return}
     const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a;
-    if(a==='x')el.remove();else if(a==='ok')done();});
+    if(a==='x')el.remove();else if(a==='ok')done();
+    else if(a==='rs'){if(!curUser){notify('ログインしてください');return}
+      /* 生産個数・加工時間・1時間あたりの累計だけを0に戻す（すでに入庫した在庫の数は変えない） */
+      ask('生産個数・加工時間・1時間あたりをリセットします。在庫の数は変わりません。よろしいですか？',()=>{it.pq=0;it.pt=0;it.pr=0;save();render();el.remove()})}});
   el.addEventListener('keydown',e=>{if(e.key==='Escape')el.remove();else if(e.key==='Enter')done()});
   document.body.appendChild(el);paint();q().focus()}
 $('grid').addEventListener('click',e=>{if(scr!=='prod')return;
@@ -3215,9 +3316,14 @@ $('grid').addEventListener('click',e=>{if(scr!=='prod')return;
   else if(a.dataset.pp!==undefined)pSheet('pp',+a.dataset.pp);else pCalc(+a.dataset.pr)},true);
 /* ===== 生産画面：ライン（S.lines=[{name,cfg}]、品目の i.line にライン名） ===== */
 var LN_DEF={hin:1,mk:1,run:1,l:'pp',r:'pr'};
-function shOf(i){return scr==='prod'?(i.line||'未設定'):(i.loc||'未設定')}
+/* 1つの製品を複数のラインに入れられる（i.lines）。i.line は先頭のライン（古い処理との互換） */
+function lnsOf(i){return Array.isArray(i.lines)?i.lines:(i.line?[i.line]:[])}
+function inLn(i,n){return lnsOf(i).includes(n)}
+function setLns(i,a){a=[...new Set(a)];i.lines=a;i.line=a[0]||''}
+function shOf(i){return scr==='prod'?(lnsOf(i)[0]||'未設定'):(i.loc||'未設定')}
+function inSh(i,sh){return scr==='prod'?(sh==='未設定'?!lnsOf(i).length:inLn(i,sh)):(i.loc||'未設定')===sh}
 function lnList(){if(!Array.isArray(S.lines))S.lines=[];return S.lines}
-function lnCfg(i){const l=scr==='prod'&&i.line?lnList().find(x=>x.name===i.line):null;return Object.assign({},LN_DEF,l&&l.cfg)}
+function lnCfg(i){const nm=scr==='prod'?((curLoc&&inLn(i,curLoc))?curLoc:lnsOf(i)[0]):'',l=nm?lnList().find(x=>x.name===nm):null;return Object.assign({},LN_DEF,l&&l.cfg)}
 function pcCls(i){return scr==='prod'&&!lnCfg(i).hin?' n-hin':''}
 function pcMk(i){return scr!=='prod'||!!lnCfg(i).mk}
 function pcRun(i){return !!lnCfg(i).run}
@@ -3240,9 +3346,9 @@ function lnManager(){const el=mkSheet('plm'),box=el.firstChild;
   const add=()=>{const v=box.querySelector('#lnNew').value.trim(),e=bad(v,-1);if(e){notify(e);return}lnList().push({name:v,cfg:Object.assign({},LN_DEF)});save();render();draw()};
   box.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a,row=b.closest('.lmr'),k=row?+row.dataset.k:-1;
     if(a==='x')el.remove();else if(a==='add')add();else if(a==='card')lnCardSheet(k);else if(a==='items')lnItemsSheet(k);
-    else if(a==='del'){const l=lnList()[k];ask('ライン「'+l.name+'」を削除しますか？（このラインの品目は「未設定」に戻ります）',()=>{S.items.forEach(i=>{if(i.line===l.name){i.inprod=true;i.line=''}});lnList().splice(k,1);if(curLoc===l.name)curLoc='';save();render();draw()})}});
+    else if(a==='del'){const l=lnList()[k];ask('ライン「'+l.name+'」を削除しますか？（ほかのラインにも入っている品目は、そちらに残ります。どこにも入っていない品目は「未設定」に戻ります）',()=>{S.items.forEach(i=>{if(inLn(i,l.name)){i.inprod=true;setLns(i,lnsOf(i).filter(n=>n!==l.name))}});lnList().splice(k,1);if(curLoc===l.name)curLoc='';save();render();draw()})}});
   box.addEventListener('change',e=>{const inp=e.target.closest('.lmr .lmn');if(!inp)return;const k=+inp.closest('.lmr').dataset.k,l=lnList()[k],v=inp.value.trim(),err=bad(v,k);
-    if(err){notify(err);draw();return}if(v===l.name)return;const old=l.name;l.name=v;S.items.forEach(i=>{if(i.line===old)i.line=v});if(curLoc===old)curLoc=v;if(scrSt.prod.loc===old)scrSt.prod.loc=v;save();render()});
+    if(err){notify(err);draw();return}if(v===l.name)return;const old=l.name;l.name=v;S.items.forEach(i=>{if(inLn(i,old))setLns(i,lnsOf(i).map(n=>n===old?v:n))});if(curLoc===old)curLoc=v;if(scrSt.prod.loc===old)scrSt.prod.loc=v;save();render()});
   box.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='lnNew'){e.preventDefault();add()}});
   draw()}
 function lnCardSheet(k){const l=lnList()[k];if(!l)return;const el=mkSheet('plm'),box=el.firstChild;
@@ -3261,14 +3367,14 @@ function lnCardSheet(k){const l=lnList()[k];if(!l)return;const el=mkSheet('plm')
     save();render();draw()});
   draw()}
 function lnItemsSheet(k){const l=lnList()[k];if(!l)return;const el=mkSheet('plm'),box=el.firstChild;let q='';
-  const list=()=>S.items.filter(i=>!q||kq(i.name+(i.maker||'')).includes(q)).map(i=>{const on=i.line===l.name,nm=String(i.name).split(/\r?\n/)[0].trim(),oth=i.line&&!on?'　現在：'+esc(i.line):'';
+  const list=()=>S.items.filter(i=>!q||kq(i.name+(i.maker||'')).includes(q)).map(i=>{const on=inLn(i,l.name),nm=String(i.name).split(/\r?\n/)[0].trim(),ot=lnsOf(i).filter(n=>n!==l.name),oth=ot.length?'　他：'+esc(ot.join('・')):'';
     return `<button type="button" class="lir${on?' on':''}" data-id="${i.id}"><i class="lck">${on?'✓':''}</i><span><b>${esc(nm)}</b><small>${esc(i.maker||'')}${oth}</small></span></button>`}).join('')||'<div class="lmz">該当する品目がありません</div>';
   box.innerHTML=`<div class="pst">品目を選ぶ<small>ライン：${esc(l.name)}（タップで入れる・外す）</small></div><input class="lmn lsr" type="search" placeholder="品名・メーカーで探す" style="width:100%;margin-top:10px"><div class="lil">${list()}</div><div class="pbt"><button type="button" class="po" data-a="x">閉じる</button></div>`;
   const L=box.querySelector('.lil');
   box.addEventListener('input',e=>{if(e.target.classList.contains('lsr')){q=kq(e.target.value);L.innerHTML=list()}});
   box.addEventListener('click',e=>{if(e.target.closest('[data-a="x"]')){el.remove();return}const b=e.target.closest('.lir');if(!b)return;const it=S.items.find(x=>x.id===+b.dataset.id);if(!it)return;
-    if(it.line!==l.name&&lnDup(it,l.name)){notify('「'+String(it.name).split(/\r?\n/)[0].trim()+'」はすでに「'+l.name+'」に入っています');return}
-    it.inprod=true;it.line=it.line===l.name?'':l.name;save();render();L.innerHTML=list()})}
+    if(!inLn(it,l.name)&&lnDup(it,l.name)){notify('「'+String(it.name).split(/\r?\n/)[0].trim()+'」はすでに「'+l.name+'」に入っています');return}
+    it.inprod=true;setLns(it,inLn(it,l.name)?lnsOf(it).filter(n=>n!==l.name):[...lnsOf(it),l.name]);save();render();L.innerHTML=list()})}
 $('tabs').addEventListener('click',e=>{if(scr!=='prod')return;if(e.target.closest('[data-lm]')){e.stopImmediatePropagation();e.preventDefault();lnManager()}},true);
 /* ===== 生産画面：在庫の品目を検索して「生産のカード」に追加する（i.inprod=true） ===== */
 
@@ -3277,30 +3383,53 @@ function prodSug(){
   const g=$('grid');g.querySelectorAll('.sugh,.sugc').forEach(x=>x.remove());
   const old=document.getElementById('sugBox');if(old)old.hidden=true;
   if(!g.__sugOn){g.__sugOn=1;g.addEventListener('click',e=>{const r=e.target.closest('.sugc');if(!r)return;e.stopPropagation();const it=S.items.find(x=>x.id===+r.dataset.sug);if(!it||!curLoc||lnDup(it,curLoc)){render();return}
-    it.inprod=true;it.line=curLoc;save();render()})}
+    it.inprod=true;setLns(it,[...lnsOf(it),curLoc]);save();render()})}
   const q=kq($('q').value);
   if(scr!=='prod'||!q||!curLoc||!lnList().some(l=>l.name===curLoc)||!window.__cardHtml)return;
-  const r=S.items.filter(i=>i.line!==curLoc&&!lnDup(i,curLoc)&&(!cur||i.maker===cur)&&kq(i.name+(i.loc||'')+(i.maker||'')).includes(q)).slice(0,20);
+  const r=S.items.filter(i=>!inLn(i,curLoc)&&!lnDup(i,curLoc)&&(!cur||i.maker===cur)&&kq(i.name+(i.loc||'')+(i.maker||'')).includes(q)).slice(0,20);
   if(!r.length)return;
   g.insertAdjacentHTML('beforeend','<div class="sugh">在庫から追加<small>カードをタップすると「'+esc(curLoc)+'」に入ります</small></div>'+r.map(i=>`<div class="sugc" data-sug="${i.id}">${window.__cardHtml(i)}<i class="sgp">＋ 追加</i></div>`).join(''))}
 /* 同じラインに同じ製品（同じ名前）は2つ入れない */
-function lnDup(it,ln){const k=kq(String(it.name));return S.items.some(x=>x!==it&&x.line===ln&&kq(String(x.name))===k)}
-function inProd(i){return !!i.line}
-function prodAdd(){
-  if(!lnList().length){ask('先にラインを作ってください。「＋ ライン」を開きますか？',()=>lnManager());return}
-  const el=mkSheet('plm'),box=el.firstChild;let q='',ln=lnList().some(l=>l.name===curLoc)?curLoc:lnList()[0].name;
-  const rows=()=>{const r=S.items.filter(i=>!q||kq(i.name+(i.maker||'')+(i.loc||'')).includes(q)).map(i=>{const on=i.line===ln,nm=String(i.name).split(/\r?\n/)[0].trim();
-    return `<button type="button" class="lir${on?' on':''}" data-id="${i.id}"><i class="lck">${on?'✓':''}</i><span><b>${esc(nm)}</b><small>${esc(i.maker||'')}${i.line&&!on?'　現在：'+esc(i.line):''}</small></span></button>`}).join('');
-    return r||'<div class="lmz">該当する品目がありません</div>'};
-  const chips=()=>`<div class="csg"><em>追加先のライン</em><div class="csc">${lnList().map(l=>`<button type="button" data-ln="${esc(l.name)}" class="${ln===l.name?'on':''}">${esc(l.name)}</button>`).join('')}</div></div>`;
-  box.innerHTML=`<div class="pst">カードを追加<small>在庫の品目を検索して、タップでラインに追加・もう一度タップで外します</small></div><div id="paC">${chips()}</div><input class="lmn lsr" type="search" placeholder="品名・メーカー・置き場所で探す" style="width:100%;margin-top:12px"><div class="lil">${rows()}</div><div class="pbt"><button type="button" class="po" data-a="x">閉じる</button></div>`;
-  const L=box.querySelector('.lil'),C=box.querySelector('#paC');
-  box.addEventListener('input',e=>{if(e.target.classList.contains('lsr')){q=kq(e.target.value);L.innerHTML=rows()}});
-  box.addEventListener('click',e=>{if(e.target.closest('[data-a="x"]')){el.remove();return}
-    const c=e.target.closest('[data-ln]');if(c){ln=c.dataset.ln;C.innerHTML=chips();L.innerHTML=rows();return}
-    const b=e.target.closest('.lir');if(!b)return;const it=S.items.find(x=>x.id===+b.dataset.id);if(!it)return;
-    if(it.line!==ln&&lnDup(it,ln)){notify('「'+String(it.name).split(/\r?\n/)[0].trim()+'」はすでに「'+ln+'」に入っています');return}
-    it.line=it.line===ln?'':ln;save();render();L.innerHTML=rows()})}
+function lnDup(it,ln){const k=kq(String(it.name));return S.items.some(x=>x!==it&&inLn(x,ln)&&kq(String(x.name))===k)}
+function inProd(i){return lnsOf(i).length>0}
+function prodAdd(tab){
+  /* 下の「追加」から開くシート。上の切り替えで「ライン追加」と「ラインに製品を追加」を行き来する */
+  const el=mkSheet('plm pad'),box=el.firstChild;
+  const opn=new Set();let t=tab||(lnList().length?'item':'line'),q='',ln=lnList().some(l=>l.name===curLoc)?curLoc:(lnList()[0]?lnList()[0].name:'');
+  const bad=(v,except)=>!v?'ライン名を入力してください':(v==='未設定'||v==='すべて')?'その名前は使えません':lnList().some((l,k)=>l.name===v&&k!==except)?'同じ名前のラインがあります':'';
+  const seg=()=>`<div class="seg"><button type="button" data-t="line" class="${t==='line'?'on':''}">ライン追加</button><button type="button" data-t="item" class="${t==='item'?'on':''}">ラインに製品を追加</button></div>`;
+  const rows=()=>{const f=S.items.filter(i=>!q||kq(i.name+(i.maker||'')+(i.loc||'')).includes(q));
+    if(!f.length)return '<div class="lmz">該当する品目がありません</div>';
+    const NO='メーカー未設定',g=new Map();
+    f.forEach(i=>{const m=String(i.maker||'').trim()||NO;if(!g.has(m))g.set(m,[]);g.get(m).push(i)});
+    const ks=[...g.keys()].sort((x,y)=>x===NO?1:y===NO?-1:x.localeCompare(y,'ja'));
+    return `<div class="lgr">`+ks.map(m=>`<section class="lgs"><div class="lgt"><span>${esc(m)}</span></div>`+g.get(m).map(i=>{const on=inLn(i,ln),ot=lnsOf(i).filter(n=>n!==ln),nm=String(i.name).split(/\r?\n/)[0].trim();
+      return `<button type="button" class="lir${on?' on':''}" data-id="${i.id}"><i class="lck">${on?'✓':''}</i><span><b>${esc(nm)}</b></span>${ot.length?'<em class="lot">他：'+esc(ot.join('・'))+'</em>':''}</button>`}).join('')+`</section>`).join('')+`</div>`};
+  const chips=()=>`<div class="csg"><em>追加先のライン</em><select class="lsel" id="lnSel" aria-label="追加先のライン">${lnList().map(l=>`<option value="${esc(l.name)}"${ln===l.name?' selected':''}>${esc(l.name)}（${S.items.filter(i=>inLn(i,l.name)).length}件）</option>`).join('')}</select></div>`;
+  const lineView=()=>{const ls=lnList();return `<div class="lma lad"><button type="button" class="po" data-a="add" aria-label="ラインを追加"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button><input class="lmn" id="lnNew" maxlength="12" placeholder="新しいライン名を入力（例：ライン1）"></div>`+
+    `<div class="lmL tl">${ls.length?ls.map((l,k)=>{const its=S.items.filter(i=>inLn(i,l.name)),o=opn.has(l.name);return `<div class="lmr${o?' open':''}" data-k="${k}"><input class="lmn" value="${esc(l.name)}" maxlength="12" aria-label="ライン名"><button type="button" data-a="tog" aria-expanded="${o}">製品 ${its.length} ${o?'▴':'▾'}</button><button type="button" class="lx" data-a="del" aria-label="削除">✕</button>${o?`<div class="lpn">${its.length?its.map(i=>`<div class="lpi">${esc(String(i.name).split(/\r?\n/)[0].trim())}<small>${esc(i.maker||'')}</small></div>`).join(''):'<div class="lpe">まだ製品がありません</div>'}<button type="button" class="lpa" data-a="items">＋ 製品を追加</button></div>`:''}</div>`}).join(''):'<div class="lmz">まだラインがありません。上から追加してください</div>'}</div>`};
+  const itemView=()=>lnList().length?`<div class="pfr"><div id="paC">${chips()}</div><input class="lmn lsr" type="search" placeholder="品名・メーカー・置き場所で探す"></div><div class="lil">${rows()}</div>`:
+    `<div class="lmz">まだラインがありません。先に「ライン追加」でラインを作ってください</div>`;
+  const draw=()=>{box.innerHTML=seg()+'<div class="pbd">'+(t==='line'?lineView():itemView())+'</div><div class="pbt" style="margin-top:14px"><button type="button" class="po" data-a="x">閉じる</button></div>'};
+  const add=()=>{const v=box.querySelector('#lnNew').value.trim(),e=bad(v,-1);if(e){notify(e);return}lnList().push({name:v,cfg:Object.assign({},LN_DEF)});if(!ln)ln=v;save();render();draw()};
+  box.addEventListener('input',e=>{if(e.target.classList.contains('lsr')){q=kq(e.target.value);const L=box.querySelector('.lil');if(L)L.innerHTML=rows()}});
+  box.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='lnNew'){e.preventDefault();add()}});
+  box.addEventListener('change',e=>{if(e.target.id==='lnSel'){ln=e.target.value;box.querySelector('.lil').innerHTML=rows();return}const inp=e.target.closest('.lmr .lmn');if(!inp)return;const k=+inp.closest('.lmr').dataset.k,l=lnList()[k],v=inp.value.trim(),err=bad(v,k);
+    if(err){notify(err);draw();return}if(v===l.name)return;const old=l.name;if(opn.delete(old))opn.add(v);l.name=v;S.items.forEach(i=>{if(inLn(i,old))setLns(i,lnsOf(i).map(n=>n===old?v:n))});if(curLoc===old)curLoc=v;if(ln===old)ln=v;if(scrSt.prod.loc===old)scrSt.prod.loc=v;save();render()});
+  box.addEventListener('click',e=>{
+    const g=e.target.closest('.seg [data-t]');if(g){t=g.dataset.t;q='';draw();return}
+    const b=e.target.closest('[data-a]');
+    if(b){const a=b.dataset.a,row=b.closest('.lmr'),k=row?+row.dataset.k:-1;
+      if(a==='x')el.remove();else if(a==='add')add();
+      else if(a==='tog'){const l=lnList()[k];if(l){opn.has(l.name)?opn.delete(l.name):opn.add(l.name);draw()}}
+      else if(a==='items'){const l=lnList()[k];if(l){ln=l.name;t='item';q='';draw()}}
+      else if(a==='del'){const l=lnList()[k];if(!l)return;ask('ライン「'+l.name+'」を削除しますか？（ほかのラインにも入っている品目は、そちらに残ります。どこにも入っていない品目は「未設定」に戻ります）',()=>{opn.delete(l.name);S.items.forEach(i=>{if(inLn(i,l.name)){i.inprod=true;setLns(i,lnsOf(i).filter(n=>n!==l.name))}});lnList().splice(k,1);if(curLoc===l.name)curLoc='';if(ln===l.name)ln=lnList()[0]?lnList()[0].name:'';save();render();draw()})}
+      return}
+    const c=e.target.closest('[data-ln]');if(c){ln=c.dataset.ln;box.querySelector('#paC').innerHTML=chips();box.querySelector('.lil').innerHTML=rows();return}
+    const r=e.target.closest('.lir');if(!r)return;const it=S.items.find(x=>x.id===+r.dataset.id);if(!it)return;
+    if(!inLn(it,ln)&&lnDup(it,ln)){notify('「'+String(it.name).split(/\r?\n/)[0].trim()+'」はすでに「'+ln+'」に入っています');return}
+    setLns(it,inLn(it,ln)?lnsOf(it).filter(n=>n!==ln):[...lnsOf(it),ln]);save();render();box.querySelector('#paC').innerHTML=chips();box.querySelector('.lil').innerHTML=rows()});
+  draw()}
 document.addEventListener('click',e=>{if(scr!=='prod')return;if(e.target.closest('#btAdd,#hAdd,#hAdd2,#rAdd,#addItem')){e.stopImmediatePropagation();e.preventDefault();prodAdd()}},true);
 function btCloseAll(){if(dtId!==null)dtClose();lvClose();zSheet(false);if(document.body.classList.contains('hist')){document.body.classList.remove('hist');logF='';render()}}
 function btSync(){const b=document.body.classList,lvo=!$('lv').hidden,zs=b.contains('zsheet');
@@ -3702,7 +3831,7 @@ $('qpGo').onclick=()=>{const out=[];document.querySelectorAll('#qpL .qpr:not([hi
 /* 読み取り：BarcodeDetector があればそれを使い、なければ内蔵の jsQR で読む */
 let scStream=null,scTimer=null,scTarget='main',scDet=null,scBusy=false;
 function jsqrLoad(){if(window.jsQR)return window.jsQR;(0,eval)($('jsqrSrc').textContent);return window.jsQR}
-function scStop(){clearTimeout(scTimer);scTimer=null;if(scStream){scStream.getTracks().forEach(t=>t.stop());scStream=null}$('scV').srcObject=null}
+function scStop(){clearTimeout(scTimer);scTimer=null;if(scStream){scStream.getTracks().forEach(t=>t.stop());scStream=null}$('scV').srcObject=null;$('scV').classList.remove('on');$('scV').parentNode.classList.remove('on')}
 function scDone(text){scStop();if($('sc').open)$('sc').close();let t=String(text||'').trim();if(!t)return;
   {const m=t.match(/^https?:\/\/\S*[?&]item=(\d+)/);if(m){const it=S.items.find(x=>x.id===+m[1]);if(!it){notify('QRの品目が見つかりませんでした');return}t=it.name}}
   scExact=kq(t);
@@ -3719,9 +3848,9 @@ function scLoop(){if(!scStream)return;const v=$('scV');
 async function scOpen(target){scTarget=target;$('scH').textContent='QRコードを枠の中に入れてください';
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){/* HTTP：読み取り画面は出さず、スマホの標準のカメラをそのまま開く（撮った写真からQRを読む） */try{$('scF').click()}catch(e){}return}
   try{scDet=null;if('BarcodeDetector' in window){try{scDet=new BarcodeDetector({formats:['qr_code']})}catch(e){scDet=null}}
-    $('sc').showModal();if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();
+    $('sc').showModal();$('scH').textContent='カメラを起動しています…';if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();
     scStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});
-    const v=$('scV');v.srcObject=scStream;await v.play();scLoop()}
+    const v=$('scV');v.srcObject=scStream;await v.play();v.classList.add('on');v.parentNode.classList.add('on');$('scH').textContent='QRコードを枠の中に入れてください';scLoop()}
   catch(e){scStop();$('scH').textContent=''}}
 $('qScan').onclick=()=>scOpen('main');$('hScan').onclick=()=>{try{btCloseAll()}catch(e){}scOpen('main')};$('lvScan').onclick=()=>scOpen('lv');
 $('scC').onclick=()=>{scStop();$('sc').close()};$('sc').addEventListener('close',scStop);
