@@ -2473,6 +2473,26 @@ body .dtb .dtg .pc .cn.z,body .dtg .pc .cn.z{color:#b3bac5;font-weight:600}
   body .pdg .pc .ib .ic,body .dtg .pc .ib .ic{width:26px;height:26px}
   .pdg .pc .tg,.dtg .pc .tg{left:6px;width:24px;height:28px;padding-bottom:6px;font-size:10px}
 }
+
+/* ===== お気に入り（スマホのみ） ===== */
+.fbtn,.favrow{display:none}
+@media(max-width:600px){
+  .fbtn{display:flex;position:absolute;top:8px;right:8px;z-index:9;width:36px;height:36px;padding:0;border:none;border-radius:50%;background:rgba(255,255,255,.94);color:#8a93a3;box-shadow:0 1px 4px rgba(0,0,0,.28);align-items:center;justify-content:center;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+  .fbtn svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
+  .fbtn.on{color:#e0245e}
+  .fbtn.on svg{fill:currentColor}
+  .fbtn:active svg{transform:scale(.8)}
+  body.edon .fbtn{right:50px}   /* 編集モード中は、右上の鉛筆ボタンの左に並べる */
+  body.prod .fbtn{right:auto;left:8px}   /* 生産画面は、右上に「生産／停止」があるので左上に */
+  .favrow{display:flex;align-items:center;padding:0;margin:16px 0 6px}
+  .favtog{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px 0 11px;border:1.5px solid #d9dbde;border-radius:18px;background:#fff;color:#444;font-size:13px;font-weight:700;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+  .favtog svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .favtog em{font-style:normal;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:#eef0f3;color:#555;font-size:12px;line-height:20px;text-align:center}
+  .favtog.on{background:#fdecf2;border-color:#e0245e;color:#c01c4d}
+  .favtog.on svg{fill:currentColor}
+  .favtog.on em{background:#e0245e;color:#fff}
+  .empty small{display:block;margin-top:6px;font-size:12px}
+}
 </style>
 </head>
 <body>
@@ -2527,6 +2547,7 @@ body .dtb .dtg .pc .cn.z,body .dtg .pc .cn.z{color:#b3bac5;font-weight:600}
       <select id="shSel" class="shsel" aria-label="棚で絞り込み"></select><button type="button" id="shDel" class="shdel" hidden aria-pressed="false" aria-label="この棚を削除対象にする" title="この棚を削除対象にする"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       </div>
       <button type="button" id="fClr" hidden title="絞り込みを解除"></button>
+      <div class="favrow" id="favRow"><button type="button" class="favtog" id="favTog" data-fv="all" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21.2l7.8-7.7 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>お気に入りだけ<em id="favCnt">0</em></button></div>
       <div class="grid" id="grid"></div>
       <div class="delbar" id="delBar" hidden><div><span id="dlCnt">0件選択</span><button class="btn g" id="dlAll" type="button">全選択</button><button class="btn g" id="dlMk" type="button" hidden>メーカー削除</button></div><div><button class="btn" id="dlGo" type="button" disabled>選択を削除</button><button class="btn g" id="dlEnd" type="button">やめる</button></div></div>
       <div class="pager" id="pager" hidden><button class="btn" id="pgPrev" type="button">◀ 前へ</button><span id="pgInfo">1 / 1</span><button class="btn" id="pgNext" type="button">次へ ▶</button></div>
@@ -2742,6 +2763,19 @@ let curUser='',curAcc=null;/* curUser＝ログイン中の人の表示名（履�
 const mob=()=>matchMedia('(max-width:600px)').matches;let navLow=false,curLoc='',locMk='';
 let delSel=new Set(),delSelMk=new Set(),delSelSh=new Set(),dlList=[],page=0,pgKey='',lastCur=null,logF='',logMore=0,logArc=[],logArcKey='',logArcNext=null,logArcDone=false,logArcLoaded=false,logArcBusy=false,logArcQ={all:true,ids:[],names:[]},logLG=[],cur='',lowOnly=false,editId=null,tmpImg='';
 const $=id=>document.getElementById(id);
+
+/* ===== お気に入り（スマホ）：この端末に保存。品目データ（サーバー）は変えない ===== */
+const FAVKEY='factory-inv-fav-v1';let favSet=new Set(),favOnly=false;
+try{favSet=new Set((JSON.parse(localStorage.getItem(FAVKEY)||'[]')||[]).map(Number))}catch(e){}
+function isFav(id){return favSet.has(+id)}
+function favSave(){try{localStorage.setItem(FAVKEY,JSON.stringify([...favSet]))}catch(e){}}
+function favBtn(i){const on=isFav(i.id);return `<button class="fbtn${on?' on':''}" data-fv="${i.id}" type="button" aria-pressed="${on}" aria-label="お気に入り"><svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21.2l7.8-7.7 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>`}
+function favUpd(){const t=document.getElementById('favTog'),c=document.getElementById('favCnt');if(!t)return;t.classList.toggle('on',favOnly);t.setAttribute('aria-pressed',favOnly);if(c)c.textContent=(S.items||[]).filter(x=>favSet.has(+x.id)).length}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-fv]');if(!b)return;e.stopPropagation();e.preventDefault();
+  if(b.dataset.fv==='all'){favOnly=!favOnly;render();return}
+  const id=+b.dataset.fv;favSet.has(id)?favSet.delete(id):favSet.add(id);favSave();
+  if(favOnly){render()}else{const on=favSet.has(id);b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);favUpd()}
+  if(navigator.vibrate)try{navigator.vibrate(12)}catch(_){}},true);
 let msgCb=null;
 function notify(m){$('msgT').textContent=m;msgCb=null;$('msgC').style.display='none';$('msg').showModal()}
 function ask(m,cb){$('msgT').textContent=m;msgCb=cb;$('msgC').style.display='';$('msg').showModal()}
@@ -2947,21 +2981,21 @@ function render(){
   const vMk=curLoc?S.makers.filter(m=>S.items.some(i=>i.maker===m&&inSh(i,curLoc))||!S.items.some(i=>i.maker===m)):S.makers;
   $('locs').innerHTML=S.makers.length?['すべて',...vMk].map(m=>`<span class="${(m==='すべて'?'':m)===cur?'on':''}" data-m="${m==='すべて'?'':esc(m)}">${esc(m)}</span>`).join(''):'';
   updZ();
-  const list=mine.filter(i=>(!curLoc||inSh(i,curLoc))&&(!q||(q===scExact?kq(i.name)===q:kq(i.name+(i.loc||'')+(i.maker||'')).includes(q))));
+  const list=mine.filter(i=>(!(favOnly&&mob())||isFav(i.id))&&(!curLoc||inSh(i,curLoc))&&(!q||(q===scExact?kq(i.name)===q:kq(i.name+(i.loc||'')+(i.maker||'')).includes(q))));
   if(scr==='prod')list.sort((a,b)=>(b.run?1:0)-(a.run?1:0)); /* 生産画面：生産中のカードを先頭に（同じ状態どうしは元の並びのまま） */
   if(delSel.size){const ok=new Set(list.map(x=>x.id));const byId=new Map(S.items.map(x=>[x.id,x]));[...delSel].forEach(id=>{const it=byId.get(id);if(!ok.has(id)&&!(it&&delSelSh.has(it.loc||'未設定')))delSel.delete(id)})}
   [...delSelMk].forEach(m=>{if(!S.makers.includes(m))delSelMk.delete(m)});[...delSelSh].forEach(l=>{if(!shelves.includes(l))delSelSh.delete(l)});
   dlList=list.map(x=>x.id);
   const cardHtml=i=>{
-    return `<div class="card${pcCls(i)} ${logF==='i:'+i.id?'sel':''}${(document.body.classList.contains('deon')&&dSel(i))?' dsel':''}"><div class="ph" data-e="${i.id}"><span class="dchk" aria-hidden="true"></span><button class="hbtn" data-h="${i.id}" type="button" aria-label="この品目の履歴"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg></button><button class="ebtn" data-e="${i.id}" type="button" aria-label="この品目を編集"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg></button>${i.maker&&pcMk(i)?`<span class="mkbg" title="${esc(i.maker)}"><img src="${MK_ICON}" alt=""><b>${esc(i.maker)}</b></span>`:''}${scr==='prod'&&pcRun(i)?`<span class="runb${i.run?' on':''}" data-run="${i.id}" role="button" aria-pressed="${!!i.run}" aria-label="${i.run?'生産中':'停止中'}（タップで切り替え）"><b>生産</b><b>停止</b></span>`:''}${i.img?`<span class="pi">${imgTag(i,640)}</span>`:'写真なし'}<span class="tag"><b>${i.stock}</b>個</span><span class="ploc">${esc(i.loc||'未設定')}</span></div>
+    return `<div class="card${pcCls(i)} ${logF==='i:'+i.id?'sel':''}${(document.body.classList.contains('deon')&&dSel(i))?' dsel':''}"><div class="ph" data-e="${i.id}"><span class="dchk" aria-hidden="true"></span><button class="hbtn" data-h="${i.id}" type="button" aria-label="この品目の履歴"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg></button>${favBtn(i)}<button class="ebtn" data-e="${i.id}" type="button" aria-label="この品目を編集"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg></button>${i.maker&&pcMk(i)?`<span class="mkbg" title="${esc(i.maker)}"><img src="${MK_ICON}" alt=""><b>${esc(i.maker)}</b></span>`:''}${scr==='prod'&&pcRun(i)?`<span class="runb${i.run?' on':''}" data-run="${i.id}" role="button" aria-pressed="${!!i.run}" aria-label="${i.run?'生産中':'停止中'}（タップで切り替え）"><b>生産</b><b>停止</b></span>`:''}${i.img?`<span class="pi">${imgTag(i,640)}</span>`:'写真なし'}<span class="tag"><b>${i.stock}</b>個</span><span class="ploc">${esc(i.loc||'未設定')}</span></div>
     <div class="nc"><div class="npr"><div class="npn" data-e="${i.id}">${esc(String(i.name).split(/\r?\n/).slice(1).join(' ').trim())}</div><span class="nmt" title="${esc(i.maker||'')}">${esc(i.maker||'')}</span></div><div class="nct" data-e="${i.id}" title="${esc(String(i.name).replace(/\s*\r?\n\s*/g,'　'))}">${esc(String(i.name).split(/\r?\n/)[0].trim())}</div>${scr==='prod'?nckHtml(i):`<div class="nck"><div class="st"><span>完成品</span><b>${cdw(i).d}<i>個</i></b></div><div class="wp"><span>仕掛品</span><b>${cdw(i).w}<i>個</i></b></div></div>`}</div>
     <div class="nm${nmSp(i.name)?' sp':''}" data-e="${i.id}" title="${esc(String(i.name).replace(/\s*\r?\n\s*/g,'　'))}">${nmHtml(i.name)}</div>
     <div class="hd2"><div class="hs2"><b>${i.stock}</b><i>個</i></div><div class="hn2" data-e="${i.id}"><span>${esc(String(i.name).split(/\r?\n/)[0].trim())}</span></div></div><div class="kv2"><div class="kvin"><div class="kc2"><span class="kl2"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>保管場所</span><span class="kvv2">${esc(i.loc||'未設定')}</span></div><div class="kc2"><span class="kl2"><svg viewBox="0 0 24 24"><path d="M3 12V4h8l9 9-8 8z"/><circle cx="7.5" cy="8.5" r="1.4"/></svg>品番</span><span class="kvv2">${esc(String(i.name).split(/\r?\n/).slice(1).join(' ').trim()||'ー')}</span></div></div></div>
     <div class="band"><span class="bl"><span class="lb">置き場</span><span class="bt">${esc(i.loc||'未設定')}</span></span><span class="bs"><span class="lb">在庫</span><b>${i.stock}</b>個</span></div>
     <div class="msub${i.loc?'':' none'}"><span class="nlb"><span class="lt">保管場所</span>：</span>${esc(i.loc||'未設定')}</div><div class="info"><div class="stock"><b>${i.stock}</b><span><i class="u" style="font-style:normal">個</i></span></div>
     <div class="btns"><button class="out" data-o="${i.id}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 14l2-6h4M21 14l-2-6h-4M3 14v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4M3 14h5l1.5 2.5h5L16 14h5"/><path d="M12 12V3m0 0l-3 3m3-3l3 3"/></svg>出庫</button><button class="in" data-i="${i.id}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 14l2-6h4M21 14l-2-6h-4M3 14v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4M3 14h5l1.5 2.5h5L16 14h5"/><path d="M12 3v9m0 0l-3-3m3 3l3-3"/></svg>入庫</button></div></div></div>`};window.__cardHtml=cardHtml;/* 在庫から追加の候補カードにも同じ見た目を使う */
-  $('grid').innerHTML=list.length?list.map(i=>cardHtml(i)).join(''):`<div class="empty" style="grid-column:1/-1">${scr==='prod'&&lnList().some(l=>l.name===curLoc)?(q?'このラインに該当するカードがありません':'このラインにはまだカードがありません')+(q?'':'<br><button type="button" class="pab" data-pa="1">＋ カードを追加</button>'):'該当する品目がありません'}</div>`;
-  $('h1').textContent=mine.length;try{const pc=document.getElementById('pgCnt');if(pc)pc.textContent=list.length}catch(e){}
+  $('grid').innerHTML=list.length?list.map(i=>cardHtml(i)).join(''):`<div class="empty" style="grid-column:1/-1">${scr==='prod'&&lnList().some(l=>l.name===curLoc)?(q?'このラインに該当するカードがありません':'このラインにはまだカードがありません')+(q?'':'<br><button type="button" class="pab" data-pa="1">＋ カードを追加</button>'):(favOnly&&mob()?'お気に入りの品目がありません<small>カードの ♡ をタップして追加できます</small>':'該当する品目がありません')}</div>`;
+  $('h1').textContent=mine.length;favUpd();try{const pc=document.getElementById('pgCnt');if(pc)pc.textContent=list.length}catch(e){}
   if(document.body.classList.contains('deon'))updDel();
   {const fk=cur+'|'+curLoc;if(fk!==lastCur){logF='';lastCur=fk}}
   const mi=mine.filter(x=>!curLoc||inSh(x,curLoc));
