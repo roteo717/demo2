@@ -2219,6 +2219,15 @@ body.prod #grid .nck>div:active{background:#eaf2fb;border-radius:8px}
 .pbt .po{flex:1.4;background:#1f6fc5;border-color:#1f6fc5;color:#fff}
 /* 生産画面：メーカーのリボンの右に出す「生産中／停止中」バッジ（タップで切り替え） */
 body.prod #grid .ph .mkbg{max-width:calc(100% + var(--pm) + var(--fo) - var(--rh) * 4.3 - 6px)}
+/* スマホ：工程カードを正方形にして、タグ・丸アイコン・個数がかぶらないよう、カード幅(cqw)に合わせて大きさを決める */
+@media(max-width:600px){
+  body .dtb .dtg:not(.ppx),body .dtb .dtg{flex:none;max-height:none;grid-auto-rows:auto;align-content:start}
+  body .dtb .dtg .pc,body .dtg .pc{container-type:inline-size;aspect-ratio:1/1;height:auto;align-self:start;justify-content:center;gap:3cqw;padding:7cqw 0 0;border-radius:12px}
+  body .dtb .dtg .pc .tg,body .dtg .pc .tg{top:-1px;left:6cqw;width:21cqw;height:25cqw;padding-bottom:5cqw;font-size:9cqw}
+  body .dtb .dtg .pc .ib,body .dtg .pc .ib{width:46cqw;height:46cqw}
+  body .dtb .dtg .pc .ib .ic,body .dtg .pc .ib .ic{width:27cqw;height:27cqw}
+  body .dtb .dtg .pc .cn,body .dtg .pc .cn,body .dtg .pc.on .cn{font-size:17cqw;padding:0}
+}
 /* スマホ：メーカーのリボンは出さず、リボン用に空けていた上の余白は元の10pxに戻す（生産画面は「生産/停止」ボタンが上に付くので余白を残す） */
 @media(max-width:600px){
   body #grid .ph .mkbg,body #grid .ph:has(.mkbg)::before{display:none!important}
