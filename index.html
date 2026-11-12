@@ -2222,8 +2222,8 @@ body.prod #grid .ph .mkbg{max-width:calc(100% + var(--pm) + var(--fo) - var(--rh
 /* スマホ：工程カードを正方形にして、タグ・丸アイコン・個数がかぶらないよう、カード幅(cqw)に合わせて大きさを決める */
 @media(max-width:600px){
   body .dtb .dtg:not(.ppx),body .dtb .dtg{flex:none;max-height:none;grid-auto-rows:auto;align-content:start}
-  body .dtb .dtg .pc,body .dtg .pc{container-type:inline-size;aspect-ratio:1/1;height:auto;align-self:start;justify-content:flex-start;gap:0;padding:18% 0 8%;border-radius:12px}
-  body .dtb .dtg .pc .tg,body .dtg .pc .tg{top:0;left:5cqw;width:25cqw;height:29cqw;padding-bottom:9cqw;font-size:8.5cqw;letter-spacing:0}
+  body .dtb .dtg .pc,body .dtg .pc{container-type:inline-size;aspect-ratio:1/1;height:auto;align-self:start;justify-content:flex-start;gap:0;padding:23% 0 6%;border-radius:10px}
+  body .dtb .dtg .pc .tg,body .dtg .pc .tg{top:0;left:10px;width:24cqw;height:28cqw;padding-bottom:9cqw;font-size:8.5cqw;letter-spacing:0}
   body .dtb .dtg .pc .ib,body .dtg .pc .ib{width:42cqw;height:42cqw;margin-bottom:3cqw}
   body .dtb .dtg .pc .ib .ic,body .dtg .pc .ib .ic{width:25cqw;height:25cqw}
   body .dtb .dtg .pc .cn,body .dtg .pc .cn,body .dtg .pc.on .cn{font-size:17cqw;padding:0}
@@ -2454,13 +2454,13 @@ body.prod #grid .card.n-hin .npn{display:none}
 body.prod .shsel{display:none!important}
 
 /* ===== 工程カード：左上のしおり型タグ（01〜06／バリ／完成）＋丸いアイコン＋色分け ===== */
-.pdg .pc,.dtg .pc{--c:#1f6fc5;--cb:#e6f0fb;--cl:#e4e8ee;position:relative;border:1px solid var(--cl);border-radius:12px;background:#fff;box-shadow:0 2px 4px rgba(20,30,50,.10),0 1px 1px rgba(20,30,50,.05);padding-top:30px;gap:8px;color:#222}
+.pdg .pc,.dtg .pc{--c:#1f6fc5;--cb:#e6f0fb;--cl:#e4e8ee;position:relative;border:1px solid var(--cl);border-radius:10px;background:#fff;box-shadow:0 2px 4px rgba(20,30,50,.10),0 1px 1px rgba(20,30,50,.05);padding-top:30px;gap:8px;color:#222}
 .pdg .pc.k-b,.dtg .pc.k-b{--c:#e08a1e;--cb:#fdeed8}
 .pdg .pc.k-d,.dtg .pc.k-d{--c:#2f9e63;--cb:#e2f4ea}
 body .pdg .pc .ib,body .dtg .pc .ib{display:flex;align-items:center;justify-content:center;flex:none;width:60px;height:60px;border-radius:50%;background:var(--cb);text-decoration:none}
 body .pdg .pc .ib .ic,body .dtg .pc .ib .ic{width:34px;height:34px;color:var(--c)}
 body .pdg .pc>span,body .dtg .pc>span{display:none}
-.pdg .pc .tg,.dtg .pc .tg{position:absolute;top:0;left:9px;box-sizing:border-box;width:30px;height:36px;padding-bottom:11px;display:flex;align-items:center;justify-content:center;background:var(--c);color:#fff;font-size:11px;font-weight:800;line-height:1;letter-spacing:0;white-space:nowrap;pointer-events:none;clip-path:polygon(0 0,100% 0,100% 68%,50% 100%,0 68%)}
+.pdg .pc .tg,.dtg .pc .tg{position:absolute;top:0;left:10px;box-sizing:border-box;width:30px;height:36px;padding-bottom:11px;display:flex;align-items:center;justify-content:center;background:var(--c);color:#fff;font-size:11px;font-weight:800;line-height:1;letter-spacing:0;white-space:nowrap;pointer-events:none;clip-path:polygon(0 0,100% 0,100% 68%,50% 100%,0 68%)}
 .pdg .pc.on,.dtg .pc.on{border-color:var(--c);background:var(--cb);box-shadow:0 0 0 1px var(--c),0 2px 4px rgba(20,30,50,.10);color:#222}
 .pdg .pc.on .ib,.dtg .pc.on .ib{background:#fff}
 /* 個数はアイコンの下（PC版と同じ） */
