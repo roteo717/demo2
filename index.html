@@ -1714,7 +1714,6 @@ body #grid.fit .kvin{flex:1 1 auto;align-content:center}
   body #grid .card,body #grid .card.low{border:1px solid #e4e7ec!important;border-radius:16px!important;background:#fff!important;box-shadow:0 1px 3px rgba(20,30,50,.06),0 6px 18px rgba(20,30,50,.05)}
   body #grid .card.low{border:1.5px solid #d8232a!important}
   body #grid .card.sel::after{border-width:2px;border-radius:15px}
-  body #grid .card.dsel{border-color:#d8232a!important}
   /* 写真：カードの内側に余白を取り、角を丸くする。縦は余った高さいっぱい */
   body #grid .ph{margin:10px 10px 0;border-radius:12px;overflow:hidden;background:#f1f2f5}
   body #grid.fit .ph{aspect-ratio:auto;flex:1 1 0;min-height:48px}
@@ -2025,6 +2024,147 @@ dialog:focus,dialog:focus-visible,button:focus,[role=button]:focus,[tabindex]:fo
 #ac #acList .acr .ab.ax{color:#d8232a;font-size:20px;font-weight:400;line-height:1}
 #ac #acList .acr .ab.ax:active{opacity:.45}
 #ac #acList .acr .ab.ph{border-color:transparent;background:transparent;visibility:hidden}
+
+/* ===== PC用 品目詳細画面／複数写真 ===== */
+body.pdon{overflow:hidden}
+#pd{position:fixed;inset:0;z-index:70;background:#f6f8fb;color:#222;overflow-y:auto;display:flex;flex-direction:column}
+#pd[hidden]{display:none}
+@media(max-width:600px){#pd{display:none!important}}
+#pd button:focus-visible{outline:3px solid #9cc3ef;outline-offset:2px}
+.pdtop{flex:none;position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:8px;box-sizing:border-box;width:min(1180px,calc(100% - 64px));margin:10px auto 0;padding:8px 10px 8px 20px;border-radius:14px;background:rgba(255,255,255,.92);box-shadow:0 1px 2px rgba(20,30,50,.05),0 4px 14px rgba(20,30,50,.06);backdrop-filter:blur(8px)}
+.pdtop .pdttl{margin-right:auto;font-size:22px;font-weight:800;color:#141b26;letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.pdtop button{display:flex;align-items:center;gap:6px;height:38px;padding:0 18px;border:0;border-radius:19px;background:transparent;color:#2b3442;font:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:background .15s,color .15s}
+.pdtop button:hover{background:#eef1f6}
+.pdtop svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.pdtop .pded{background:#1b3a6b;color:#fff}
+.pdtop .pded:hover{background:#244b88}
+@media(max-width:700px){.pdtop{width:calc(100% - 20px);padding:6px 8px 6px 14px}.pdtop .pdttl{font-size:18px}.pdtop button{padding:0 12px}}
+.pdtop .pdmk{font-size:15px;color:#6b7686}
+.pdwrap{width:100%;max-width:1180px;margin:0 auto;padding:24px 32px 24px;flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+.pdhero{flex:none;position:relative;display:grid;grid-template-columns:minmax(0,520px) minmax(0,1fr);gap:14px 56px;align-items:stretch}
+.pdgh{position:absolute;right:0;top:-18px;max-width:60%;overflow:hidden;font-size:clamp(70px,11vw,150px);font-weight:800;line-height:1;color:rgba(31,111,197,.07);white-space:nowrap;pointer-events:none;user-select:none}
+.pdpic,.pdinfo{position:relative}
+.pdinfo{display:flex;flex-direction:column;height:0;min-height:100%}
+.pdph{aspect-ratio:4/3;min-height:300px;max-height:min(400px,44vh);background:#f1f2f5;border-radius:20px;overflow:hidden;box-shadow:0 10px 30px rgba(31,60,110,.10);display:flex;align-items:center;justify-content:center;color:#8a94a4}
+.pdph img{width:100%;height:100%;object-fit:contain;display:block}
+.pdth{grid-column:1;display:flex;gap:10px;flex-wrap:wrap}
+.pdth button{width:84px;height:62px;padding:0;border:2px solid transparent;border-radius:10px;background:#fff;overflow:hidden;cursor:pointer}
+.pdth button.on{border-color:#1f6fc5}
+.pdth img{width:100%;height:100%;object-fit:cover;display:block}
+.pdm{font-size:16px;color:#6b7686}
+.pdn{font-size:34px;font-weight:700;line-height:1.25;margin:2px 0 6px;word-break:break-all}
+.pdp{font-size:16px;color:#6b7686;word-break:break-all}
+.pdlb{margin:22px 0 10px;font-size:15px;font-weight:700;color:#4a5566}
+.pdg{flex:1 1 0;min-height:0;grid-template-rows:repeat(2,minmax(0,1fr));margin-top:20px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.pdg .pc{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(2px,1.2vh,10px);padding:6px 0;border:1.5px solid #dfe4ec;border-radius:12px;background:#fff;color:#2b3442;font:inherit;font-size:14px}
+.pdg .pc .ic{width:32px;height:32px;background:currentColor;-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center}
+.pdg .pc em{font-style:normal;font-size:20px;font-weight:800}
+.pdg .pc em.z{color:#b3bac5;font-weight:600}
+.pdg .pc.on{border-color:#1f6fc5;background:#eaf2fb;color:#1d4f91}
+.pdact{display:flex;align-items:center;gap:12px;margin-top:22px;flex-wrap:wrap}
+.pdact button{height:54px;padding:0 30px;border:none;border-radius:26px;font-size:17px;font-weight:700;color:#fff;cursor:pointer}
+#pdAct .o{background:#1d4f91}
+#pdAct .n{background:#1b7f4b}
+#pdAct button.off{opacity:.35}
+.pdtot{font-size:15px;color:#6b7686}
+.pdtot b{font-size:40px;line-height:1;color:#111;margin-right:4px}
+.pdhint{margin:8px 0 0;font-size:13px;color:#8a94a4}
+.pdhint.hid{visibility:hidden}
+.pdtabs{flex:none;display:flex;gap:28px;margin-top:30px;border-bottom:1px solid #dfe4ec}
+.pdtabs button{margin-bottom:-1px;padding:0 0 12px;border:none;border-bottom:3px solid transparent;background:none;color:#8a94a4;font:inherit;font-size:17px;font-weight:700;cursor:pointer}
+.pdtabs button.on{color:#1d4f91;border-bottom-color:#1f6fc5}
+.pdbody{flex:1 1 0;min-height:150px;display:grid;grid-template-columns:minmax(0,1fr) 300px;grid-template-rows:minmax(0,1fr);gap:48px;margin-top:14px}
+.pdbody>div{min-height:0;overflow-y:auto;overscroll-behavior:contain}
+.pdbody>ul{min-height:0;overflow-y:auto}
+.pdls{}
+.pdlog{width:100%;border-collapse:collapse;font-size:16px}
+.pdlog td{padding:12px 10px;border-bottom:1px solid #e6eaf0}
+.pdlog .pt{color:#6b7686;white-space:nowrap}
+.pdlog .pq{font-weight:800;white-space:nowrap}
+.pdlog .lin{color:#1b7f4b}.pdlog .lou{color:#1d4f91}
+.pdempty{margin:16px 0;color:#8a94a4}
+.pdfl{display:grid;grid-template-columns:88px 1fr 52px;align-items:center;gap:12px;padding:7px 0;font-size:15px}
+.pdfl b{text-align:right}
+.pdbar{height:12px;border-radius:6px;background:#e6eaf0;overflow:hidden}
+.pdbar i{display:block;height:100%;border-radius:6px;background:#1f6fc5}
+.pdfa{list-style:none;margin:0;padding:0;font-size:15px;color:#4a5566}
+.pdfa li{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #e6eaf0}
+.pdfa b{color:#111;text-align:right;word-break:break-all}
+.pdrel{margin-top:56px}
+.pdrel h3{margin:0 0 16px;font-size:18px}
+.pdrl{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.pdr{padding:0;border:none;border-radius:16px;background:#fff;overflow:hidden;text-align:left;font:inherit;cursor:pointer;box-shadow:0 4px 16px rgba(31,60,110,.08)}
+.pdr .rp{aspect-ratio:4/3;background:#e6edf5;overflow:hidden}
+.pdr .rp img{width:100%;height:100%;object-fit:contain;display:block}
+.pdr .rn{padding:12px 14px 2px;font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pdr .rs{padding:0 14px 14px;font-size:13px;color:#6b7686}
+@media(max-width:1000px){.pdhero,.pdbody{grid-template-columns:1fr;gap:24px}.pdrl{grid-template-columns:repeat(2,1fr)}}
+/* ===== カード型レイアウト：上部の情報カード＋下の履歴カード ===== */
+.pdwrap{width:min(1180px,calc(100% - 64px));padding:14px 0 14px;gap:14px}
+.pdhero{padding:22px 24px;border-radius:14px;background:#fff;box-shadow:0 1px 2px rgba(20,30,50,.05),0 4px 14px rgba(20,30,50,.06);gap:14px 40px;--ps:clamp(240px,44vh,440px);grid-template-columns:var(--ps) minmax(0,1fr)}
+.pdph{box-shadow:none;border-radius:12px;width:var(--ps);max-width:100%;height:auto;aspect-ratio:1/1;min-height:0;max-height:none}
+.pdcard{flex:1 1 0;box-sizing:border-box;min-height:200px;display:flex;flex-direction:column;padding:22px 24px 18px;border-radius:14px;background:#fff;box-shadow:0 1px 2px rgba(20,30,50,.05),0 4px 14px rgba(20,30,50,.06)}
+.pdcard .pdtabs{margin-top:0;border-bottom:0;gap:0}
+.pdcard .pdtabs button{padding:0;border:0;color:#141b26;font-size:22px;font-weight:800}
+.pdcard .pdbody{margin-top:12px;gap:40px}
+.pdfa{padding:4px 18px;border-radius:12px;background:#f6f8fb}
+.pdfa li:last-child{border-bottom:0}
+@media(max-width:1000px){.pdwrap{width:calc(100% - 40px)}.pdhero{padding:16px}}
+@media(min-width:601px){#edMode{display:none!important}} /* PC：上の「編集」ボタンは出さない（編集は詳細画面から） */
+.xrow{margin-top:10px}
+.xh{font-size:13px;font-weight:700;margin-bottom:6px}
+.xl{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.xt{position:relative;width:64px;height:64px;border-radius:8px;overflow:hidden;background:#e6e8eb}
+.xt img{width:100%;height:100%;object-fit:cover;display:block}
+.xt button{position:absolute;top:2px;right:2px;width:22px;height:22px;padding:0;border:none;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;line-height:1;cursor:pointer}
+#dlg.lim .xrow{display:none}
+
+/* PC・タブレット：入出庫の履歴は品目の詳細画面で見るので、右側のパネルからは外し、置き場マップを広く使う */
+@media(min-width:601px){
+  .side .sh,.side .log{display:none!important}
+  .side .zmap{flex:none;max-height:none}
+}
+
+/* ===== PC・タブレット：操作ボタンを、左の縦メニュー（アイコン＋文字を横に並べる）にする ===== */
+.ibl{display:none}
+@media(min-width:601px){
+  .app{padding-left:calc(212px + 14px + env(safe-area-inset-left,0px))!important;padding-top:10px!important}
+  .lrow .ibs{position:fixed;left:0;top:0;bottom:0;right:auto;z-index:30;width:212px;height:auto;margin:0;
+    display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:4px;
+    padding:calc(18px + env(safe-area-inset-top,0px)) 14px 18px calc(14px + env(safe-area-inset-left,0px));
+    background:#fff;border:none;border-right:1px solid #e3e6ea;overflow-y:auto;scrollbar-width:none}
+  .lrow .ibs::-webkit-scrollbar{display:none}
+  .lrow .ibs .ibl{display:block;padding:0 12px;margin:0 0 4px;font-size:12px;font-weight:500;letter-spacing:.02em;color:#9aa0ab}
+  .lrow .ibs .ib1{order:0}
+  .lrow .ibs #zBtn{order:1}.lrow .ibs #qpBtn{order:2}.lrow .ibs #rAdd{order:3}.lrow .ibs #rImp{order:4}.lrow .ibs #rDel{order:5}
+  .lrow .ibs .ib2{order:6;margin-top:22px}
+  .lrow .ibs #acBtn{order:7}
+  .lrow .ibs .rsep{display:none!important}
+  .lrow .ibs .ib,.lrow .ibs #lvOpen.ib{flex:none;width:100%;min-width:0;height:44px;padding:0 12px;gap:14px;
+    flex-direction:row;justify-content:flex-start;align-items:center;border:none;border-radius:10px;background:transparent;color:#2b2f36;text-align:left}
+  .lrow .ibs .ib svg{width:22px;height:22px;flex:none}
+  .lrow .ibs .il,.lrow .ibs .rx .il{font-size:15px;font-weight:700;line-height:1.2;text-align:left;color:inherit}
+  .lrow .ibs #acBtn .il{max-width:none}
+  .lrow .ibs .ib:hover,.lrow .ibs #lvOpen.ib:hover{background:#f3f6fa}
+  .lrow .ibs .ib[aria-pressed="true"],.lrow .ibs #rAdd[aria-expanded="true"]{background:#eaf2fb;color:var(--red)}
+  .lrow .ibs .rng:hover{background:#fdeeea}
+  .lrow .ibs .rng[aria-pressed="true"]{background:#fdeeea;color:#a8281f}
+  /* 右の列（置き場マップ）は、タブの行から下まで使う */
+  .side{grid-row:1/3}
+}
+
+/* ===== PC・タブレット：置き場マップは左メニューの下に置く（「マップ」ボタンで隠す／出す） ===== */
+@media(min-width:601px){
+  .app{grid-template-columns:minmax(0,1fr)!important;padding-left:calc(272px + 14px + env(safe-area-inset-left,0px))!important}
+  .lrow .ibs{width:272px}
+  .side{display:flex!important;position:fixed!important;left:calc(10px + env(safe-area-inset-left,0px))!important;right:auto!important;top:auto!important;bottom:10px!important;width:252px;height:auto!important;max-height:56vh;max-height:56dvh;grid-area:auto!important;z-index:31;overflow:auto;border-radius:14px;border:1px solid #e3e6ea;box-shadow:none;background:#fff;padding:0}
+  body.nomap .side{display:none!important}
+  .side .zmap.off #zmap{display:flow-root!important}
+  .side .zmap.off .zh{margin-bottom:8px!important}
+  .side .zmap,.side .zmap.off{display:block!important;margin:0;padding:12px 12px 14px;max-height:none;width:406px;zoom:.62;box-sizing:border-box} /* 元の大きさのまま縮小して、棚の形を保つ */
+  .lrow .ibs #zBtn[aria-pressed="true"]{background:#eaf2fb;color:var(--red)}
+  body.nomap .lrow .ibs #zBtn,body.nomap .lrow .ibs #zBtn[aria-pressed="true"]{background:transparent;color:#2b2f36}
+}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2079,6 +2219,11 @@ body.prod #grid .nck>div:active{background:#eaf2fb;border-radius:8px}
 .pbt .po{flex:1.4;background:#1f6fc5;border-color:#1f6fc5;color:#fff}
 /* 生産画面：メーカーのリボンの右に出す「生産中／停止中」バッジ（タップで切り替え） */
 body.prod #grid .ph .mkbg{max-width:calc(100% + var(--pm) + var(--fo) - var(--rh) * 4.3 - 6px)}
+/* スマホ：メーカーのリボンは出さず、リボン用に空けていた上の余白は元の10pxに戻す（生産画面は「生産/停止」ボタンが上に付くので余白を残す） */
+@media(max-width:600px){
+  body #grid .ph .mkbg,body #grid .ph:has(.mkbg)::before{display:none!important}
+  body:not(.prod) #grid .ph{margin-top:10px!important}
+}
 body.prod #grid .ph .runb{position:absolute;z-index:8;top:calc(var(--rh) * -1 - 8px);right:0;height:var(--rh);box-sizing:border-box;display:flex;align-items:stretch;padding:3px;border-radius:999px;background:#eef0f3;border:1.5px solid #d5d9e0;cursor:pointer;user-select:none;-webkit-user-select:none;isolation:isolate}
 body.prod #grid .ph .runb::before{content:"";position:absolute;z-index:-1;top:2px;bottom:2px;left:2px;width:calc(50% - 2px);border-radius:999px;background:#9aa3b0;transform:translateX(100%);transition:transform .22s ease,background .22s ease}
 body.prod #grid .ph .runb.on::before{background:#1fa862;transform:translateX(0)}
@@ -2174,6 +2319,147 @@ body.prod #grid .card.n-hin .npn{display:none}
 .lgr .lir .lot{flex:none;margin-left:auto;font-style:normal;font-size:11px;padding:1px 8px;border-radius:999px;background:#fff3dc;border:1px solid #f1d9a8;color:#9a5b00;white-space:nowrap}
 .pab{margin-top:12px;height:44px;padding:0 20px;border:none;border-radius:10px;background:#1f6fc5;color:#fff;font-weight:700;font-size:15px}
 </style>
+<style id="newDesign">
+/* =====================================================================
+   新デザイン（PC・タブレット）：白い大きな角丸ウィンドウ＋横長カード
+   色は従来のまま（青 #1f6fc5 / 背景 #eef1f5 / 完成品＝青 / 仕掛品＝橙 / 低在庫＝赤）
+   スマホ（600px以下）は従来のデザインのまま
+   ===================================================================== */
+.pgh{display:none}
+@media(min-width:601px){
+  body{background:#eef1f5}
+  /* 全体を1枚の白い角丸ウィンドウにする */
+  body::before{content:"";position:fixed;inset:12px;border-radius:24px;background:#fff;box-shadow:0 12px 40px rgba(31,60,110,.12);z-index:0;pointer-events:none}
+
+  /* ---- 左メニュー：選択中の項目を青のベタ塗りに ---- */
+  body .lrow .ibs{left:12px;top:12px;bottom:12px;width:272px;background:transparent;border-right:1px solid #e8ebf0;border-radius:24px 0 0 24px;padding:28px 16px 18px 16px}
+  body .lrow .ibs .ibl{font-size:12px;font-weight:700;letter-spacing:.08em;color:#a0a6b1;padding:0 14px;margin-bottom:6px}
+  body .lrow .ibs .ib,body .lrow .ibs #lvOpen.ib{height:46px;border-radius:12px;color:#5b6472;gap:14px;padding:0 14px}
+  body .lrow .ibs .il,body .lrow .ibs .rx .il{font-size:15px;font-weight:600}
+  body .lrow .ibs .ib:hover,body .lrow .ibs #lvOpen.ib:hover{background:#f3f6fa;color:#1a1d24}
+  body .lrow .ibs .ib[aria-pressed="true"]:not(.rng),body .lrow .ibs #rAdd[aria-expanded="true"],body .lrow .ibs #zBtn[aria-pressed="true"]{background:var(--red);color:#fff;box-shadow:0 8px 16px rgba(31,111,197,.28)}
+  body .lrow .ibs .rng:hover{background:#fdeeea;color:#a8281f}
+  body .lrow .ibs .rng[aria-pressed="true"]{background:#fdeeea;color:#a8281f;box-shadow:none}
+  body.nomap .lrow .ibs #zBtn,body.nomap .lrow .ibs #zBtn[aria-pressed="true"]{background:transparent;color:#5b6472;box-shadow:none}
+  /* 置き場マップ（暗いパネル）：ウィンドウ内に収める */
+  body .side{left:calc(22px + env(safe-area-inset-left,0px))!important;bottom:26px!important;border-radius:16px} /* 左メニュー（幅272px）の中央に置く：(272-252)/2+12 */
+
+  /* ---- 右側：見出し → タブ → 検索 → カード ---- */
+  body .app{position:relative;z-index:1;margin:12px 12px 12px 284px;padding:0 30px!important;grid-template-rows:auto auto auto minmax(0,1fr)!important;background:transparent}
+  .pgh{grid-column:1;grid-row:1;display:flex;align-items:center;gap:14px;padding:28px 0 18px}
+  .pgh h1{margin:0;font-size:26px;font-weight:700;letter-spacing:.01em;color:#1a1d24}
+  .pgh .pgc{font-size:13px;font-weight:700;color:var(--red);background:#eaf2fb;border-radius:999px;padding:5px 14px;white-space:nowrap}
+  .pgh .pgc b{font-size:14px}
+  .pgh .pga{margin-left:auto;display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 20px;border-radius:10px;border:1.5px solid var(--red);background:#fff;color:var(--red);font-size:15px;font-weight:700;cursor:pointer;white-space:nowrap}
+  .pgh .pgc,.pgh .pga{display:none}
+  .pgh .pga svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+  .pgh .pga:hover{background:#eaf2fb}
+  .pgh .pga:active{filter:brightness(.95)}
+  body .tabs{grid-column:1;grid-row:2;gap:8px;padding:0 0 16px;align-items:center;scrollbar-width:thin}
+  body .main{grid-column:1;grid-row:3 / 5}
+  body .app>.main{grid-row:3}
+  body .app{grid-template-rows:auto auto minmax(0,1fr)!important}
+
+  /* タブ＝丸いチップ */
+  body .tab,body .tab:not(.on):not(.add){flex:none;height:38px;display:inline-flex;align-items:center;padding:0 18px;border:1.5px solid #dfe4ec;border-radius:999px;background:#fff;color:#4a5160;font-size:14px;font-weight:700;box-shadow:none}
+  body .tab:hover:not(.on){background:#f3f6fa}
+  body .tab.on{padding:0 18px;font-size:14px;background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 6px 14px rgba(31,111,197,.25)}
+  body.deon .tabs .tab.dsel{background:#fdeeea;color:#a8281f;border-color:#d8232a;box-shadow:0 0 0 1px #d8232a}
+
+  /* 内側の青い枠をなくして、白地にそのまま並べる */
+  body .main{background:transparent!important;border:none!important;border-radius:0!important;padding:0!important}
+
+  /* 検索バー */
+  body .lrow{margin-bottom:16px}
+  body .lrow .tools{flex:0 1 420px;margin:0!important}
+  body .lrow .tools #q{height:44px!important;border:1.5px solid #dfe4ec;border-radius:10px;background-color:#fff;font-size:14px}
+
+  /* ---- 横長カード（左：写真／右：メーカー・品名・品番・完成品・仕掛品） ---- */
+  body #grid.grid{gap:16px}
+  body #grid .card,body #grid .card.low{display:grid!important;grid-template-columns:minmax(0,36%) minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;column-gap:18px;align-items:stretch;padding:14px!important;border:1px solid #e6e9ef!important;border-radius:14px!important;background:#fff!important;box-shadow:0 1px 2px rgba(20,30,50,.04),0 4px 14px rgba(20,30,50,.05)!important;overflow:hidden!important;min-height:0}
+  body #grid .card.low{border:1.5px solid #d8232a!important}
+  body #grid .card.sel{border-color:var(--red)!important}
+  body #grid .card.sel::after{border-radius:13px}
+  body #grid .sugc .card{padding-bottom:52px!important}
+
+  /* 写真 */
+  body #grid .card .ph{grid-column:1;grid-row:1 / 3;margin:0!important;width:auto!important;max-width:none!important;height:auto!important;min-height:0!important;aspect-ratio:auto!important;flex:none!important;align-self:stretch;border-radius:10px!important;overflow:hidden!important;background:#f1f3f6!important}
+  body #grid .ph .mkbg,body #grid .ph::before{display:none!important} /* 旧リボンはやめて、右側のチップに */
+  body.prod #grid .ph .runb{--rh:26px;top:8px!important;right:8px!important;left:auto!important}
+
+  /* 右側の文字 */
+  body #grid .card .nc{grid-column:2;grid-row:1;display:flex!important;flex-direction:column;justify-content:center;min-width:0;padding:2px 0 0!important;text-align:left}
+  body #grid .card .npr{display:contents!important}
+  body #grid .card .nmt{order:0;display:none!important}
+  body #grid .card:has(.mkbg) .nmt:not(:empty){display:inline-flex!important;align-items:center;align-self:flex-start;max-width:100%;height:22px;margin:0 0 8px;padding:0 10px;border-radius:6px;background:#e8f1fc;color:#1f6fc5;font-size:12px;font-weight:700;line-height:1}
+  body #grid .card .nct{order:1;margin:0;font-size:18px;font-weight:700;line-height:1.35;color:#1a1d24;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  body #grid .card .npn{order:2;flex:none;min-height:1.4em;margin-top:3px;font-size:13px;line-height:1.4;letter-spacing:.02em;color:#8a909c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  /* 完成品・仕掛品：アイコン＋ラベル＋数字を横に並べる */
+  body #grid .card .nck{order:3;display:flex!important;gap:0;margin-top:12px!important;padding:12px 0 0!important;border-top:1px solid #eef0f3;align-items:center}
+  body #grid .card .nck>div{flex:1 1 0;min-width:0;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto;column-gap:0;align-items:center;padding:0 10px 0 0!important;text-align:left}
+  body #grid .card .nck>div+div{padding-left:14px!important}
+  body #grid .card .nck>div::after{display:none!important;content:none!important}
+  body #grid .card .nck>div>span{grid-column:1;grid-row:1;font-size:12px;font-weight:500;line-height:1.2;color:#8a909c;white-space:nowrap}
+  body #grid .card .nck>div>b{grid-column:1;grid-row:2;margin-top:2px;font-size:20px;line-height:1.15}
+  body #grid .card .nck .st::after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Ccircle cx='14' cy='14' r='14' fill='%23eaf2fb'/%3E%3Cpath d='M8.5 14.5l3.8 3.8 7.2-7.6' fill='none' stroke='%231f6fc5' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+  body #grid .card .nck .wp::after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Ccircle cx='14' cy='14' r='14' fill='%23fdf0e1'/%3E%3Ccircle cx='14' cy='14' r='6' fill='none' stroke='%23d9791a' stroke-width='2'/%3E%3Cpath d='M14 10.8V14l2.4 1.6' fill='none' stroke='%23d9791a' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E")}
+  body #grid .card.low .nck .st::after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Ccircle cx='14' cy='14' r='14' fill='%23fdeeea'/%3E%3Cpath d='M8.5 14.5l3.8 3.8 7.2-7.6' fill='none' stroke='%23d8232a' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+
+  /* 旧デザインの余分な要素は隠す */
+  body #grid .card>.nm,body #grid .card>.hd2,body #grid .card>.kv2,body #grid .card>.band,body #grid .card>.msub{display:none!important}
+
+  /* 入出庫モード：右側の下にボタンを出す */
+  body #grid .card .info{display:none!important}
+  body.mvon #grid .card .info{display:block!important;grid-column:2;grid-row:2;padding:12px 0 0!important}
+
+  /* 前へ／次へ */
+  .pager .btn{border-radius:10px}
+  body .delbar{left:0!important;right:0!important} /* 右端をカードの右端にそろえる */
+}
+
+
+/* PC：棚のタブは出さず、検索バーの右にプルダウンで選ぶ（検索の虫めがねは右端）。削除モード・生産画面ではタブをそのまま使う */
+.shsel{display:none}
+@media(min-width:601px){
+  body:not(.prod) #tabs{display:none!important} /* 削除モードでも棚のボタンは出さず、プルダウン＋「✕」で選ぶ */
+  body .lrow .tools{flex:0 1 auto!important;gap:12px!important;align-items:center}
+  body .lrow .tools #q{flex:0 1 320px!important;width:320px!important;min-width:180px;background-position:right 14px center!important;padding-left:14px!important;padding-right:42px!important}
+  body:not(.prod) .shsel{display:block;flex:none;width:190px;height:44px;box-sizing:border-box;padding:0 40px 0 14px;border:1.5px solid #dfe4ec;border-radius:10px;font-size:14px;font-weight:600;color:#2b2f36;cursor:pointer;-webkit-appearance:none;appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232b2f36' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center/18px}
+  .shsel.on{border-color:var(--red);color:var(--red)}
+.shdel{display:none}
+@media(min-width:601px){
+  body.deon:not(.prod) .shdel:not([hidden]){display:inline-flex;align-items:center;justify-content:center;flex:none;width:44px;height:44px;padding:0;border:1.5px solid #dfe4ec;border-radius:10px;background:#fff;color:#d8232a;cursor:pointer}
+  .shdel svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round}
+  .shdel:hover{background:#fdeeea;border-color:#d8232a}
+  .shdel.on{background:#d8232a;border-color:#d8232a;color:#fff;box-shadow:0 6px 14px rgba(216,35,42,.25)}
+  .shsel.dsel{border-color:#d8232a;background-color:#fdeeea;color:#a8281f}
+}
+  .shsel:focus{outline:none}
+}
+body.prod .shsel{display:none!important}
+
+/* ===== 工程カード：左上のしおり型タグ（01〜06／バリ／完成）＋丸いアイコン＋色分け ===== */
+.pdg .pc,.dtg .pc{--c:#1f6fc5;--cb:#e6f0fb;--cl:#e4e8ee;position:relative;border:1px solid var(--cl);border-radius:12px;background:#fff;box-shadow:0 2px 4px rgba(20,30,50,.10),0 1px 1px rgba(20,30,50,.05);padding-top:30px;gap:8px;color:#222}
+.pdg .pc.k-b,.dtg .pc.k-b{--c:#e08a1e;--cb:#fdeed8}
+.pdg .pc.k-d,.dtg .pc.k-d{--c:#2f9e63;--cb:#e2f4ea}
+body .pdg .pc .ib,body .dtg .pc .ib{display:flex;align-items:center;justify-content:center;flex:none;width:60px;height:60px;border-radius:50%;background:var(--cb);text-decoration:none}
+body .pdg .pc .ib .ic,body .dtg .pc .ib .ic{width:34px;height:34px;color:var(--c)}
+body .pdg .pc>span,body .dtg .pc>span{display:none}
+.pdg .pc .tg,.dtg .pc .tg{position:absolute;top:-1px;left:9px;box-sizing:border-box;width:28px;height:32px;padding-bottom:7px;display:flex;align-items:center;justify-content:center;background:var(--c);color:#fff;font-size:11px;font-weight:800;line-height:1;letter-spacing:0;white-space:nowrap;pointer-events:none;clip-path:polygon(0 0,100% 0,100% 100%,50% 80%,0 100%)}
+.pdg .pc.on,.dtg .pc.on{border-color:var(--c);background:var(--cb);box-shadow:0 0 0 1px var(--c),0 2px 4px rgba(20,30,50,.10);color:#222}
+.pdg .pc.on .ib,.dtg .pc.on .ib{background:#fff}
+/* 個数はアイコンの下（PC版と同じ） */
+body .dtb .dtg .pc .cn,body .dtg .pc .cn,body .dtg .pc.on .cn{order:1;align-self:center;margin:0;min-width:0;max-width:100%;padding:0 4px;background:transparent;color:#222;font-size:20px;font-weight:800;line-height:1.1}
+body .dtb .dtg .pc .cn.z,body .dtg .pc .cn.z{color:#b3bac5;font-weight:600}
+@media(max-width:600px){body .dtb .dtg .pc .cn,body .dtg .pc .cn,body .dtg .pc.on .cn{font-size:18px}}
+@media(max-width:600px){
+  .pdg .pc,.dtg .pc{padding-top:26px;gap:5px}
+  body .pdg .pc .ib,body .dtg .pc .ib{width:46px;height:46px}
+  body .pdg .pc .ib .ic,body .dtg .pc .ib .ic{width:26px;height:26px}
+  .pdg .pc .tg,.dtg .pc .tg{left:6px;width:24px;height:28px;padding-bottom:6px;font-size:10px}
+}
+</style>
 </head>
 <body>
 <header class="mhead">
@@ -2200,12 +2486,14 @@ body.prod #grid .card.n-hin .npn{display:none}
 </header>
 <div class="app">
   <div class="left">
+    <div class="pgh"><h1>工場在庫管理</h1><span class="pgc">登録品目 <b id="pgCnt">0</b> 品</span><button type="button" class="pga" id="pgAdd" onclick="document.getElementById('addItem').click()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>品目を追加</button></div>
     <div class="tabs" id="tabs"></div>
     <div class="main">
       <div class="edbar" id="edBar"><span>編集モード中　カードをタップして編集</span><button id="edBarEnd" type="button">終了</button></div>
       <div class="lrow">
         <div class="locs" id="locs"></div>
         <div class="ibs">
+          <div class="ibl ib1" aria-hidden="true">メニュー</div><div class="ibl ib2" aria-hidden="true">アカウント</div>
           <button class="ib" id="zBtn" type="button" aria-pressed="true" aria-label="置き場マップを隠す" title="置き場マップ"><svg viewBox="0 0 24 24"><path d="M12 15.5s-4.5-4.3-4.5-7.8a4.5 4.5 0 0 1 9 0c0 3.5-4.5 7.8-4.5 7.8z"/><circle cx="12" cy="7.7" r="1.6" fill="currentColor"/><path d="M8.6 13.5L4 20h16l-4.6-6.5"/></svg><span class="il">マップ</span></button>
           <button class="ib" id="mvMode" type="button" aria-pressed="false" aria-label="入出庫ボタンを表示" title="入出庫"><svg viewBox="0 0 24 24"><path d="M8 4v14M4 14l4 4 4-4M16 20V6M12 10l4-4 4 4"/></svg><span class="il">入出庫</span></button>
           <button class="ib" id="edMode" type="button" aria-pressed="false" aria-label="編集ボタンを表示" title="編集"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg><span class="il">編集</span></button>
@@ -2222,6 +2510,7 @@ body.prod #grid .card.n-hin .npn{display:none}
       </div>
       <div class="tools">
         <input type="search" id="q" placeholder="品名・場所・メーカー"><button class="qsc" id="qScan" type="button" aria-label="QRコードで検索" title="QRコードで検索"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M4 10V8a4 4 0 0 1 4-4h2M14 4h2a4 4 0 0 1 4 4v2M20 14v2a4 4 0 0 1-4 4h-2M10 20H8a4 4 0 0 1-4-4v-2"/><g fill="currentColor" stroke="none"><rect x="7" y="7" width="4" height="4" rx="1"/><rect x="13" y="7" width="4" height="4" rx="1"/><rect x="7" y="13" width="4" height="4" rx="1"/><rect x="13" y="13" width="4" height="4" rx="1"/></g></svg></button>
+      <select id="shSel" class="shsel" aria-label="棚で絞り込み"></select><button type="button" id="shDel" class="shdel" hidden aria-pressed="false" aria-label="この棚を削除対象にする" title="この棚を削除対象にする"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       </div>
       <button type="button" id="fClr" hidden title="絞り込みを解除"></button>
       <div class="grid" id="grid"></div>
@@ -2364,6 +2653,7 @@ body.prod #grid .card.n-hin .npn{display:none}
   <div class="bar" style="justify-content:flex-end"><button class="btn g" id="mvC" type="button">キャンセル</button><button class="btn" id="mvOk" type="button">決定</button></div>
 </dialog>
 
+<div id="pd" hidden></div>
 <div class="dt" id="dv" hidden>
   <button class="dtback" id="dvBack" type="button" aria-label="戻る"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
   <div class="dts" id="dvS"><div class="dtph" id="dvPh"></div><div class="dtb" id="dvB"></div></div>
@@ -2450,6 +2740,7 @@ function save(){
   if(!useSrv){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){notify('保存容量がいっぱいです。写真を減らしてください。')}return}
   try{/* 新しい写真はここでサーバーに送り、品目には写真の場所（URL）だけを持たせる */
     for(const it of S.items){if(it.img&&it.img.startsWith('data:')){const x=xhr('POST','api/photo',it.img,'text/plain');if(x.status!==200)throw new Error('photo');it.img=JSON.parse(x.responseText).url}}
+    for(const it of S.items){if(Array.isArray(it.imgs))for(let k=0;k<it.imgs.length;k++){const u=it.imgs[k];if(u&&u.startsWith('data:')){const x=xhr('POST','api/photo',u,'text/plain');if(x.status!==200)throw new Error('photo');it.imgs[k]=JSON.parse(x.responseText).url}}}
   }catch(e){notify('写真をサーバーに送れませんでした。接続を確認して、もう一度保存してください。');return}
   srvFlush()}
 async function srvFlush(){
@@ -2636,6 +2927,7 @@ function render(){
   const shelves=scr==='prod'?[...lnList().map(l=>l.name),...(hasUn?['未設定']:[])]:[...new Set(S.items.map(i=>i.loc||'未設定'))].filter(l=>l!=='未設定'||hasUn).sort((a,b)=>a.localeCompare(b,'ja',{numeric:true}));
   if(curLoc&&!shelves.includes(curLoc))curLoc='';
   $('tabs').innerHTML=['すべて',...shelves].map(l=>`<div class="tab ${(l==='すべて'?'':l)===curLoc?'on':''}" data-sh="${l==='すべて'?'':esc(l)}">${esc(l)}</div>`).join('');
+  try{const sel=$('shSel');if(sel){sel.innerHTML=['すべての棚',...shelves].map((l,k)=>`<option value="${k?esc(l):''}">${esc(l)}</option>`).join('');sel.value=curLoc||'';sel.classList.toggle('on',!!curLoc)}}catch(e){}
   syncFClr();
   /* 棚を選んでいる間は、その棚に品目があるメーカーだけ出す（品目がまだ1件もない新規メーカーは、見失わないよう常に出す） */
   const vMk=curLoc?S.makers.filter(m=>S.items.some(i=>i.maker===m&&inSh(i,curLoc))||!S.items.some(i=>i.maker===m)):S.makers;
@@ -2655,7 +2947,7 @@ function render(){
     <div class="msub${i.loc?'':' none'}"><span class="nlb"><span class="lt">保管場所</span>：</span>${esc(i.loc||'未設定')}</div><div class="info"><div class="stock"><b>${i.stock}</b><span><i class="u" style="font-style:normal">個</i></span></div>
     <div class="btns"><button class="out" data-o="${i.id}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 14l2-6h4M21 14l-2-6h-4M3 14v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4M3 14h5l1.5 2.5h5L16 14h5"/><path d="M12 12V3m0 0l-3 3m3-3l3 3"/></svg>出庫</button><button class="in" data-i="${i.id}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 14l2-6h4M21 14l-2-6h-4M3 14v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4M3 14h5l1.5 2.5h5L16 14h5"/><path d="M12 3v9m0 0l-3-3m3 3l3-3"/></svg>入庫</button></div></div></div>`};window.__cardHtml=cardHtml;/* 在庫から追加の候補カードにも同じ見た目を使う */
   $('grid').innerHTML=list.length?list.map(i=>cardHtml(i)).join(''):`<div class="empty" style="grid-column:1/-1">${scr==='prod'&&lnList().some(l=>l.name===curLoc)?(q?'このラインに該当するカードがありません':'このラインにはまだカードがありません')+(q?'':'<br><button type="button" class="pab" data-pa="1">＋ カードを追加</button>'):'該当する品目がありません'}</div>`;
-  $('h1').textContent=mine.length;
+  $('h1').textContent=mine.length;try{const pc=document.getElementById('pgCnt');if(pc)pc.textContent=list.length}catch(e){}
   if(document.body.classList.contains('deon'))updDel();
   {const fk=cur+'|'+curLoc;if(fk!==lastCur){logF='';lastCur=fk}}
   const mi=mine.filter(x=>!curLoc||inSh(x,curLoc));
@@ -2703,7 +2995,7 @@ function edgeColor(im){try{const k=im.src.length+':'+im.src.slice(-60);if(phC.ha
     const avg=[0,1,2].map(j=>ms.reduce((q,m)=>q+m[j],0)/4);
     res={t:css(out.t),b:css(out.b),l:css(out.l),r:css(out.r),solid:same?css(avg):null,ar:im.naturalWidth/im.naturalHeight}}
   phC.set(k,res);return res}catch(e){return null}}
-function phBg(){document.querySelectorAll('#grid .ph,.dtph').forEach(ph=>{const im=ph.querySelector('img');if(!im)return;
+function phBg(){document.querySelectorAll('#grid .ph,.dtph,.pdph').forEach(ph=>{const im=ph.querySelector('img');if(!im)return;
   const f=()=>{const c=edgeColor(im);if(!c){ph.style.removeProperty('background');return}
     if(c.solid){ph.style.setProperty('background',c.solid,'important');return}
     /* 写真が枠より横長なら上下に、縦長なら左右に余白が出る。余白の色を写真の端の色に合わせる */
@@ -2724,72 +3016,39 @@ function fit(){fit0();fitNames();phBg();fitStock()}
 const PHR=4/3;let _infoH=0; /* PHR＝写真枠の幅÷高さ（PC・タブレット）。_infoH＝入出庫ボタン欄の高さ */
 function fit0(){
   const g=$('grid'),pg=$('pager');
-  g.classList.remove('fit','paged','fillw');g.style.gridTemplateColumns='';g.style.justifyContent='';g.style.gridAutoRows='';pg.hidden=true;pg.style.bottom='';
+  g.classList.remove('fit','paged','fillw');g.style.gridTemplateColumns='';g.style.justifyContent='';g.style.gridAutoRows='';g.style.rowGap='';g.style.columnGap='';{const lr0=document.querySelector('.lrow');if(lr0)lr0.style.marginBottom=''}pg.hidden=true;pg.style.bottom='';
   const cards=[...g.querySelectorAll('.card')];cards.forEach(x=>x.style.display='');
-  if(!matchMedia('(min-width:601px) and (min-height:520px)').matches){ /* スマホ：ページ送りなし。全件を1ページに並べて縦にスクロール */
-    syncSearchW();return;
-  }
+  if(!matchMedia('(min-width:601px) and (min-height:520px)').matches){syncSearchW();return} /* スマホ：従来どおり */
   const n=cards.length;if(!n){syncSearchW();return}
   g.classList.add('fit');
-  const gcs=getComputedStyle(g),W=g.clientWidth-(parseFloat(gcs.paddingLeft)||0)-(parseFloat(gcs.paddingRight)||0),H=g.clientHeight-12-(parseFloat(gcs.paddingTop)||0)-(parseFloat(gcs.paddingBottom)||0),gap=parseFloat(gcs.rowGap)||10; /* 余白（影用）を除いた中身の広さ */
-  const minW=150,maxW=340,pagerH=0;
-  const cap=8; /* 1画面8個まで（横4枚×2段） */
-  const maxC=Math.max(1,Math.floor((W+gap)/(minW+gap)));
-  /* 写真以外（品名・在庫・ボタン）の高さ。写真は正方形なので、カードの高さ＝幅＋この高さ */
-  g.style.setProperty('--pr',PHR); /* 写真枠の縦横比は常に一定（履歴パネルや入出庫ボタンの表示で変えない） */
-  const mv=document.body.classList.contains('mvon'),inf=g.querySelector('.card .info');if(mv&&inf&&inf.offsetHeight)_infoH=inf.offsetHeight;
-  const natH=()=>Math.max(...cards.map(c0=>[...c0.children].filter(x=>!x.classList.contains('ph')).reduce((a,x)=>a+x.offsetHeight,0)))+4;
-  let nonPh=natH();
-  /* 列数と段数を試し、写真が正方形のまま画面に収まる中で、見える写真の面積がいちばん大きい配置を選ぶ */
-  const layout=Hh=>{let best=null;
-    for(let c=1;c<=maxC;c++){
-      const w=Math.min(maxW,(W-(c-1)*gap)/c);if(w<minW)continue;
-      for(let rows=1;rows<=4;rows++){const rh=Math.round(w/PHR+nonPh);if(rows*rh+(rows-1)*gap>Hh)break;
-        const p=Math.min(cap,c*rows),sc=p*w*w;
-        if(!best||sc>best.sc)best={c,rows,rh,sc}}}
-    return best};
-  /* 横は常に4枚・2段（履歴パネルの有無で枚数を変えない）。カードの幅は「横幅から割った幅」と「高さに収まる幅」の小さいほう。
-     写真の枠の縦横比は全カード同じ。幅で決まって縦が余るときは、余りはまず写真に回す（最大で正方形まで） */
-  const mk=()=>{let L=null;
-    g.style.setProperty('--pr',PHR); /* 写真枠の縦横比は常に一定（履歴パネルや入出庫ボタンの表示で変えない） */
-    if(maxC>=4){const wW=(W-3*gap)/4,rhA=Math.floor((H-gap)/2),pa=rhA-nonPh; /* pa＝写真に使える高さ */
-      /* カードの幅は常に横いっぱい（上限なし）＝どのモニターでも右に余白ができない。
-         高さが足りないときは写真の枠を横長にして収め、余るときは写真を縦に伸ばす（最大で正方形） */
-      const w=wW,ph1=Math.min(pa,w);
-      if(w>=minW&&ph1>=60)L={c:4,rows:2,rh:Math.round(ph1+nonPh),w},g.style.setProperty('--pr',(w/ph1).toFixed(4))}
-    if(!L)L=layout(H);
-    return L};
-  const cols=L=>{if(L.w&&L.w<(W-(L.c-1)*gap)/L.c-1){g.style.gridTemplateColumns=`repeat(${L.c},${L.w}px)`;g.style.justifyContent='start'} /* （フォールバック配置のときだけ） */
-    else{g.style.gridTemplateColumns=`repeat(${L.c},minmax(0,1fr))`;g.style.justifyContent=''}};
-  let paged=false,per=n;
-  let L=mk();
-  /* 品名や在庫の文字の大きさはカードの幅で変わり、行数も変わる。決めた幅で測り直し、下の欄が入りきらないときは高さを取り直す（下の見切れ防止） */
-  for(let it=0;it<3&&L&&L.w;it++){
-    cols(L);g.style.gridAutoRows='auto';
-    const nm=natH();if(nm<=nonPh+1)break;
-    nonPh=nm;L=mk();
-  }
-  if(L){per=Math.min(cap,L.c*L.rows);paged=n>per}
-  else{ /* どうしても収まらないときは、1段だけ高さに合わせる（写真は正方形でなくなる） */
-    paged=n>maxC;
-    L={c:maxC,rows:1,rh:Math.max(160,Math.floor(H-pagerH))};
-    per=L.c;
-  }
-  const pages=Math.ceil(n/per);
-  if(paged&&pages>1){
+  const gcs=getComputedStyle(g),W=g.clientWidth-(parseFloat(gcs.paddingLeft)||0)-(parseFloat(gcs.paddingRight)||0),H=g.clientHeight-12-(parseFloat(gcs.paddingTop)||0)-(parseFloat(gcs.paddingBottom)||0),gap=parseFloat(gcs.rowGap)||16;
+  /* 横長カード：幅に応じて1～3列、高さに応じて段数を決める（入出庫ボタンを出すときは少し高く） */
+  const mv=document.body.classList.contains('mvon');
+  const minW=400,maxH=mv?240:196;
+  const c=3; /* 1画面＝3列×3段＝9枚に固定 */
+  /* 1画面＝3段固定（幅が足りれば3列×3段＝9品）。ページが分かれるときは「前へ／次へ」の分の高さをあける */
+  const rows=3,per=c*rows,pages=Math.ceil(n/per),H2=H-(n>per?56:0);
+  const rh=Math.max(120,Math.min(maxH,Math.floor((H2-(rows-1)*gap)/rows)));
+  /* カードの高さ（写真の比率）はそのまま。余った高さはカード同士の間隔に回す（最大40px） */
+  /* 余白は「検索バーとカードの間」と「カード同士（2か所）」の3か所に等しく配る */
+  const ex=Math.max(0,Math.min(24,Math.floor((H2-rows*rh-(rows-1)*gap)/rows))),gp=gap+ex;
+  g.style.rowGap=gp+'px';g.style.columnGap=gp+'px';
+  const lr=document.querySelector('.lrow');if(lr)lr.style.marginBottom=(16+ex)+'px';
+  g.style.gridTemplateColumns=`repeat(${c},minmax(0,1fr))`;
+  g.style.gridAutoRows=rh+'px';
+  if(n>per&&pages>1){
     page=Math.min(Math.max(page,0),pages-1);
-    cards.forEach((x,i)=>{x.style.display=(i>=page*per&&i<(page+1)*per)?'':'none'});
+    cards.forEach((x,i)=>{if(i>=page*per&&i<(page+1)*per)x.style.removeProperty('display');else x.style.setProperty('display','none','important')}); /* CSSの display:grid!important に負けないよう important で隠す */
     g.classList.add('paged');pg.hidden=false;
     pgShow(page,pages);
     $('pgPrev').disabled=page<=0;$('pgNext').disabled=page>=pages-1;
+    /* 前へ／次へ：カードの下端と枠の下端のちょうど真ん中に置く */
+    const mn=g.closest('.main')||g.parentElement;
+    if(mn){const gr=g.getBoundingClientRect(),cb=gr.top+(parseFloat(gcs.paddingTop)||0)+rows*rh+(rows-1)*gp,mr=mn.getBoundingClientRect(),bw=parseFloat(getComputedStyle(mn).borderBottomWidth)||0,free=(mr.bottom-bw)-cb,ph=pg.offsetHeight||46;
+      pg.style.bottom=Math.max(6,Math.round((free-ph)/2))+'px'}
   }
-  cols(L);
-  g.classList.toggle('fillw',!!L.fill);
-  g.style.gridAutoRows=L.rh+'px';
-  /* 前へ／次へ：カードの下端と枠の下端のちょうど真ん中に置く（上下の余白を均等に） */
-  if(!pg.hidden){const vis=cards.filter(x=>x.style.display!=='none'),mn=g.closest('.main')||g.parentElement;
-    if(vis.length&&mn){const gr=g.getBoundingClientRect(),cb=gr.top+(parseFloat(gcs.paddingTop)||0)+L.rows*L.rh+(L.rows-1)*gap,mr=mn.getBoundingClientRect(),bw=parseFloat(getComputedStyle(mn).borderBottomWidth)||0,free=(mr.bottom-bw)-cb,ph=pg.offsetHeight||46;
-      pg.style.bottom=Math.max(6,Math.round((free-ph)/2))+'px'}}
+  /* 削除バー（選択を削除／やめる）：「前へ／次へ」と同じ高さ（カード下端と枠下端の真ん中）に置く */
+  {const mn=g.closest('.main')||g.parentElement,db=$('delBar');if(mn&&db){const gr=g.getBoundingClientRect(),cb=gr.top+(parseFloat(gcs.paddingTop)||0)+rows*rh+(rows-1)*gp,mr=mn.getBoundingClientRect(),bw=parseFloat(getComputedStyle(mn).borderBottomWidth)||0,free=(mr.bottom-bw)-cb,bh=db.offsetHeight||38;db.style.bottom=Math.max(6,Math.round((free-bh)/2))+'px'}}
   syncSearchW();
 }
 try{new ResizeObserver(()=>syncSearchW()).observe(document.getElementById('tabs'));document.fonts&&document.fonts.ready.then(()=>syncSearchW())}catch(e){} /* タブの高さ（フォント読み込み後など）が変わったら測り直す */
@@ -2976,11 +3235,11 @@ function commit(){
     if(d===0){$('mv').close();return}
     i.st[k]+=d;i.stock+=d;i.proc=k;ent.push(lg(d,{pr:pn}))}
   S.log.unshift(...ent);
-  S.log=S.log.slice(0,300);if(dtId!==null)i.proc='';/* 詳細画面：入庫・出庫したら工程の選択を外す（次は工程を選び直す） */save();$('mv').close();render();if(dtId!==null)dtDraw();
+  S.log=S.log.slice(0,300);if(dtId!==null||pdId!==null)i.proc='';/* 詳細画面：入庫・出庫したら工程の選択を外す（次は工程を選び直す） */save();$('mv').close();render();if(dtId!==null)dtDraw();if(pdId!==null)pdDraw();
 }
 document.addEventListener('click',e=>{
   const t=e.target.closest('[data-m],[data-o],[data-i],[data-h],[data-e],[data-act],#addMaker');if(!t)return;
-  if(t.closest('#dvBar')){const it=S.items.find(x=>x.id===dtId);if(!it||!it.proc){notify('先に工程を選んでください');return}}
+  if(t.closest('#dvBar,#pdAct')){const it=S.items.find(x=>x.id===(t.closest('#pdAct')?pdId:dtId));if(!it||!it.proc){notify('先に工程を選んでください');return}}
   if(t.dataset.act==='addmk')$('nMaker').click();
   else if(t.dataset.act==='delmk')$('delMaker').click();
   else if(t.dataset.m!==undefined){cur=t.dataset.m;render()}
@@ -3004,6 +3263,7 @@ $('logF').onclick=e=>{const t=e.target.closest('[data-lf]');if(!t)return;logF=t.
 $('mvQ').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();commit()}};
 $('mvC').onclick=()=>$('mv').close();
 $('mvOk').onclick=commit;
+$('shSel').onchange=e=>{cur='';curLoc=e.target.value;render()};
 $('tabs').onclick=e=>{const t=e.target.closest('[data-sh]');if(!t)return;cur='';/* スマホ・パソコン共通：棚のタブ（「すべて」も含む）を押したら、メーカーの絞り込みは必ず解除する */curLoc=t.dataset.sh;render()};
 $('hOpen').onclick=()=>{dtBack=null;document.body.classList.add('hist');const sd=document.querySelector('.side');if(sd)sd.scrollTop=0};
 $('hClose').onclick=()=>{const bk=dtBack;dtBack=null;document.body.classList.remove('hist');logF='';render();if(bk!==null&&mob()&&S.items.some(x=>x.id===bk))dtOpen(bk)};/* 詳細から開いた履歴は、閉じると詳細に戻る *//* 履歴を閉じたら、カードの選択も外す */
@@ -3092,7 +3352,7 @@ $('grid').addEventListener('click',e=>{ /* 履歴モード：カードをタッ�
   if(mob()||!S.hshow||document.body.classList.contains('edon')||document.body.classList.contains('deon'))return;
   if(e.target.closest('button'))return;
   const c=e.target.closest('.card');if(!c)return;const el=c.querySelector('[data-e]');if(!el)return;
-  const id='i:'+el.dataset.e;logF=logF===id?'':id;render()});
+  pdOpen(+el.dataset.e)}); /* PC：カードをタップ → 品目の詳細画面（履歴・工程ごとの在庫） */
 $('hisBtn').onclick=()=>{};/* 履歴を隠したら、カードの選択も外す */
 $('zTog2').onclick=()=>{$('mMenu').hidden=true;$('mMenuBtn').setAttribute('aria-expanded','false');S.zhide=false;save();zApply()};
 placeMap();zApply();hApply();addEventListener('resize',placeMap);addEventListener('orientationchange',placeMap);
@@ -3252,7 +3512,7 @@ function pSheet(kind,id,after){const it=S.items.find(x=>x.id===id);if(!it)return
   const el=document.createElement('div');el.className='psh';
   const ttl=kind==='pp'?'工程を選ぶ':'1時間あたりの加工数';
   el.innerHTML=`<div class="psb" role="dialog" aria-label="${ttl}"><div class="pst">${ttl}<small>${esc(nm)}${kind==='pp'?'　（複数選べます）':''}</small></div>`+
-   (kind==='pp'?`<div class="dtg ppx">${PROC.map(p=>`<button type="button" class="pc" data-n="${p.k==='bari'?'b':p.k==='done'?'d':p.k.slice(1)}"><i class="ic" aria-hidden="true" style="-webkit-mask-image:url(${p.m});mask-image:url(${p.m})"></i><span>${p.t}</span></button>`).join('')}</div><div class="ppv"></div>`
+   (kind==='pp'?`<div class="dtg ppx">${PROC.map(p=>`<button type="button" class="pc k-${p.c}" data-n="${p.k==='bari'?'b':p.k==='done'?'d':p.k.slice(1)}"><b class="tg">${p.g}</b><s class="ib"><i class="ic" aria-hidden="true" style="-webkit-mask-image:url(${p.m});mask-image:url(${p.m})"></i></s><span>${p.t}</span></button>`).join('')}</div><div class="ppv"></div>`
                :`<div class="prr"><input type="number" inputmode="numeric" min="0" step="1" id="prIn" value="${Math.floor(+it.pr||0)||''}" placeholder="120"><span>個/h</span></div>`)+
    `<div class="pbt">${kind==='pp'?'':'<button type="button" data-a="clr">クリア</button>'}<button type="button" data-a="x">キャンセル</button><button type="button" class="po" data-a="ok">決定</button></div></div>`;
   const close=()=>el.remove();
@@ -3335,7 +3595,7 @@ function nckHtml(i){const c=lnCfg(i),d=cdw(i);
 /* 下から出るシート（.psh）を開いている間は、後ろの画面をスクロールさせない。シートの中身が長いときだけ、シート内でスクロールできる */
 (function(){const can=(el,b)=>{/* タッチした場所から、シートの外枠までの間に、スクロールできる部分（品目リストなど）があるか */for(;el&&el!==b.parentNode;el=el.parentElement){const o=getComputedStyle(el).overflowY;if((o==='auto'||o==='scroll')&&el.scrollHeight>el.clientHeight+1)return true}return false};const blk=e=>{if(!document.querySelector('.psh'))return;const b=e.target&&e.target.closest?e.target.closest('.psb'):null;if(b&&can(e.target,b))return;if(e.cancelable)e.preventDefault()};document.addEventListener('touchmove',blk,{passive:false});document.addEventListener('wheel',blk,{passive:false})})();
 /* 下から出るシートを開いたまま下のタブを押したら、シートを閉じる（タブの動作はそのまま行う） */
-document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('.btab'))document.querySelectorAll('.psh').forEach(x=>x.remove())},true);
+document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('.btab')){window.__padWas=!!document.querySelector('.psh .psb.pad');/* 押す前に生産の「追加」シートが開いていたか */document.querySelectorAll('.psh').forEach(x=>x.remove())}},true);
 function mkSheet(cls){const el=document.createElement('div');el.className='psh';el.innerHTML='<div class="psb '+(cls||'')+'" role="dialog"></div>';el.addEventListener('click',e=>{if(e.target===el)el.remove()});el.addEventListener('keydown',e=>{if(e.key==='Escape')el.remove()});document.body.appendChild(el);return el}
 function lnManager(){const el=mkSheet('plm'),box=el.firstChild;
   const draw=()=>{const ls=lnList();box.innerHTML=`<div class="pst">ライン管理<small>ラインごとに、入れる品目を選べます</small></div>`+
@@ -3430,12 +3690,12 @@ function prodAdd(tab){
     if(!inLn(it,ln)&&lnDup(it,ln)){notify('「'+String(it.name).split(/\r?\n/)[0].trim()+'」はすでに「'+ln+'」に入っています');return}
     setLns(it,inLn(it,ln)?lnsOf(it).filter(n=>n!==ln):[...lnsOf(it),ln]);save();render();box.querySelector('#paC').innerHTML=chips();box.querySelector('.lil').innerHTML=rows()});
   draw()}
-document.addEventListener('click',e=>{if(scr!=='prod')return;if(e.target.closest('#btAdd,#hAdd,#hAdd2,#rAdd,#addItem')){e.stopImmediatePropagation();e.preventDefault();prodAdd()}},true);
+document.addEventListener('click',e=>{if(scr!=='prod')return;if(e.target.closest('#btAdd,#hAdd,#hAdd2,#rAdd,#addItem')){e.stopImmediatePropagation();e.preventDefault();if(e.target.closest('#btAdd')&&window.__padWas){window.__padWas=false;return}/* 下の「追加」をもう一度押したら閉じるだけ */prodAdd()}},true);
 function btCloseAll(){if(dtId!==null)dtClose();lvClose();zSheet(false);if(document.body.classList.contains('hist')){document.body.classList.remove('hist');logF='';render()}}
 function btSync(){const b=document.body.classList,lvo=!$('lv').hidden,zs=b.contains('zsheet');
   $('btHome').classList.toggle('on',!lvo&&!zs&&scr!=='prod');$('btProd').classList.toggle('on',!lvo&&!zs&&scr==='prod');$('btList').classList.toggle('on',lvo);$('btMap').classList.toggle('on',zs);
   const dt=!$('dv').hidden;if(b.contains('dton')!==dt)b.toggle('dton',dt);btOverlay()}
-function btOverlay(){/* 「追加」「アカウント」の画面が開いている間は、そのボタンを選択中の色にして、ほかは選択を外す */const acO=!!$('ac')&&$('ac').open,adO=!!$('dlg')&&$('dlg').open&&!editId;$('btAcc').classList.toggle('on',acO);$('btAdd').classList.toggle('on',adO);if(acO||adO){['btHome','btProd','btList','btMap'].forEach(i=>$(i).classList.remove('on'))}}
+function btOverlay(){/* 「追加」「アカウント」の画面が開いている間は、そのボタンを選択中の色にして、ほかは選択を外す */const acO=!!$('ac')&&$('ac').open,adO=(!!$('dlg')&&$('dlg').open&&!editId)||!!document.querySelector('.psh .psb.pad');/* 生産画面の「追加」シートが開いている間も青にする */$('btAcc').classList.toggle('on',acO);$('btAdd').classList.toggle('on',adO);if(acO||adO){['btHome','btProd','btList','btMap'].forEach(i=>$(i).classList.remove('on'))}}
 $('hSearch').onclick=()=>{btCloseAll();qToggle(!document.querySelector('.tools').classList.contains('so'))};
 $('btProd').onclick=()=>{btCloseAll();scrSet('prod');topScroll(true)};
 $('btHome').onclick=()=>{scrSet('inv');const b=document.body.classList,over=!$('lv').hidden||b.contains('zsheet')||b.contains('hist')||dtId!==null;btCloseAll();if(!over)topScroll(true)};
@@ -3445,7 +3705,7 @@ $('btMap').onclick=()=>{const b=document.body.classList;
   if(b.contains('hist')){zSheet(true);return} /* 履歴は閉じずに、その上にマップを重ねる */
   btCloseAll();zSheet(true)};
 function leaveHist(){if(document.body.classList.contains('hist')){document.body.classList.remove('hist');logF=''}} /* 履歴を開いたままマップで棚を選んだら、履歴をその置き場所で絞り込む（ホームには戻らない）。leaveHistは現在未使用 */
-{const mo=new MutationObserver(btSync);mo.observe(document.body,{attributes:true,attributeFilter:['class']});mo.observe($('lv'),{attributes:true,attributeFilter:['hidden']});mo.observe($('dv'),{attributes:true,attributeFilter:['hidden']});btSync()}
+{new MutationObserver(btSync).observe(document.body,{childList:true});/* シートの出入りでも下タブの色を更新 */const mo=new MutationObserver(btSync);mo.observe(document.body,{attributes:true,attributeFilter:['class']});mo.observe($('lv'),{attributes:true,attributeFilter:['hidden']});mo.observe($('dv'),{attributes:true,attributeFilter:['hidden']});btSync()}
 $('edFab').onclick=()=>$('edMode').click();
 $('hEdit').onclick=()=>$('edMode').click();
 
@@ -3472,7 +3732,13 @@ function updDel(){const n=delSel.size+mkAll().size+delSelSh.size;$('dlCnt').text
   $('dlMk').hidden=!cur;$('dlMk').title=cur?`「${cur}」とその品目をすべて削除`:'';
   document.querySelectorAll('#grid .card').forEach(c=>{const e=c.querySelector('[data-e]');if(e){const it=S.items.find(x=>x.id===+e.dataset.e);c.classList.toggle('dsel',!!it&&dSel(it))}});
   {const ma=mkAll();document.querySelectorAll('#locs span').forEach(c=>c.classList.toggle('dsel',c.dataset.m!==''&&ma.has(c.dataset.m)))}
-  document.querySelectorAll('#tabs .tab').forEach(c=>c.classList.toggle('dsel',c.dataset.sh!==''&&delSelSh.has(c.dataset.sh)))}
+  document.querySelectorAll('#tabs .tab').forEach(c=>c.classList.toggle('dsel',c.dataset.sh!==''&&delSelSh.has(c.dataset.sh)));syncShDel()}
+/* 削除モード（PC）：プルダウンで選んだ棚の横に「✕」を出す。押すと、その棚が削除対象になる */
+function syncShDel(){const sel=$('shSel'),b=$('shDel');if(!sel||!b)return;const on=document.body.classList.contains('deon');
+  [...sel.options].forEach(o=>{if(o.dataset.t===undefined)o.dataset.t=o.textContent;o.textContent=(on&&o.value&&delSelSh.has(o.value)?'✕ ':'')+o.dataset.t});
+  const m=on&&!!curLoc&&delSelSh.has(curLoc);b.hidden=!(on&&curLoc);b.classList.toggle('on',m);b.setAttribute('aria-pressed',m?'true':'false');sel.classList.toggle('dsel',m)}
+$('shDel').onclick=()=>{const sh=curLoc;if(!sh||!document.body.classList.contains('deon'))return;const ids=S.items.filter(i=>(i.loc||'未設定')===sh).map(i=>i.id);
+  if(delSelSh.has(sh)){delSelSh.delete(sh);ids.forEach(id=>delSel.delete(id))}else{delSelSh.add(sh);ids.forEach(id=>delSel.add(id))}updDel()};
 function delSet(on){if(on&&!isAdmin()){notify('削除は管理者だけができます');return}if(on&&document.body.classList.contains('edon'))edSet(false);if(on&&document.body.classList.contains('mvon'))mvSet(false);
   document.body.classList.toggle('deon',on);$('delBar').hidden=!on;const b=$('rDel');b.setAttribute('aria-pressed',on?'true':'false');b.setAttribute('aria-label',on?'削除モードをやめる':'削除する品目を選ぶ');
   if(!on){delSel.clear();delSelMk.clear();delSelSh.clear()}updDel()}
@@ -3586,7 +3852,7 @@ function openEdit(id){$('pv').classList.remove('adj');if(!canEdit()){notify('編
   $('dt').textContent=id?'品目を編集':'品目を追加';
   $('fMaker').innerHTML=S.makers.map(m=>`<option ${m===i.maker?'selected':''}>${esc(m)}</option>`).join('')+`<option value="__new__" ${S.makers.length?'':'selected'}>＋ メーカーを追加…</option>`;$('fMakerNew').value='';mkNewSync();
   $('fName').value=i.name;$('fStock').value=i.stock;locFill(i.loc||'');
-  tmpImg=i.img;phz=i.z||1;phx=i.x||0;phy=i.y||0;$('file').value='';showPv();
+  tmpImg=i.img;phz=i.z||1;phx=i.x||0;phy=i.y||0;$('file').value='';showPv();tmpX=[];
   {const ph=document.querySelector('#grid .ph'),r=ph&&ph.getBoundingClientRect();$('pv').style.aspectRatio=r&&r.width>0&&r.height>0?(r.width/r.height).toFixed(3):''} /* カードの写真枠と同じ比率にする */
   {/* 作業者は既存品目の「在庫数」と「置き場所」だけ編集できる（管理者・新規追加はこれまでどおり全項目） */const lim=!!id&&!isAdmin();$('dlg').classList.toggle('lim',lim);
     ['pZoom','pReset','pAuto','pickImg','rotImg','rmImg','fName','fMaker','fMakerNew'].forEach(k=>{$(k).disabled=lim||((k==='pAuto'||k==='rotImg')&&!tmpImg)});$('edHint').hidden=!lim}
@@ -3651,13 +3917,48 @@ $('fSave').onclick=()=>{
   if(mk==='__new__'){mk=$('fMakerNew').value.trim();if(!mk){notify('メーカー名を入力してください');$('fMakerNew').focus();return}if(!S.makers.includes(mk))S.makers.push(mk)}
   let lc=$('fLoc').value;
   if(lc==='__new__'){lc=$('fLocNew').value.trim();if(!lc){notify('置き場所を入力してください');$('fLocNew').focus();return}}
-  const v={name,maker:mk,stock:Math.max(0,+$('fStock').value||0),unit:'個',loc:lc,img:tmpImg,z:phz,x:phx,y:phy};
-  if(lim){v.name=orig.name;v.maker=orig.maker;v.img=orig.img;v.z=orig.z;v.x=orig.x;v.y=orig.y}/* 作業者は在庫数・置き場所以外を変えられない */
+  const v={name,maker:mk,stock:Math.max(0,+$('fStock').value||0),unit:'個',loc:lc,img:tmpImg,z:phz,x:phx,y:phy,imgs:[]};
+  if(lim){v.name=orig.name;v.maker=orig.maker;v.img=orig.img;v.z=orig.z;v.x=orig.x;v.y=orig.y;v.imgs=[]}/* 作業者は在庫数・置き場所以外を変えられない */
   if(editId){const it=S.items.find(x=>x.id===editId),d=v.stock-it.stock;
     if(d){/* 編集画面で在庫数を直したときも履歴に残す（e:1＝編集による修正） */const n=new Date();S.log.unshift({id:it.id,name:v.name,d,e:1,u:curUser,t:`${n.getMonth()+1}/${n.getDate()} ${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`,ts:fts(n)});S.log=S.log.slice(0,300)}
     Object.assign(it,v);stFix(it)}else{const ni={id:S.nid++,...v};stFix(ni);S.items.push(ni)}
-  if(cur&&cur!==v.maker)cur=v.maker;if(curLoc&&(v.loc||'未設定')!==curLoc)curLoc='';save();$('dlg').close();render();
+  if(cur&&cur!==v.maker)cur=v.maker;if(curLoc&&(v.loc||'未設定')!==curLoc)curLoc='';save();$('dlg').close();render();if(pdId!==null)pdDraw();
 };
+
+
+/* 写真は1枚だけ（追加写真の機能は廃止） */
+function xDraw(){}
+/* ===== PC用 品目詳細画面 ===== */
+function pdOpen(id){const i=S.items.find(x=>x.id===id);if(!i)return;i.proc='';pdId=id;pdIx=0;pdTab='h';pdDraw();const el=$('pd');el.hidden=false;el.scrollTop=0;document.body.classList.add('pdon')}
+function pdClose(){if(pdId===null)return;const i=S.items.find(x=>x.id===pdId);if(i)i.proc='';pdId=null;$('pd').hidden=true;document.body.classList.remove('pdon')}
+function pdDraw(){const i=S.items.find(x=>x.id===pdId);if(!i){pdClose();return}stFix(i);
+  const el=$('pd'),st=el.scrollTop,a=String(i.name).split(/\r?\n/).map(x=>x.trim()).filter(Boolean),pn=a.slice(1).join(' ');
+  const th=i.img?[i.img]:[];pdIx=0;
+  const main=th.length?(pdIx===0&&i.img?imgTag(i):`<img src="${th[pdIx]}" alt="">`):'写真なし';
+  const cd=cdw(i),mx=Math.max(1,...PROC.map(p=>i.st[p.k])),off=i.proc?'':' off';
+  let tb;
+  if(pdTab==='h'){const lg=S.log.filter(x=>x.id===i.id);
+    tb=lg.length?`<div class="pdls"><table class="pdlog">${lg.map(x=>`<tr><td class="pt">${esc(x.t||'')}</td><td>${esc(x.u||'')}</td><td class="pq ${x.d>0?'lin':'lou'}">${x.e?'修正':x.d>0?'入庫':'出庫'} ${x.d>0?'+':''}${x.d}</td><td>${esc(x.e?'':(x.fr||x.pr||''))}</td></tr>`).join('')}</table></div>`:'<p class="pdempty">この品目の入出庫の記録はまだありません</p>'}
+  else tb=PROC.map(p=>`<div class="pdfl"><span>${p.t}</span><div class="pdbar"><i style="width:${i.st[p.k]/mx*100}%"></i></div><b>${i.st[p.k]}</b></div>`).join('');
+  el.innerHTML=`<div class="pdtop"><span class="pdttl">品目の詳細</span><button type="button" data-pdc><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>一覧に戻る</button><button type="button" class="pded" data-pdedit>編集</button></div>
+<div class="pdwrap"><div class="pdhero">
+<div class="pdpic"><div class="pdph">${main}</div></div>
+<div class="pdinfo"><div class="pdm">${esc(i.maker)}</div><div class="pdn">${esc(a[0]||'')}</div>${pn?`<div class="pdp">${esc(pn)}</div>`:''}
+<div class="pdg">${PROC.map(p=>`<div class="pc k-${p.c}"><b class="tg">${p.g}</b><s class="ib"><i class="ic" aria-hidden="true" style="-webkit-mask-image:url(${p.m});mask-image:url(${p.m})"></i></s><span>${p.t}</span><em class="${i.st[p.k]?'':'z'}">${i.st[p.k]}</em></div>`).join('')}</div>
+</div></div>
+<div class="pdcard"><div class="pdtabs"><button type="button" class="on" data-tab="h">入出庫の履歴</button></div>
+<div class="pdbody"><div>${tb}</div><ul class="pdfa"><li><span>置き場所</span><b>${esc(i.loc||'未設定')}</b></li><li><span>在庫の合計</span><b>${i.stock} ${esc(i.unit||'個')}</b></li><li><span>完成品</span><b>${cd.d} ${esc(i.unit||'個')}</b></li><li><span>仕掛品</span><b>${cd.w} ${esc(i.unit||'個')}</b></li></ul></div></div></div>`;
+  phBg();el.scrollTop=st}
+$('pd').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const i=S.items.find(x=>x.id===pdId);if(!i)return;
+  if(b.hasAttribute('data-pdc'))pdClose();
+  else if(b.hasAttribute('data-pdedit'))openEdit(pdId);
+  else if(b.dataset.px!==undefined){pdIx=+b.dataset.px;pdDraw()}
+  else if(b.dataset.tab){pdTab=b.dataset.tab;pdDraw()}
+  else if(b.dataset.pc){i.proc=i.proc===b.dataset.pc?'':b.dataset.pc;save();/* 画面を描き直さず、その場で見た目だけ変える（位置が動かない） */
+    $('pd').querySelectorAll('.pdg .pc').forEach(x=>x.classList.toggle('on',x.dataset.pc===i.proc));
+    $('pdAct').querySelectorAll('button').forEach(x=>x.classList.toggle('off',!i.proc));
+    const h=$('pd').querySelector('.pdhint');if(h)h.classList.toggle('hid',!!i.proc)}});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&pdId!==null&&!document.querySelector('dialog[open]'))pdClose()});
 
 /* ===== Excel（.xlsx）／CSVから品目をまとめて読み込む ===== */
 (()=>{
@@ -3864,16 +4165,16 @@ $('scF').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;c
 
 /* ===== スマホ：詳細画面（カードをタップ → 写真・品名・在庫・置き場所、下に入庫／出庫ボタン） ===== */
 const IC_DRILL="data:image/png;base64,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",IC_GEAR="data:image/png;base64,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",IC_BARI="data:image/png;base64,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";/* アイコン画像（透明PNG。色は文字色に合わせて塗る） */
-const PROC=[1,2,3,4,5,6].map(n=>({k:'p'+n,t:'工程'+n,m:IC_DRILL})).concat([{k:'bari',t:'バリ取り',m:IC_BARI},{k:'done',t:'完成品',m:IC_GEAR}]);
+const PROC=[1,2,3,4,5,6].map(n=>({k:'p'+n,t:'工程'+n,m:IC_DRILL,g:'0'+n,c:'p'})).concat([{k:'bari',t:'バリ取り',m:IC_BARI,g:'バリ',c:'b'},{k:'done',t:'完成品',m:IC_GEAR,g:'完成',c:'d'}]);
 /* 工程ごとの在庫：i.st={p1..p6,bari,done}。i.stock（一覧に出す合計）と食い違っていたら、差を「完成品」から調整する */
 function cdw(i){try{stFix(i)}catch(e){}const t=Math.max(0,+i.stock||0),d=Math.min(t,Math.max(0,+(i.st&&i.st.done)||0));return{d:d,w:t-d}} /* 完成品＝工程の「完成品」、仕掛品＝在庫のうち完成品以外 */
 function stFix(i){if(!i.st||typeof i.st!=='object')i.st={};let sum=0;for(const p of PROC){i.st[p.k]=Math.max(0,Math.floor(+i.st[p.k]||0));sum+=i.st[p.k]}
   let diff=(+i.stock||0)-sum;if(diff>0)i.st.done+=diff;else if(diff<0){for(const p of PROC.slice().reverse()){const t=Math.min(i.st[p.k],-diff);i.st[p.k]-=t;diff+=t;if(!diff)break}}}
-let dtId=null;let dtBack=null;/* 詳細から履歴を開いたときの、戻り先の品目ID */
+let dtId=null;let dtBack=null;let pdId=null,pdIx=0,pdTab='h',tmpX=[];/* 詳細から履歴を開いたときの、戻り先の品目ID */
 function dtDraw(){const i=S.items.find(x=>x.id===dtId);if(!i){dtClose(true);return}stFix(i);
   const a=String(i.name).split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
   $('dvPh').innerHTML=(i.img?`<span class="pi">${imgTag(i)}</span>`:'<span>写真なし</span>')+`<button class="dth" data-h="${i.id}" type="button" aria-label="この品目の履歴"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg><span>履歴</span></button>`;
-  $('dvB').innerHTML=`<div class="dtt">${a.slice(1).join(' ').trim()?`<div class="dtm">${esc(a.slice(1).join(' ').trim())}</div>`:''}<div class="dtn">${esc(a[0]||'')}</div></div><div class="dtg" id="dvPg">${PROC.map(p=>`<button type="button" class="pc${i.proc===p.k?' on':''}" data-pc="${p.k}"><i class="ic" aria-hidden="true" style="-webkit-mask-image:url(${p.m});mask-image:url(${p.m})"></i><span>${p.t}</span><em class="cn${i.st[p.k]?'':' z'}">${i.st[p.k]}</em></button>`).join('')}</div>`;
+  $('dvB').innerHTML=`<div class="dtt">${a.slice(1).join(' ').trim()?`<div class="dtm">${esc(a.slice(1).join(' ').trim())}</div>`:''}<div class="dtn">${esc(a[0]||'')}</div></div><div class="dtg" id="dvPg">${PROC.map(p=>`<button type="button" class="pc k-${p.c}${i.proc===p.k?' on':''}" data-pc="${p.k}"><b class="tg">${p.g}</b><s class="ib"><i class="ic" aria-hidden="true" style="-webkit-mask-image:url(${p.m});mask-image:url(${p.m})"></i></s><span>${p.t}</span><em class="cn${i.st[p.k]?'':' z'}">${i.st[p.k]}</em></button>`).join('')}</div>`;
   $('dvBar').innerHTML=`<button class="o${i.proc?'':' off'}" data-o="${i.id}" type="button" aria-disabled="${i.proc?'false':'true'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 14l2-6h4M21 14l-2-6h-4M3 14v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4M3 14h5l1.5 2.5h5L16 14h5"/><path d="M12 12V3m0 0l-3 3m3-3l3 3"/></svg>出庫</button><button class="n${i.proc?'':' off'}" data-i="${i.id}" type="button" aria-disabled="${i.proc?'false':'true'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 14l2-6h4M21 14l-2-6h-4M3 14v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4M3 14h5l1.5 2.5h5L16 14h5"/><path d="M12 3v9m0 0l-3-3m3 3l3-3"/></svg>入庫</button>`;phBg()}
 function dtOpen(id){dtId=id;{const it=S.items.find(x=>x.id===id);if(it)it.proc=''}/* 開くたびに工程の選択を外す：工程を押さないと入庫・出庫できない */dtDraw();$('dv').hidden=false;$('dvS').scrollTop=0;try{if(!(history.state&&history.state.dt))history.pushState({dt:1},'')}catch(e){}}
 /* 詳細画面の開閉：画面を閉じるときに history.back() は呼ばない（遅れて完了して、素早い切り替えで順番が崩れるのを防ぐ）。
@@ -3933,6 +4234,14 @@ if('serviceWorker' in navigator){window.addEventListener('load',function(){navig
   }
   document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')toTop()});
   window.addEventListener('pageshow',function(e){if(e.persisted)toTop()});
+})();
+</script>
+<script>
+/* PC・タブレット：「マップ」ボタンで、左メニューの下の置き場マップを隠す／出す */
+(()=>{const mq=matchMedia('(min-width:601px)'),b=document.getElementById('zBtn');if(!b)return;
+/* 以前に「マップを隠す」で保存された設定が残っていても、PC・タブレットではマップを描く */
+try{if(mq.matches&&S.zhide){S.zhide=false;zApply()}}catch(e){}
+b.addEventListener('click',e=>{if(!mq.matches)return;e.stopImmediatePropagation();document.body.classList.toggle('nomap')},true);
 })();
 </script>
 </body>
