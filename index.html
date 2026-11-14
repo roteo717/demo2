@@ -2532,15 +2532,16 @@ html body #dvPg .pc span{display:block;grid-area:nm;max-width:100%;font-size:12p
 html body #dvPg .pc em{margin:0;padding:0;grid-area:ct;max-width:100%;font-size:clamp(18px,2.7vh,22px);font-weight:800;line-height:1.15;white-space:nowrap;align-self:start;letter-spacing:0}
 html body #dvPg .pc em::after{content:"個";margin-left:2px;font-size:12px;font-weight:700;opacity:.7}
 html body #dvPg .pc.on span{color:var(--c)}
-/* ===== 「工程を選ぶ」画面：詳細画面と同じ、アイコン＋工程名の横長ボタンを2列に（選んだものはチェック付き） ===== */
-html body .psb .dtg.ppx{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0 12px}
-html body .psb .dtg.ppx .pc{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-areas:"ic nm";column-gap:10px;align-items:center;justify-items:start;aspect-ratio:auto;container-type:normal;height:auto;min-height:clamp(40px,6.9vh,52px);padding:4px 34px 4px 12px;border-radius:14px;text-align:left;overflow:hidden}
+/* ===== 「工程を選ぶ」画面：詳細画面と同じ、アイコン＋工程名の横長ボタンを2列に（選んだものは濃い枠） ===== */
+html body .psb .dtg.ppx{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0 14px}
+html body .psb .dtg.ppx + .ppv{display:none}   /* 「選択中：…」の文字は出さない（ボタンの色でわかるため） */
+html body .psb .dtg.ppx .pc{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-areas:"ic nm";column-gap:10px;align-items:center;justify-items:start;aspect-ratio:auto;container-type:normal;height:auto;min-height:clamp(40px,6.9vh,52px);padding:4px 12px;border-radius:14px;text-align:left;overflow:hidden}
 html body .psb .dtg.ppx .pc .tg{display:none}
 html body .psb .dtg.ppx .pc .ib{grid-area:ic;width:clamp(24px,4.2vh,32px);height:clamp(24px,4.2vh,32px);margin:0}
 html body .psb .dtg.ppx .pc span{display:block;grid-area:nm;max-width:100%;font-size:14px;font-weight:700;line-height:1.2;color:#2b3a52;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 html body .psb .dtg.ppx .pc.on span{color:var(--c)}
-html body .psb .dtg.ppx .pc.on::after{content:"\2713";position:absolute;right:11px;top:50%;transform:translateY(-50%);font-size:16px;font-weight:800;line-height:1;color:var(--c)}
 html body .psb .dtg.ppx .pc.on .ib{background:none;border:0;box-shadow:none}
+html body .psb .pbt .po:disabled{background:#b9c3d4;color:#fff;border-color:transparent;opacity:1;cursor:default;box-shadow:none}
 /* ===== お気に入り（スマホのみ） ===== */
 .fbtn{display:none}
 @media(max-width:600px){
@@ -3634,8 +3635,8 @@ function pSheet(kind,id,after){const it=S.items.find(x=>x.id===id);if(!it)return
                :`<div class="prr"><input type="number" inputmode="numeric" min="0" step="1" id="prIn" value="${Math.floor(+it.pr||0)||''}" placeholder="120"><span>個/h</span></div>`)+
    `<div class="pbt">${kind==='pp'?'':'<button type="button" data-a="clr">クリア</button>'}<button type="button" data-a="x">キャンセル</button><button type="button" class="po" data-a="ok">決定</button></div></div>`;
   const close=()=>el.remove();
-  const paint=()=>{if(kind!=='pp')return;el.querySelectorAll('.ppx .pc').forEach(b=>b.classList.toggle('on',sel.has(isNaN(+b.dataset.n)?b.dataset.n:+b.dataset.n)));const t=ppText([...sel]);el.querySelector('.ppv').innerHTML=t?'選択中：<b>'+(sel.size===1&&sel.has('d')?'':'工程 ')+t+'</b>':'未選択'};
-  const done=()=>{if(kind==='pp'){it.pp=ppNorm([...sel])}else{const n=Math.floor(+el.querySelector('#prIn').value||0);it.pr=n>0?n:0}save();render();close();if(after&&kind==='pp'&&ppNorm(it.pp).length)after()};
+  const paint=()=>{if(kind!=='pp')return;el.querySelectorAll('.ppx .pc').forEach(b=>b.classList.toggle('on',sel.has(isNaN(+b.dataset.n)?b.dataset.n:+b.dataset.n)));const t=ppText([...sel]);el.querySelector('.ppv').innerHTML=t?'選択中：<b>'+(sel.size===1&&sel.has('d')?'':'工程 ')+t+'</b>':'未選択';const okb=el.querySelector('.pbt .po');if(okb)okb.disabled=!sel.size};
+  const done=()=>{if(kind==='pp'&&!sel.size)return;if(kind==='pp'){it.pp=ppNorm([...sel])}else{const n=Math.floor(+el.querySelector('#prIn').value||0);it.pr=n>0?n:0}save();render();close();if(after&&kind==='pp'&&ppNorm(it.pp).length)after()};
   el.addEventListener('click',e=>{if(e.target===el){close();return}
     const n=e.target.closest('.ppx .pc');if(n){const v=isNaN(+n.dataset.n)?n.dataset.n:+n.dataset.n;sel.has(v)?sel.delete(v):sel.add(v);paint();return}
     const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a;
