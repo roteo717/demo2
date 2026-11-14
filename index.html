@@ -2521,12 +2521,13 @@ html body .pdg .pc .ib{width:auto;height:min(44px,40%);aspect-ratio:1/1}
 html body .pdg .pc .tg{font-size:11px}
 html body .pdg .pc em{font-size:clamp(15px,2.4vh,21px)}
 /* ===== スマホの品目の詳細：工程ボタンを「アイコン｜工程名／個数」の横長にして、2列に並べる ===== */
-html body #dvPg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-html body #dvPg .pc{display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-areas:"ic nm" "ic ct";column-gap:12px;row-gap:0;align-items:center;justify-items:start;align-content:center;aspect-ratio:auto;container-type:normal;height:auto;min-height:68px;padding:10px 14px;border-radius:14px;text-align:left;overflow:hidden}
+html body .dtph{flex:none;min-height:0}   /* 写真は縮めない（4:3のまま。足りないぶんはボタン側で小さくする） */
+html body #dvPg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+html body #dvPg .pc{display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-areas:"ic nm" "ic ct";column-gap:10px;row-gap:0;align-items:center;justify-items:start;align-content:center;aspect-ratio:auto;container-type:normal;height:auto;min-height:clamp(46px,7.4vh,60px);padding:5px 12px;border-radius:14px;text-align:left;overflow:hidden}
 html body #dvPg .pc .tg{display:none}
-html body #dvPg .pc .ib{grid-area:ic;width:36px;height:36px;margin:0}
-html body #dvPg .pc span{display:block;grid-area:nm;max-width:100%;font-size:12.5px;font-weight:700;line-height:1.2;color:#5b6678;white-space:nowrap;align-self:end}
-html body #dvPg .pc em{margin:0;padding:0;grid-area:ct;max-width:100%;font-size:22px;font-weight:800;line-height:1.15;white-space:nowrap;align-self:start;letter-spacing:0}
+html body #dvPg .pc .ib{grid-area:ic;width:clamp(26px,4.4vh,34px);height:clamp(26px,4.4vh,34px);margin:0}
+html body #dvPg .pc span{display:block;grid-area:nm;max-width:100%;font-size:12px;font-weight:700;line-height:1.2;color:#5b6678;white-space:nowrap;align-self:end}
+html body #dvPg .pc em{margin:0;padding:0;grid-area:ct;max-width:100%;font-size:clamp(18px,2.7vh,22px);font-weight:800;line-height:1.15;white-space:nowrap;align-self:start;letter-spacing:0}
 html body #dvPg .pc em::after{content:"個";margin-left:2px;font-size:12px;font-weight:700;opacity:.7}
 html body #dvPg .pc.on span{color:var(--c)}
 /* ===== お気に入り（スマホのみ） ===== */
@@ -2815,7 +2816,7 @@ function isFav(id){return favSet.has(+id)}
 function favSave(){try{localStorage.setItem(FAVKEY,JSON.stringify([...favSet]))}catch(e){}}
 
 /* スマホの詳細：個数の桁が多いときは、数字を小さくして枠に収める */
-function fitPc(){document.querySelectorAll('#dvPg .pc em').forEach(e=>{e.style.fontSize='';const w=e.parentElement.clientWidth-parseFloat(getComputedStyle(e.parentElement).paddingLeft)-parseFloat(getComputedStyle(e.parentElement).paddingRight)-36-12;let fs=22;while(fs>10&&e.scrollWidth>w+0.5&&e.scrollWidth>0){fs-=1;e.style.fontSize=fs+'px'}})}
+function fitPc(){document.querySelectorAll('#dvPg .pc em').forEach(e=>{e.style.fontSize='';let fs=parseFloat(getComputedStyle(e).fontSize);while(fs>10&&e.scrollWidth>e.clientWidth+0.5&&e.clientWidth>0){fs-=1;e.style.fontSize=fs+'px'}})}
 {const _dd=dtDraw;dtDraw=function(){const r=_dd.apply(this,arguments);try{fitPc()}catch(e){}return r}}
 {const _do=dtOpen;dtOpen=function(){const r=_do.apply(this,arguments);try{fitPc()}catch(e){}return r}} /* 画面を表示したあとにもう一度（表示前は幅が測れないため） */
 window.addEventListener('resize',()=>{try{fitPc()}catch(e){}});
