@@ -2521,15 +2521,26 @@ html body .pdg .pc .ib{width:auto;height:min(44px,40%);aspect-ratio:1/1}
 html body .pdg .pc .tg{font-size:11px}
 html body .pdg .pc em{font-size:clamp(15px,2.4vh,21px)}
 /* ===== スマホの品目の詳細：工程ボタンを「アイコン｜工程名／個数」の横長にして、2列に並べる ===== */
-html body .dtph{flex:none;min-height:0}   /* 写真は縮めない（4:3のまま。足りないぶんはボタン側で小さくする） */
+html body .dtph{flex:none;min-height:0}   /* 写真は4:3のまま。高さが足りないときだけ、JSで必要な分だけ縮める（fitDv） */
+html body .dtb{padding-bottom:20px}   /* 一番下のボタンの下に余白 */
+html body .dts{overscroll-behavior:none}
 html body #dvPg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-html body #dvPg .pc{display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-areas:"ic nm" "ic ct";column-gap:10px;row-gap:0;align-items:center;justify-items:start;align-content:center;aspect-ratio:auto;container-type:normal;height:auto;min-height:clamp(46px,7.4vh,60px);padding:5px 12px;border-radius:14px;text-align:left;overflow:hidden}
+html body #dvPg .pc{display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-areas:"ic nm" "ic ct";column-gap:10px;row-gap:0;align-items:center;justify-items:start;align-content:center;aspect-ratio:auto;container-type:normal;height:auto;min-height:clamp(40px,6.9vh,60px);padding:4px 12px;border-radius:14px;text-align:left;overflow:hidden}
 html body #dvPg .pc .tg{display:none}
-html body #dvPg .pc .ib{grid-area:ic;width:clamp(26px,4.4vh,34px);height:clamp(26px,4.4vh,34px);margin:0}
+html body #dvPg .pc .ib{grid-area:ic;width:clamp(24px,4.2vh,34px);height:clamp(24px,4.2vh,34px);margin:0}
 html body #dvPg .pc span{display:block;grid-area:nm;max-width:100%;font-size:12px;font-weight:700;line-height:1.2;color:#5b6678;white-space:nowrap;align-self:end}
 html body #dvPg .pc em{margin:0;padding:0;grid-area:ct;max-width:100%;font-size:clamp(18px,2.7vh,22px);font-weight:800;line-height:1.15;white-space:nowrap;align-self:start;letter-spacing:0}
 html body #dvPg .pc em::after{content:"個";margin-left:2px;font-size:12px;font-weight:700;opacity:.7}
 html body #dvPg .pc.on span{color:var(--c)}
+/* ===== 「工程を選ぶ」画面：詳細画面と同じ、アイコン＋工程名の横長ボタンを2列に（選んだものはチェック付き） ===== */
+html body .psb .dtg.ppx{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0 12px}
+html body .psb .dtg.ppx .pc{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-areas:"ic nm";column-gap:10px;align-items:center;justify-items:start;aspect-ratio:auto;container-type:normal;height:auto;min-height:clamp(40px,6.9vh,52px);padding:4px 34px 4px 12px;border-radius:14px;text-align:left;overflow:hidden}
+html body .psb .dtg.ppx .pc .tg{display:none}
+html body .psb .dtg.ppx .pc .ib{grid-area:ic;width:clamp(24px,4.2vh,32px);height:clamp(24px,4.2vh,32px);margin:0}
+html body .psb .dtg.ppx .pc span{display:block;grid-area:nm;max-width:100%;font-size:14px;font-weight:700;line-height:1.2;color:#2b3a52;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html body .psb .dtg.ppx .pc.on span{color:var(--c)}
+html body .psb .dtg.ppx .pc.on::after{content:"\2713";position:absolute;right:11px;top:50%;transform:translateY(-50%);font-size:16px;font-weight:800;line-height:1;color:var(--c)}
+html body .psb .dtg.ppx .pc.on .ib{background:none;border:0;box-shadow:none}
 /* ===== お気に入り（スマホのみ） ===== */
 .fbtn{display:none}
 @media(max-width:600px){
@@ -2817,9 +2828,13 @@ function favSave(){try{localStorage.setItem(FAVKEY,JSON.stringify([...favSet]))}
 
 /* スマホの詳細：個数の桁が多いときは、数字を小さくして枠に収める */
 function fitPc(){document.querySelectorAll('#dvPg .pc em').forEach(e=>{e.style.fontSize='';let fs=parseFloat(getComputedStyle(e).fontSize);while(fs>10&&e.scrollWidth>e.clientWidth+0.5&&e.clientWidth>0){fs-=1;e.style.fontSize=fs+'px'}})}
-{const _dd=dtDraw;dtDraw=function(){const r=_dd.apply(this,arguments);try{fitPc()}catch(e){}return r}}
-{const _do=dtOpen;dtOpen=function(){const r=_do.apply(this,arguments);try{fitPc()}catch(e){}return r}} /* 画面を表示したあとにもう一度（表示前は幅が測れないため） */
-window.addEventListener('resize',()=>{try{fitPc()}catch(e){}});
+/* スマホの詳細：縦にはみ出す（＝スクロールが要る）ときだけ、写真の高さを必要な分だけ縮める。ふだんは4:3のまま */
+function fitDv(){const s=document.getElementById('dvS'),ph=document.getElementById('dvPh'),dv=document.getElementById('dv');if(!s||!ph||!dv||dv.hidden)return;
+  ph.style.aspectRatio='';ph.style.height='';const over=s.scrollHeight-s.clientHeight;
+  if(over>0){const h=ph.getBoundingClientRect().height,nh=Math.max(110,Math.floor(h-over));if(nh<h){ph.style.aspectRatio='auto';ph.style.height=nh+'px'}}}
+{const _dd=dtDraw;dtDraw=function(){const r=_dd.apply(this,arguments);try{fitPc();fitDv()}catch(e){}return r}}
+{const _do=dtOpen;dtOpen=function(){const r=_do.apply(this,arguments);try{fitPc();fitDv()}catch(e){}return r}} /* 画面を表示したあとにもう一度（表示前は幅が測れないため） */
+window.addEventListener('resize',()=>{try{fitPc();fitDv()}catch(e){}});
 function favBtn(i){const on=isFav(i.id);return `<button class="fbtn${on?' on':''}" data-fv="${i.id}" type="button" aria-pressed="${on}" aria-label="お気に入り"><svg viewBox="0 0 24 24"><path d="M12 2.8l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.6l-5.8 3.1 1.1-6.5L2.6 9.6l6.5-.9L12 2.8z"/></svg></button>`}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-fv]');if(!b)return;e.stopPropagation();e.preventDefault();
   const id=+b.dataset.fv;favSet.has(id)?favSet.delete(id):favSet.add(id);favSave();render(); /* 並べ替えのため再描画 */
